@@ -2,10 +2,9 @@
 #define __HAS_CRITICAL_SECTION_HPP
 
 #include <vector>
-#include <vector>
+#include <set>
 
 namespace Scan {
-
     class Resource {
         int id_;
         bool isShort_;
@@ -18,17 +17,23 @@ namespace Scan {
         int get_id() const { return id_; }
     };
 
+    class CriticalSection;
+    typedef std::set<CriticalSection *> CSSet;
+
     class CriticalSection {
     public:
         int res_id;
         double duration;
         std::vector<CriticalSection> nested;
-        bool is_nested;
+        CriticalSection *parent; 
     
-        CriticalSection(int rid, double dur, bool nest = false) : 
-            res_id(rid), duration(dur), is_nested(nest) {}
+        CriticalSection(int rid, double dur, CriticalSection *p=0) : 
+            res_id(rid), duration(dur), parent(p) {}
+        
+        void addCS(CSSet &s);
     };
 
+    
     class HasCriticalSection {
     private:
         static double get_dur(const std::vector<CriticalSection> &v, int rid); 
@@ -41,8 +46,23 @@ namespace Scan {
             section on resource rid, or 0 if the task does not use
             resource rid
         */
-        double getDuration(int rid); 
+        double getDuration(int rid);
+        CSSet getAllCriticalSections();
     };
 
+    class ChainElem {
+    public: 
+        HasCriticalSection *task1;
+        CriticalSection *cs;
+        HasCriticalSection *task2;
+        ChainElem(HasCriticalSection *t1, CriticalSection *c, HasCriticalSection *t2);
+    };
+
+    typedef std::vector<ChainElem> BlockingChain;
+    typedef std::set<HasCriticalSection *> HCSSet;
+    typedef std::set<Resource *> ResourceSet;
+    
+    std::set<BlockingChain> getAllBlockingChains(const HasCriticalSection &t);    
+    HCSSet getBlockingTasks(const BlockingChain &bc);
 }
 #endif // __HAS_CRITICAL_SECTION_HPP

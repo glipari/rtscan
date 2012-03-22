@@ -7,6 +7,15 @@ namespace Scan {
     Resource::Resource(int rid, bool s) :
         id_(rid), isShort_(s), ceiling_(0) {}
 
+
+    void CriticalSection::addCS(CSSet &s)
+    {
+        for (auto c : nested) {
+            s.insert(&c);
+            c.addCS(s);
+        }
+    }
+
     double HasCriticalSection::get_dur(const std::vector<CriticalSection> &v, int rid)
     {
         vector<double> d;
@@ -23,5 +32,19 @@ namespace Scan {
     {
         return get_dur(cs, rid);
     } 
+
+    CSSet HasCriticalSection::getAllCriticalSections()
+    {
+        CSSet s;
+        for (auto c : cs) {
+            s.insert(&c);
+            c.addCS(s)
+        }
+    }
+
+    ChainElem::ChainElem(HasCriticalSection *t1, CriticalSection *c, HasCriticalSection *t2) :
+        task1(t1), cs(c), task2(t2) {}
+
+
 
 }
