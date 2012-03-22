@@ -1,5 +1,66 @@
-----------------------------------
-               SCAN
--- -SC-hedulability -AN-alyser ---
+-------------------------------------------
+                 RTSCAN
+-------------------------------------------
+-- Real-Time-SC-hedulability -AN-alyser ---
+-------------------------------------------
 
+This is a set of libraries and a set of programs
+for performing scheduling analysis of real-time 
+systems. The intention is to provide a repository
+that collects real-time scheduling analysis formulas
+and programs, so that researchers do not need to 
+implement everything from scratch every time. 
 
+The programs and the libraries are written in C++. 
+You need:
+
+- the latest GNU g++ compiler (> 4.6)
+- the boost spirit library
+- the boost filestystem library
+- the google test library
+- the automake and autoconf tools
+
+They should be all available in your Linux distribution. 
+On Ubuntu and Debian, check with apt-cache and apt-get.
+
+Google Test is only needed if you wish to run the tests 
+(strongly suggested!). Please download it from here: 
+
+  http://code.google.com/p/googletest/
+
+and follow instructions to compile and install. 
+
+To compile the libraries and the programs: 
+
+> autoreconf
+> ./configure
+> make
+
+To compile and run the tests
+
+> make check
+
+The programs are in directory drivers/. 
+
+To add your own files: modify the Makefile.am file in 
+the appropriate directory, then run again autoreconf, 
+./configure and make from the main project directory.
+
+The idea is to put 
+- common utility files in directory common/
+- models of tasks, processors, distributed platforms, etc.
+  in models/
+- schedulability analysis functions and classes in analysis/
+
+If you want to add your own analysis or task model, please 
+also consider to write appropriate tests for them. Add the 
+corresponding test files into the test/ directory. 
+
+As you can see, most of the files are header files and 
+most of them heavily use templates for maximum reuse. 
+
+Have fun! 
+
+March 22 2012
+Giuseppe Lipari
+g.lipari@sssup.it
