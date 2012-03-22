@@ -50,7 +50,8 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am_scantest_OBJECTS = DBFTest.$(OBJEXT) ParseTest.$(OBJEXT) \
 	TaskSetTest.$(OBJEXT) TaskTest.$(OBJEXT) test_main.$(OBJEXT) \
-	TestUtility.$(OBJEXT) TestFP.$(OBJEXT)
+	TestUtility.$(OBJEXT) TestFP.$(OBJEXT) \
+	CriticalSectionsTest.$(OBJEXT)
 scantest_OBJECTS = $(am_scantest_OBJECTS)
 scantest_DEPENDENCIES =
 scantest_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -238,7 +239,9 @@ SUBDIRS =
 AM_CXXFLAGS = -Wall -std=c++0x -I${top} -I${gtest_dir}/include/
 scantest_LDFLAGS = -L${gtest_dir}/lib/ -L${top}common -L${top}models -L${top}analysis   
 scantest_LDADD = -lgtest -lpthread -lscan_analysis -lscan_models -lscan_common -lboost_filesystem 
-scantest_SOURCES = DBFTest.cpp ParseTest.cpp  TaskSetTest.cpp  TaskTest.cpp test_main.cpp TestUtility.cpp TestFP.cpp
+scantest_SOURCES = DBFTest.cpp ParseTest.cpp  TaskSetTest.cpp  TaskTest.cpp test_main.cpp TestUtility.cpp TestFP.cpp \
+	CriticalSectionsTest.cpp
+
 all: all-recursive
 
 .SUFFIXES:
@@ -292,6 +295,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CriticalSectionsTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DBFTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParseTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaskSetTest.Po@am__quote@

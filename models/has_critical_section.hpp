@@ -30,7 +30,11 @@ namespace Scan {
         CriticalSection(int rid, double dur, CriticalSection *p=0) : 
             res_id(rid), duration(dur), parent(p) {}
         
-        void addCS(CSSet &s);
+        /** just stores the pointers, used for analysis */
+        void addCStoSet(CSSet &s);
+
+        /** makes a copy of the parameter */
+        void addNestedCS(const CriticalSection &cs);
     };
 
     

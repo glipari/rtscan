@@ -8,12 +8,19 @@ namespace Scan {
         id_(rid), isShort_(s), ceiling_(0) {}
 
 
-    void CriticalSection::addCS(CSSet &s)
+    void CriticalSection::addCStoSet(CSSet &s)
     {
         for (auto c : nested) {
             s.insert(&c);
-            c.addCS(s);
+            c.addCStoSet(s);
         }
+    }
+
+    void CriticalSection::addNestedCS(const CriticalSection &c)
+    {
+        CriticalSection c1(c);
+        c1.parent = this;
+        nested.push_back(c1);
     }
 
     double HasCriticalSection::get_dur(const std::vector<CriticalSection> &v, int rid)
@@ -38,13 +45,10 @@ namespace Scan {
         CSSet s;
         for (auto c : cs) {
             s.insert(&c);
-            c.addCS(s)
+            c.addCStoSet(s);
         }
     }
 
     ChainElem::ChainElem(HasCriticalSection *t1, CriticalSection *c, HasCriticalSection *t2) :
         task1(t1), cs(c), task2(t2) {}
-
-
-
 }
