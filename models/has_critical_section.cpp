@@ -6,49 +6,143 @@ namespace Scan {
 
     Resource::Resource(int rid, bool s) :
         id_(rid), isShort_(s), ceiling_(0) {}
-
-
-    void CriticalSection::addCStoSet(CSSet &s)
+    
+    CriticalSection::CriticalSection(int rid, double dur, CriticalSection *p) : 
+        res_id(rid), duration(dur), nested(), parent(p) 
+    {}
+    
+    CriticalSection::CriticalSection(const CriticalSection &cs) : 
+        res_id(cs.res_id), 
+        duration(cs.duration),
+        nested(cs.nested),
+        parent(nullptr),
+        cs_list(),
+        pos(cs_list.end())
     {
-        for (auto c : nested) {
-            s.insert(&c);
-            c.addCStoSet(s);
-        }
+        // set the parent of all nested critical sections
+        for (auto i = nested.begin(); i != nested.end(); i++)  
+            i->parent = this;
+    }
+
+    CriticalSection & CriticalSection::operator=(const CriticalSection &cs)
+    {
+        res_id = cs.res_id;
+        duration = cs.duration;
+        nested = cs.nested;
+
+        for (auto i = nested.begin(); i != nested.end(); i++)  
+            i->parent = this;
+
+        parent = nullptr;
+
+        cs_list.clear();
+        pos = cs_list.end();
+
+        return *this;
     }
 
     void CriticalSection::addNestedCS(const CriticalSection &c)
     {
-        CriticalSection c1(c);
-        c1.parent = this;
-        nested.push_back(c1);
+        nested.push_back(c);
+        // after adding the critical section, I have to set its parent. 
+        // it may happen that the resize operation on the vector actually changed 
+        // the pointers. hence I have to set again the parent for 
+        // everybody
+        for (auto i = nested.begin(); i != nested.end(); i++)  
+            i->parent = this;
     }
 
-    double HasCriticalSection::get_dur(const std::vector<CriticalSection> &v, int rid)
+    CriticalSection *CriticalSection::get_parent() const
     {
-        vector<double> d;
-        for (auto c : v) {
-            if (c.res_id == rid) d.push_back(c.duration);
-            else d.push_back( get_dur(c.nested, rid) );
-        }
-        if (d.size() == 0) return 0;
-        else return *max(d.begin(), d.end());
+        return parent;
     }
-
-
-    double HasCriticalSection::getDuration(int rid)
+        
+    int CriticalSection::get_resource() const
     {
-        return get_dur(cs, rid);
+        return res_id;
+    }
+        
+    double CriticalSection::get_duration() const
+    {
+        return duration;
+    }
+        
+    CSSet::const_iterator CriticalSection::begin() const
+    {
+        return nested.begin();
     } 
-
-    CSSet HasCriticalSection::getAllCriticalSections()
+            
+    CSSet::const_iterator CriticalSection::end() const
     {
-        CSSet s;
-        for (auto c : cs) {
-            s.insert(&c);
-            c.addCStoSet(s);
+        return nested.end();
+    }
+            
+    bool CriticalSection::access_resource(int r) const 
+    {
+        if (res_id == r) return true;
+        else {
+            for (auto i = nested.begin(); i!= nested.end(); ++i) 
+                if (i->access_resource(r)) return true;
+        }
+        return false;
+    }
+            
+    void __visit_pre_order(const CriticalSection *cs, int res, list<const CriticalSection *> &l)
+    {
+        if (res == cs->get_resource()) 
+            l.push_back(cs);
+        for (auto i = cs->begin(); i!= cs->end(); i++) 
+            __visit_pre_order(&(*i), res, l);
+    }
+ 
+    /** finds the first critical section in the tree that uses the resource 
+        res (it uses depth-first, pre-order) */ 
+    const CriticalSection * CriticalSection::find_first(int res)
+    {
+        // builds the list
+        cs_list.clear();
+        __visit_pre_order(this, res, cs_list);
+        if (cs_list.size() == 0) {
+            pos = cs_list.end();
+            return nullptr;
+        }
+        else {
+            pos = cs_list.begin();
+            return *(pos++);
         }
     }
-
+        
+    /** finds the next critical section in the tree (after previos) that uses the 
+        resource res (it uses depth-first, pre-order) */ 
+    const CriticalSection * CriticalSection::find_next()
+    {
+        if (pos == cs_list.end()) return nullptr;
+        else return *(pos++);
+    }
+    
     ChainElem::ChainElem(HasCriticalSection *t1, CriticalSection *c, HasCriticalSection *t2) :
         task1(t1), cs(c), task2(t2) {}
+
+    CSSet HasCriticalSection::get_outer_cs() const
+    {
+        CSSet s;
+        for (auto i = cs.begin(); i != cs.end(); i++)  
+            s.push_back(*i);
+        return s;        
+    }
+
+    void HasCriticalSection::addCS(const CriticalSection &c)
+    {
+        cs.push_back(c);
+    }
+
+    bool HasCriticalSection::uses_resource(int res_id)
+    {
+        for (auto i = cs.begin(); i != cs.end(); ++i) {
+            if (i->access_resource(res_id)) return true;
+        }
+        return false;
+    }
+
+
 }

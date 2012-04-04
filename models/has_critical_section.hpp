@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <set>
+#include <list>
 
 namespace Scan {
     class Resource {
@@ -18,40 +19,66 @@ namespace Scan {
     };
 
     class CriticalSection;
-    typedef std::set<CriticalSection *> CSSet;
+//    typedef std::vector<CriticalSection *> CSSet;
+    typedef std::vector<CriticalSection> CSSet;
 
     class CriticalSection {
-    public:
         int res_id;
         double duration;
-        std::vector<CriticalSection> nested;
+        CSSet nested;
         CriticalSection *parent; 
-    
-        CriticalSection(int rid, double dur, CriticalSection *p=0) : 
-            res_id(rid), duration(dur), parent(p) {}
+
+        std::list<const CriticalSection *> cs_list;
+        std::list<const CriticalSection *>::const_iterator pos;
+    public:        
+        CriticalSection(int rid, double dur, CriticalSection *p=0);
         
-        /** just stores the pointers, used for analysis */
-        void addCStoSet(CSSet &s);
+        CriticalSection(const CriticalSection &cs);
+        CriticalSection & operator=(const CriticalSection &cs);
 
         /** makes a copy of the parameter */
         void addNestedCS(const CriticalSection &cs);
+
+        // /** Returns the parent CS, or nullptr */
+        CriticalSection *get_parent() const;
+        
+        /** returns resource id */
+        int get_resource() const;
+        
+        /** returns cs lenght */
+        double get_duration() const;
+
+        /** returns the iterator to the first nested critical section */
+        CSSet::const_iterator begin() const; 
+        /** returns the iterator to the end of the set of nested
+         * critical section (points to a unvalid element) */
+        CSSet::const_iterator end() const;
+        
+        /** returns true if the resource is accessed in this critical
+            section or in any of the nested critical sections */
+        bool access_resource(int r) const; 
+
+        /** finds the first critical section in the tree that uses the resource 
+            res (it uses depth-first, in-order) */ 
+        const CriticalSection * find_first(int res);
+        
+        /** finds the next critical section in the tree that uses the 
+            resource res (it uses depth-first, in-order) */ 
+        const CriticalSection * find_next();        
     };
 
-    
     class HasCriticalSection {
     private:
         static double get_dur(const std::vector<CriticalSection> &v, int rid); 
+        CSSet cs;
     public:
-        std::vector<CriticalSection> cs;
 
         HasCriticalSection() : cs() {}
-        /** 
-            Returns the worst case duration of the longest critical
-            section on resource rid, or 0 if the task does not use
-            resource rid
-        */
-        double getDuration(int rid);
-        CSSet getAllCriticalSections();
+        void addCS(const CriticalSection &c);
+        CSSet get_outer_cs() const;
+        /** returns true if the resource is accessed by the task in
+         * any of the critical sections (also nested ones) */
+        bool uses_resource(int res_id);
     };
 
     class ChainElem {
@@ -61,7 +88,7 @@ namespace Scan {
         HasCriticalSection *task2;
         ChainElem(HasCriticalSection *t1, CriticalSection *c, HasCriticalSection *t2);
     };
-
+    
     typedef std::vector<ChainElem> BlockingChain;
     typedef std::set<HasCriticalSection *> HCSSet;
     typedef std::set<Resource *> ResourceSet;
