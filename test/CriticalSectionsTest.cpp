@@ -8,8 +8,10 @@ using namespace std;
 
 class TestCSFix : public ::testing::Test {
 protected:
+    typedef vector<TaskRes> TaskSet;
+
     vector<Resource> resources;
-    vector<TaskRes> tasks;
+    TaskSet tasks;
     
     TestCSFix() {
         // 4 resources
@@ -19,20 +21,20 @@ protected:
         resources.push_back(Resource(4));
         
         // four tasks
-        tasks.push_back(TaskRes(1,2,3));
-        tasks.push_back(TaskRes(1,2,3));
-        tasks.push_back(TaskRes(1,2,3));
-        tasks.push_back(TaskRes(1,2,3));
+        tasks.push_back(TaskRes(1,20,30));
+        tasks.push_back(TaskRes(2,20,30));
+        tasks.push_back(TaskRes(3,20,30));
+        tasks.push_back(TaskRes(4,20,30));
 
-        CriticalSection cs11(1, 1);
-        CriticalSection cs12(2, 2);
-        
+        /* task 0 */
+        CriticalSection cs11(1, 1);        
         CriticalSection cs11_1(2, 3);
         CriticalSection cs11_2(3, 4);
         cs11.addNestedCS(cs11_1);
         cs11.addNestedCS(cs11_2);
         tasks[0].addCS(cs11);
         
+        CriticalSection cs12(2, 2);
         CriticalSection cs12_1(3, 5);
         cs12.addNestedCS(cs12_1);
         CriticalSection cs12_2(4, 6);
@@ -40,6 +42,20 @@ protected:
         CriticalSection cs12_3(3, 7);
         cs12.addNestedCS(cs12_3);
         tasks[0].addCS(cs12);
+
+        /* task 1 */
+        CriticalSection cs21(3, 8);
+        CriticalSection cs21_1(4, 9);
+        cs21.addNestedCS(cs21_1);
+        tasks[1].addCS(cs21);
+
+        /* task 2 */
+        CriticalSection cs31(2, 10);
+        CriticalSection cs31_1(3, 11);
+        CriticalSection cs31_1_1(4, 12);
+        cs31_1.addNestedCS(cs31_1_1);
+        cs31.addNestedCS(cs31_1);
+        tasks[2].addCS(cs31);
     }
 };
 
@@ -117,3 +133,79 @@ TEST_F(TestCSFix, CSFind)
     EXPECT_EQ(nullptr, ptr);
 }
 
+TEST_F(TestCSFix, CSList) 
+{
+    CSList l = tasks[0].get_cs_list(1);
+
+    CSList::iterator i = l.begin();
+    
+    EXPECT_NE(l.end(), i);
+
+    EXPECT_EQ(1, (*i)->get_duration());
+    i++;
+    EXPECT_EQ(l.end(), i);
+
+    // finding a resource not in the tree
+    l = tasks[0].get_cs_list(5);
+    EXPECT_EQ(0, l.size());
+
+    l = tasks[0].get_cs_list(3);
+    i = l.begin();
+    EXPECT_EQ(4, (*i)->get_duration());
+    i++;
+    EXPECT_EQ(5, (*i)->get_duration());
+    i++;
+    EXPECT_EQ(7, (*i)->get_duration());
+    i++;
+    EXPECT_EQ(l.end(), i);
+}
+
+TEST_F(TestCSFix, GetPath)
+{        
+    // the list of critical section on resource 2
+    CSList l = tasks[0].get_cs_list(2);
+
+    // the set of the outermost critical sections
+    CSSet s = tasks[0].get_outer_cs();
+
+    // the first in the list 
+    CSList::iterator i = l.begin();
+
+    // the first outermost critical section
+    CSSet::iterator j = s.begin();
+    
+    // the path ending in i
+    CSList p1 = (*i)->get_path();
+
+    // root of the path, should be the first outermost critical section
+    CSList::iterator p_i = p1.begin();
+
+    EXPECT_EQ(1, p1.size());
+    EXPECT_EQ(j->get_duration(), (*p_i)->get_duration());
+    EXPECT_EQ(j->get_resource(), (*p_i)->get_resource());
+
+    EXPECT_EQ(p1.begin(), find_cs(p1.begin(), p1.end(), 1));
+
+    i++;
+    p1 = (*i)->get_path();
+    EXPECT_EQ(0, p1.size());
+}
+
+TEST_F(TestCSFix, FindTaskRes)
+{
+    EXPECT_EQ(tasks.begin(), find_task_uses_res(tasks.begin(), tasks.end(), 1));
+    EXPECT_EQ(tasks.end(), find_task_uses_res(tasks.begin()+1, tasks.end(), 1));
+    EXPECT_EQ(tasks.end(), find_task_uses_res(tasks.begin(), tasks.end(), 5));
+}
+
+TEST_F(TestCSFix, TaskSubset)
+{
+    TaskSet subset;
+    subset_tasks_use_res(tasks.begin(), tasks.end(), subset, 1);
+    EXPECT_EQ(1, subset.size());
+    subset.clear();
+    subset_tasks_use_res(tasks.begin(), tasks.end(), subset, 2);
+    EXPECT_EQ(2, subset.size());
+    EXPECT_EQ(1, subset[0].get_wcet());
+    EXPECT_EQ(3, subset[1].get_wcet());
+}

@@ -15,56 +15,57 @@ using namespace Scan;
 
 class TaskTestFix : public ::testing::Test {
 protected:
-	Task *t1;
-	Task *t2;
+    Task *t1;
+    Task *t2;
 
-	void SetUp() {
-		t1 = new Task();
-		t2 = new Task(4.5, 8, 10);
-	}
-	void TearDown() {
-		delete t1;
-		delete t2;
-	}
+    void SetUp() {
+        t1 = new Task();
+        t2 = new Task(4.5, 8, 10);
+    }
+    void TearDown() {
+        delete t1;
+        delete t2;
+    }
 };
 
 TEST_F(TaskTestFix, TaskCreate)
 {
-	Task *t3;
-	ASSERT_NO_THROW({
-		t3 = new Task(8,4,10);
+    Task *t3;
+    ASSERT_NO_THROW({
+            t3 = new Task(8,4,10);
 	});
-	delete t3;
+    delete t3;
 
-	ASSERT_THROW(t3 = new Task(8,12,6), IllegalValue);
-	ASSERT_THROW(t3 = new Task(-2,12,6), IllegalValue);
-	ASSERT_NO_THROW(t3 = new Task(2,12,6));
-	delete t3;
+    ASSERT_THROW(t3 = new Task(8,12,6), IllegalValue);
+    ASSERT_THROW(t3 = new Task(-2,12,6), IllegalValue);
+    ASSERT_NO_THROW(t3 = new Task(2,12,6));
+    delete t3;
 }
 
 
 TEST_F(TaskTestFix, TaskCopy)
 {
-	Task t4(*t2);
+    Task t4(*t2);
 
-	ASSERT_EQ(t4.get_period(), 10);
-	ASSERT_EQ(t4.get_wcet(), 4.5);
-	ASSERT_EQ(t4.get_dline(), 8);
+    ASSERT_EQ(t4.get_period(), 10);
+    ASSERT_EQ(t4.get_wcet(), 4.5);
+    ASSERT_EQ(t4.get_dline(), 8);
+    ASSERT_EQ(t4.get_id(), t2->get_id());
 
-	t4 = *t1;
+    t4 = *t1;
 
-	ASSERT_EQ(t4.get_period(), 0);
-	ASSERT_EQ(t4.get_wcet(), 0);
-	ASSERT_EQ(t4.get_dline(), 0);
+    ASSERT_EQ(t4.get_period(), 0);
+    ASSERT_EQ(t4.get_wcet(), 0);
+    ASSERT_EQ(t4.get_dline(), 0);
 }
 
 TEST_F(TaskTestFix, TaskPrint)
 {
-	std::stringstream output;
-	output << *t1;
-	ASSERT_EQ("0  0  0", output.str());
-	output << std::endl << *t2;
-	ASSERT_EQ("0  0  0\n4.5  8  10", output.str());
+    std::stringstream output;
+    output << *t1;
+    ASSERT_EQ("0  0  0", output.str());
+    output << std::endl << *t2;
+    ASSERT_EQ("0  0  0\n4.5  8  10", output.str());
 }
 
 TEST_F(TaskTestFix, TaskRead)
@@ -115,37 +116,3 @@ TEST_F(TaskTestFix, TaskName)
     Task task3 = task2;
     EXPECT_EQ(std::string("MyTask"), task3.get_name());
 }
-
-/*TEST_F(TaskTestFix, TaskProperty)
-{
-	Task task(1,2,4);
-	task.set_property<int>("priority", 5);
-	//EXPECT_EQ(5, task.get_property<int>("priority"));
-	Task task2(task);
-	//EXPECT_EQ(5, task2.get_property<int>("priority"));
-
-	task2.set_property<int>("priority", 2);
-	EXPECT_EQ(2, task2.get_property<int>("priority"));
-	EXPECT_EQ(5, task.get_property<int>("priority"));
-        }
-
-
-TEST(PropertyTest, Copy)
-{
-	PropertySet pset;
-
-	pset.set_property<string>("pippo", "pluto");
-
-	PropertySet pp(pset);
-	EXPECT_EQ("pluto", pp.get_property<string>("pippo"));
-
-	pset.set_property<int>("paperino", 8);
-	EXPECT_EQ(8, pset.get_property<int>("paperino"));
-
-	EXPECT_THROW(pset.set_property<string>("paperino", "abc"), PropertyWrongType);
-	EXPECT_EQ(8, pset.get_property<int>("paperino"));
-
-	pp = pset;
-	EXPECT_EQ(8, pp.get_property<int>("paperino"));
-	EXPECT_THROW(pp.get_property<int>("pippo"), PropertyWrongType);
-        }*/

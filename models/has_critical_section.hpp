@@ -2,8 +2,10 @@
 #define __HAS_CRITICAL_SECTION_HPP
 
 #include <vector>
-#include <set>
 #include <list>
+#include <set>
+
+#include <models/has_unique_id.hpp>
 
 namespace Scan {
     class Resource {
@@ -19,8 +21,8 @@ namespace Scan {
     };
 
     class CriticalSection;
-//    typedef std::vector<CriticalSection *> CSSet;
     typedef std::vector<CriticalSection> CSSet;
+    typedef std::list<const CriticalSection *>CSList;
 
     class CriticalSection {
         int res_id;
@@ -64,8 +66,24 @@ namespace Scan {
         
         /** finds the next critical section in the tree that uses the 
             resource res (it uses depth-first, in-order) */ 
-        const CriticalSection * find_next();        
+        const CriticalSection * find_next();
+
+        /** returns the list of pointers to the containing critical
+            sections, from the root to the parent. If this is an outer
+            critical section, returns an empty list */
+        CSList get_path() const;
     };
+
+    /** find the critical section in the list that accesses res (if any) */ 
+    template<class Iter>
+    Iter find_cs(Iter b, Iter e, int res) {
+        Iter i = b;
+        while (i != e) {
+            if ((*i)->get_resource() == res) return i;
+            i++;
+        }
+        return e;
+    }
 
     class HasCriticalSection {
     private:
@@ -79,21 +97,48 @@ namespace Scan {
         /** returns true if the resource is accessed by the task in
          * any of the critical sections (also nested ones) */
         bool uses_resource(int res_id);
+
+        /** get the list of pointers to all critical sections of this
+            task that insist on resource res */
+        CSList get_cs_list(int res);
     };
 
-    class ChainElem {
-    public: 
-        HasCriticalSection *task1;
-        CriticalSection *cs;
-        HasCriticalSection *task2;
-        ChainElem(HasCriticalSection *t1, CriticalSection *c, HasCriticalSection *t2);
+    class BlockingChain {
+        std::set<int> tasks;
+        std::set<int> res;
+    public:
+        typedef std::set<int>::const_iterator task_iterator;
+        typedef std::set<int>::const_iterator res_iterator;
+
+        void addTask(const HasUniqueId &t);
+        void addRes(int res); 
+        
+        task_iterator task_begin() const;
+        task_iterator task_end() const;
+
+        res_iterator res_begin() const;
+        res_iterator res_end() const;
     };
-    
-    typedef std::vector<ChainElem> BlockingChain;
-    typedef std::set<HasCriticalSection *> HCSSet;
-    typedef std::set<Resource *> ResourceSet;
-    
-    std::set<BlockingChain> getAllBlockingChains(const HasCriticalSection &t);    
-    HCSSet getBlockingTasks(const BlockingChain &bc);
+
+    template<class Iter>
+    Iter find_task_uses_res(Iter a, Iter b, int res)
+    {
+        for(Iter i = a; i!=b; ++i) {
+            if (i->uses_resource(res)) 
+                return i;
+        }
+        return b;
+    }
+
+    template<class Container, class Iter>
+    void subset_tasks_use_res(Iter a, Iter b, Container &c, int res)
+    {
+        Iter i = a;
+        i = find_task_uses_res(a, b, res);
+        while (i != b) {
+            c.insert(c.end(), *i);
+            i = find_task_uses_res(i+1, b, res);
+        }
+    }
 }
 #endif // __HAS_CRITICAL_SECTION_HPP

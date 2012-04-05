@@ -75,6 +75,7 @@ namespace Scan {
     {
         std::sort(s.begin(),s.end(), Cmp());
     }
+
 }
 
 #endif

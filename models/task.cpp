@@ -6,14 +6,10 @@
 using namespace std;
 
 namespace Scan {
-    int Task::counter = 0;
-
     void Task::init_name_()
     {
         stringstream nn;
-        nn << "Task_" << counter; 
-        numeric_id = counter;
-        counter ++;
+        nn << "AnonymousTask"; 
         name = string(nn.str());        
     }
 
@@ -39,12 +35,13 @@ namespace Scan {
         init_name_();
     }
     
-    Task::Task(const Task &t) : name(t.name), period(t.period), wcet(t.wcet), dline(t.dline), offset(t.offset), jitter(t.jitter)
+    Task::Task(const Task &t) : HasUniqueId(t), name(t.name), period(t.period), wcet(t.wcet), dline(t.dline), offset(t.offset), jitter(t.jitter)
     {
     }
 
     Task & Task::operator=(const Task &t)
     {
+        HasUniqueId::operator=(t);
         name = t.name;
         period = t.period;
         dline = t.dline;

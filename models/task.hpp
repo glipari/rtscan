@@ -6,18 +6,16 @@
 #include <memory>
 
 #include <common/exceptions.hpp>
+#include <models/has_unique_id.hpp>
 
 namespace  Scan {
     /** 
         This class models a sporadic task or a periodic non-concrete
         task (also called offset-free task).
     */
-    class Task {
+    class Task : public HasUniqueId {
     private:
         std::string name;
-        int numeric_id;
-        static int counter;
-
         void init_name_();
     public: 
         /**
@@ -80,8 +78,6 @@ namespace  Scan {
         /// sets the offset
         void set_jitter(int j) { jitter = j; }     
             
-        inline int get_id() const { return numeric_id; };
-
     private:
         int period;
         double wcet;

@@ -5,7 +5,6 @@
  *      Author: lipari
  */
 #include <gtest/gtest.h>
-
 #include <models/taskset.hpp>
 
 using namespace std;
@@ -83,10 +82,4 @@ TEST_F(TaskSetFixture, TestSort)
     tset1.sort<TaskCmpPeriod>();
     EXPECT_EQ( &tset1[0], &tset1["TA"] );
     EXPECT_EQ( &tset1[1], &tset1["TB"] );
-    //tset1["TA"].set_property<int>("priority", 5);
-    //tset1["TB"].set_property<int>("priority", 4);
-
-    //tset1.sort_property<int>("priority");
-    //EXPECT_EQ( &tset1[0], &tset1["TB"] );
-    //EXPECT_EQ( &tset1[1], &tset1["TA"] );
 }

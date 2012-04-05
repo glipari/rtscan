@@ -3,7 +3,6 @@
 using namespace std;
 
 namespace Scan {
-
     Resource::Resource(int rid, bool s) :
         id_(rid), isShort_(s), ceiling_(0) {}
     
@@ -119,10 +118,18 @@ namespace Scan {
         if (pos == cs_list.end()) return nullptr;
         else return *(pos++);
     }
-    
-    ChainElem::ChainElem(HasCriticalSection *t1, CriticalSection *c, HasCriticalSection *t2) :
-        task1(t1), cs(c), task2(t2) {}
 
+    CSList CriticalSection::get_path() const 
+    {
+        CSList l;
+        const CriticalSection *p = parent;
+        while (p != nullptr) {
+            l.push_front(p);
+            p = p->parent;
+        }
+        return l;
+    }
+  
     CSSet HasCriticalSection::get_outer_cs() const
     {
         CSSet s;
@@ -144,5 +151,47 @@ namespace Scan {
         return false;
     }
 
+    CSList HasCriticalSection::get_cs_list(int res)
+    {
+        const CriticalSection *ptr;
+        CSList l;
+        for (auto i = cs.begin(); i != cs.end(); ++i) {
+            ptr = i->find_first(res);
+            while (ptr != nullptr) {
+                l.push_back(ptr);
+                ptr = i->find_next();
+            }
+        }
+        return l;
+    }
 
+    void BlockingChain::addTask(const HasUniqueId &t)
+    {
+        tasks.insert(t.get_id());
+    }
+
+    void BlockingChain::addRes(int r)
+    {
+        res.insert(r);
+    }
+        
+    BlockingChain::task_iterator BlockingChain::task_begin() const
+    {
+        return tasks.begin();
+    }
+
+    BlockingChain::task_iterator BlockingChain::task_end() const
+    {
+        return tasks.end();
+    }
+
+    BlockingChain::res_iterator BlockingChain::res_begin() const
+    {
+        return res.begin();
+    }
+    
+    BlockingChain::res_iterator BlockingChain::res_end() const
+    {
+        return res.end();
+    }
 }
