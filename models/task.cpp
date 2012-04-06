@@ -115,4 +115,10 @@ namespace Scan {
         t.set_period(p); t.set_dline(d); t.set_wcet(w); 
         return i;
     }
+
+    bool task_cmp_ids(const Task &a, const Task &b)
+    {
+        return (a.get_id() == b.get_id());
+    }
+
 }

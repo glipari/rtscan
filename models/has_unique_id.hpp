@@ -11,6 +11,11 @@ namespace Scan {
         HasUniqueId& operator=(const HasUniqueId& other);
         inline int get_id() const { return id; }
     };
+
+    class LessUniqueId {
+    public:
+        bool operator()(const HasUniqueId& a, const HasUniqueId& b) const;
+    };
 }
 
 #endif

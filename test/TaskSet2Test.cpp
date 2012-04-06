@@ -8,25 +8,29 @@ using namespace Scan;
 
 TEST(TaskSet2, IntersectSubtract)
 {
-    vector<int> v = {
-        1,2,3,4,5
+    vector<Task> v = {
+        Task(1,10,10),
+        Task(2,10,10),
+        Task(3,10,10),
+        Task(4,10,10),
+        Task(5,10,10)
     };
 
-    vector<int> v1(v.begin(), v.begin()+3);
-    vector<int> v2(v.begin()+2, v.end());
-
+    vector<Task> v1(v.begin(), v.begin()+3);
+    vector<Task> v2(v.begin()+2, v.end());
+    
     EXPECT_EQ(3, v1.size());
     EXPECT_EQ(3, v2.size());
 
-    vector<int> inter;
-    intersect(v1.begin(), v1.end(), v2.begin(), v2.end(), inter);
+    vector<Task> inter;
+    intersect(inter, v1.begin(), v1.end(), v2.begin(), v2.end(), task_cmp_ids);
 
     EXPECT_EQ(1, inter.size());
-    EXPECT_EQ(3, inter[0]);
+    EXPECT_EQ(v[2].get_id(), inter[0].get_id());
 
-    vector<int> sub;
-    subtract(v1.begin(), v1.end(), v2.begin(), v2.end(), sub);
+    vector<Task> sub;
+    subtract(sub, v1.begin(), v1.end(), v2.begin(), v2.end(), task_cmp_ids);
     EXPECT_EQ(2, sub.size());
-    EXPECT_EQ(1, sub[0]);
-    EXPECT_EQ(2, sub[1]);
+    EXPECT_EQ(v[0].get_id(), sub[0].get_id());
+    EXPECT_EQ(v[1].get_id(), sub[1].get_id());
 }

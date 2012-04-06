@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <models/taskres.hpp>
+#include <analysis/mbwi_interference.hpp>
 
 using namespace Scan;
 using namespace std;
@@ -12,6 +13,7 @@ protected:
 
     vector<Resource> resources;
     TaskSet tasks;
+    vector<int> tid;
     
     TestCSFix() {
         // 4 resources
@@ -25,6 +27,9 @@ protected:
         tasks.push_back(TaskRes(2,20,30));
         tasks.push_back(TaskRes(3,20,30));
         tasks.push_back(TaskRes(4,20,30));
+
+        for (int i=0; i<4; i++) 
+            tid.push_back(tasks[i].get_id());
 
         /* task 0 */
         CriticalSection cs11(1, 1);        
@@ -206,6 +211,11 @@ TEST_F(TestCSFix, TaskSubset)
     subset.clear();
     subset_tasks_use_res(tasks.begin(), tasks.end(), subset, 2);
     EXPECT_EQ(2, subset.size());
-    EXPECT_EQ(1, subset[0].get_wcet());
-    EXPECT_EQ(3, subset[1].get_wcet());
+    EXPECT_EQ(tid[0], subset[0].get_id());
+    EXPECT_EQ(tid[2], subset[1].get_id());
+}
+
+TEST_F(TestCSFix, MBWI_Interf)
+{
+    
 }

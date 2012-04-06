@@ -96,7 +96,7 @@ namespace Scan {
  
     /** finds the first critical section in the tree that uses the resource 
         res (it uses depth-first, pre-order) */ 
-    const CriticalSection * CriticalSection::find_first(int res)
+    const CriticalSection * CriticalSection::find_first(int res) const
     {
         // builds the list
         cs_list.clear();
@@ -113,7 +113,7 @@ namespace Scan {
         
     /** finds the next critical section in the tree (after previos) that uses the 
         resource res (it uses depth-first, pre-order) */ 
-    const CriticalSection * CriticalSection::find_next()
+    const CriticalSection * CriticalSection::find_next() const
     {
         if (pos == cs_list.end()) return nullptr;
         else return *(pos++);
@@ -143,7 +143,7 @@ namespace Scan {
         cs.push_back(c);
     }
 
-    bool HasCriticalSection::uses_resource(int res_id)
+    bool HasCriticalSection::uses_resource(int res_id) const
     {
         for (auto i = cs.begin(); i != cs.end(); ++i) {
             if (i->access_resource(res_id)) return true;
@@ -151,7 +151,7 @@ namespace Scan {
         return false;
     }
 
-    CSList HasCriticalSection::get_cs_list(int res)
+    CSList HasCriticalSection::get_cs_list(int res) const
     {
         const CriticalSection *ptr;
         CSList l;
@@ -165,33 +165,33 @@ namespace Scan {
         return l;
     }
 
-    void BlockingChain::addTask(const HasUniqueId &t)
-    {
-        tasks.insert(t.get_id());
-    }
+    // void BlockingChain::addTask(const HasUniqueId &t)
+    // {
+    //     tasks.insert(t.get_id());
+    // }
 
-    void BlockingChain::addRes(int r)
-    {
-        res.insert(r);
-    }
+    // void BlockingChain::addRes(int r)
+    // {
+    //     res.insert(r);
+    // }
         
-    BlockingChain::task_iterator BlockingChain::task_begin() const
-    {
-        return tasks.begin();
-    }
+    // BlockingChain::task_iterator BlockingChain::task_begin() const
+    // {
+    //     return tasks.begin();
+    // }
 
-    BlockingChain::task_iterator BlockingChain::task_end() const
-    {
-        return tasks.end();
-    }
+    // BlockingChain::task_iterator BlockingChain::task_end() const
+    // {
+    //     return tasks.end();
+    // }
 
-    BlockingChain::res_iterator BlockingChain::res_begin() const
-    {
-        return res.begin();
-    }
+    // BlockingChain::res_iterator BlockingChain::res_begin() const
+    // {
+    //     return res.begin();
+    // }
     
-    BlockingChain::res_iterator BlockingChain::res_end() const
-    {
-        return res.end();
-    }
+    // BlockingChain::res_iterator BlockingChain::res_end() const
+    // {
+    //     return res.end();
+    // }
 }

@@ -9,5 +9,11 @@ namespace Scan {
     {
         id = other.id;
     }
+
+    bool LessUniqueId::operator()(const HasUniqueId& a, const HasUniqueId& b) const 
+    {
+        return a.get_id() < b.get_id();
+    }
+
 }
 

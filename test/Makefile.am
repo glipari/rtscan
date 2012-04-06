@@ -13,6 +13,7 @@ scantest_SOURCES = test_main.cpp \
 	DBFTest.cpp ParseTest.cpp  TaskSetTest.cpp  \
 	TaskTest.cpp TestUtility.cpp TestFP.cpp \
 	CriticalSectionsTest.cpp \
-	TaskSet2Test.cpp
+	TaskSet2Test.cpp \
+	MBWITest.cpp
 
 #TestBasicFunctions.cpp  

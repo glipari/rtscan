@@ -101,6 +101,8 @@ namespace  Scan {
        case this is not true.
     */
     std::istream & operator>>(std::istream &i, Task &t) throw(IllegalValue);
+
+    bool task_cmp_ids(const Task &a, const Task &b); 
 }
 
 #endif
