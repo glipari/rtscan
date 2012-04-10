@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <models/taskres.hpp>
-#include <analysis/mbwi_interference.hpp>
 
 using namespace Scan;
 using namespace std;
@@ -213,9 +212,4 @@ TEST_F(TestCSFix, TaskSubset)
     EXPECT_EQ(2, subset.size());
     EXPECT_EQ(tid[0], subset[0].get_id());
     EXPECT_EQ(tid[2], subset[1].get_id());
-}
-
-TEST_F(TestCSFix, MBWI_Interf)
-{
-    
 }
