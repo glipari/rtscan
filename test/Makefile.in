@@ -52,7 +52,7 @@ am_scantest_OBJECTS = test_main.$(OBJEXT) DBFTest.$(OBJEXT) \
 	ParseTest.$(OBJEXT) TaskSetTest.$(OBJEXT) TaskTest.$(OBJEXT) \
 	TestUtility.$(OBJEXT) TestFP.$(OBJEXT) \
 	CriticalSectionsTest.$(OBJEXT) TaskSet2Test.$(OBJEXT) \
-	MBWITest.$(OBJEXT)
+	MBWITest.$(OBJEXT) MEDFTest.$(OBJEXT)
 scantest_OBJECTS = $(am_scantest_OBJECTS)
 scantest_DEPENDENCIES =
 scantest_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -245,7 +245,8 @@ scantest_SOURCES = test_main.cpp \
 	TaskTest.cpp TestUtility.cpp TestFP.cpp \
 	CriticalSectionsTest.cpp \
 	TaskSet2Test.cpp \
-	MBWITest.cpp
+	MBWITest.cpp \
+	MEDFTest.cpp
 
 all: all-recursive
 
@@ -303,6 +304,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CriticalSectionsTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DBFTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MBWITest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MEDFTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParseTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaskSet2Test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaskSetTest.Po@am__quote@

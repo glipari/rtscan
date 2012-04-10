@@ -10,6 +10,8 @@ namespace Scan {
         TaskEx() : Task() {}
         TaskEx(double wcet, double dline, int period, int offset=0, double jitter=0) throw(IllegalValue) : 
             Task(wcet, dline, period, offset, jitter) {}
+
+        TaskEx(const Task &t) : Task(t) {}
     };
 }
 
