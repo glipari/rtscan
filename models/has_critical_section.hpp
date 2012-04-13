@@ -67,7 +67,7 @@ namespace Scan {
         /** finds the next critical section in the tree that uses the 
             resource res (it uses depth-first, in-order) */ 
         const CriticalSection * find_next() const;
-
+        
         /** returns the list of pointers to the containing critical
             sections, from the root to the parent. If this is an outer
             critical section, returns an empty list */
@@ -94,6 +94,7 @@ namespace Scan {
         HasCriticalSection() : cs() {}
         void addCS(const CriticalSection &c);
         CSSet get_outer_cs() const;
+
         /** returns true if the resource is accessed by the task in
          * any of the critical sections (also nested ones) */
         bool uses_resource(int res_id) const;
@@ -102,23 +103,6 @@ namespace Scan {
             task that insist on resource res */
         CSList get_cs_list(int res) const;
     };
-
-    // class BlockingChain {
-    //     std::set<HasUniqueId, LessUniqueId> tasks;
-    //     std::set<int> res;
-    // public:
-    //     typedef std::set<HasUniqueId, LessUniqueId>::const_iterator task_iterator;
-    //     typedef std::set<int>::const_iterator res_iterator;
-
-    //     void addTask(const HasUniqueId &t);
-    //     void addRes(int res);
-        
-    //     task_iterator task_begin() const;
-    //     task_iterator task_end() const;
-
-    //     res_iterator res_begin() const;
-    //     res_iterator res_end() const;
-    // };
 
     template<class Iter>
     Iter find_task_uses_res(Iter a, Iter b, int res)

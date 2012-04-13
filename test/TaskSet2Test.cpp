@@ -1,6 +1,6 @@
 #include <vector>
 #include <gtest/gtest.h>
-#include <models/task_set.hpp>
+#include <common/sequence.hpp>
 #include <models/task.hpp>
 
 using namespace std;
