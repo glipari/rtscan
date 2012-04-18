@@ -22,15 +22,4 @@ namespace Scan {
         v.push_back(sum);
         return v;
     }
-
-    /**
-       RandFixNum by Roger Stafford. 
-       Implemented in Python by Paul Emberson and Rob Davis.
-
-       Transalated in C++ by Giuseppe Lipari. 
-     */
-    std::vector rand_fix_sum(int n, double U_target, int nproc)
-    {
-        // TO BE DONE...
-    }
 }
