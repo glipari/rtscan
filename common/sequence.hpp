@@ -36,17 +36,17 @@ namespace Scan {
     }
 
 
-    /** computes the sum of the largest nproc-1 elements in the
+    /** computes the sum of the largest nproc elements in the
      * sequence */
     template <class Iter>
-    double sum_max_n1(Iter v_begin, Iter v_end, unsigned nproc)
+    double sum_max_n(Iter v_begin, Iter v_end, unsigned nproc)
     {
         double s = 0.0;
         sort(v_begin, v_end);
         reverse(v_begin, v_end);
         unsigned k = 0;
         for (Iter i = v_begin; i != v_end; ++i) {
-            if (k >= (nproc-1)) break; 
+            if (k >= nproc) break; 
             s += *i; 
             k++;
         }

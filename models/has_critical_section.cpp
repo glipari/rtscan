@@ -3,8 +3,8 @@
 using namespace std;
 
 namespace Scan {
-    Resource::Resource(int rid, bool s) :
-        id_(rid), isShort_(s), ceiling_(0) {}
+    Resource::Resource(/*int rid,*/ bool s) :
+        isShort_(s), ceiling_(0) {}
     
     CriticalSection::CriticalSection(int rid, double dur, CriticalSection *p) : 
         res_id(rid), duration(dur), nested(), parent(p) 
@@ -165,33 +165,18 @@ namespace Scan {
         return l;
     }
 
-    // void BlockingChain::addTask(const HasUniqueId &t)
-    // {
-    //     tasks.insert(t.get_id());
-    // }
+    double HasCriticalSection::get_max_length(int res_id) const
+    {
+        CSList cslist = get_cs_list(res_id);
+        const CriticalSection *cs = 0;
+        double m = 0.0;
+        for (auto c : cslist) {
+            if (c->get_duration() > m) {
+                cs = c;
+                m = cs->get_duration();
+            }
+        }
+        return m;
+    }
 
-    // void BlockingChain::addRes(int r)
-    // {
-    //     res.insert(r);
-    // }
-        
-    // BlockingChain::task_iterator BlockingChain::task_begin() const
-    // {
-    //     return tasks.begin();
-    // }
-
-    // BlockingChain::task_iterator BlockingChain::task_end() const
-    // {
-    //     return tasks.end();
-    // }
-
-    // BlockingChain::res_iterator BlockingChain::res_begin() const
-    // {
-    //     return res.begin();
-    // }
-    
-    // BlockingChain::res_iterator BlockingChain::res_end() const
-    // {
-    //     return res.end();
-    // }
 }

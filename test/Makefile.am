@@ -16,6 +16,7 @@ scantest_SOURCES = test_main.cpp \
 	TaskSet2Test.cpp \
 	MBWITest.cpp \
 	MEDFTest.cpp \
-	HasProcessorTest.cpp
+	HasProcessorTest.cpp \
+	FMLPTest.cpp
 
 #TestBasicFunctions.cpp  

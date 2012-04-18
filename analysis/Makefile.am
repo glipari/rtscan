@@ -10,3 +10,5 @@ libscan_analysis_la_SOURCES=dbf.cpp \
 	mbwi_interference.cpp \
 	fmlp.cpp
 
+#	lg_multi_baker.cpp
+

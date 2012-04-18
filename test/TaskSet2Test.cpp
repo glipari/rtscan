@@ -34,3 +34,12 @@ TEST(TaskSet2, IntersectSubtract)
     EXPECT_EQ(v[0].get_id(), sub[0].get_id());
     EXPECT_EQ(v[1].get_id(), sub[1].get_id());
 }
+
+TEST(Sequence, TestMaxSum)
+{
+    vector<double> v = {
+        4, 7, 10, 2, 3, 1, -5
+    };
+    
+    EXPECT_EQ(21, sum_max_n(v.begin(), v.end(), 3));
+}

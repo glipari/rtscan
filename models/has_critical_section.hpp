@@ -8,17 +8,43 @@
 #include <models/has_unique_id.hpp>
 
 namespace Scan {
-    class Resource {
-        int id_;
+    class Resource : public HasUniqueId {
+        //int id_;
         bool isShort_;
         int ceiling_;
      public:
-        Resource(int rid, bool s = false);        
+        explicit Resource(// int rid, 
+                          bool s = false);        
         int get_ceiling() const {return ceiling_; }
         void set_ceiling(int ceil) { ceiling_ = ceil; }
         bool isShort()  const { return isShort_; }
-        int get_id() const { return id_; }
+        //int get_id() const { return id_; }
     };
+
+    class ResourceIdLessThan {
+    public:
+        bool operator()(const Resource &a, const Resource &b) const {
+            return a.get_id() < b.get_id();
+        }
+    };
+
+    class ResourceIdEqualPred {
+        int id;
+    public:
+        ResourceIdEqualPred(const Resource &res) : id(res.get_id()) {}
+        ResourceIdEqualPred(int rid) : id(rid) {}
+        bool operator()(const Resource &res) const {
+            return res.get_id() == id;
+        } 
+    };
+
+    template<class Iter>
+    Resource get_res_by_id(int rid, Iter begin, Iter end)
+    {
+        Iter r_it = find_if(begin, end, ResourceIdEqualPred(rid));
+        if (r_it == end) throw "Resource not found!";
+        return *r_it;
+    }
 
     class CriticalSection;
     typedef std::vector<CriticalSection> CSSet;
@@ -102,6 +128,9 @@ namespace Scan {
         /** get the list of pointers to all critical sections of this
             task that insist on resource res */
         CSList get_cs_list(int res) const;
+
+        /** get longest critical section on resource res_id */
+        double get_max_length(int res_id) const;
     };
 
     template<class Iter>

@@ -72,7 +72,7 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libscan_common_la_LIBADD =
 am_libscan_common_la_OBJECTS = exceptions.lo property.lo statvar.lo \
-	model.lo
+	model.lo generators.lo
 libscan_common_la_OBJECTS = $(am_libscan_common_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -252,7 +252,9 @@ top = ../
 SUBDIRS = 
 AM_CPPFLAGS = -Wall -std=c++0x -I${top}
 lib_LTLIBRARIES = libscan_common.la
-libscan_common_la_SOURCES = exceptions.cpp property.cpp statvar.cpp model.cpp
+libscan_common_la_SOURCES = exceptions.cpp property.cpp statvar.cpp model.cpp \
+	generators.cpp
+
 all: all-recursive
 
 .SUFFIXES:
@@ -328,6 +330,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/exceptions.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/generators.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/model.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/property.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/statvar.Plo@am__quote@
@@ -674,6 +677,7 @@ uninstall-am: uninstall-libLTLIBRARIES
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
 	pdf pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
 	uninstall-libLTLIBRARIES
+
 
 # End of Makefile.am
 

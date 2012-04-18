@@ -16,6 +16,15 @@ namespace Scan {
     public:
         bool operator()(const HasUniqueId& a, const HasUniqueId& b) const;
     };
+    
+    class EqualIdPred {
+        int id;
+    public:
+        EqualIdPred(const HasUniqueId& x) : id(x.get_id()) {}
+        bool operator()(const HasUniqueId& y) const {
+            return id == y.get_id();
+        }
+    };
 }
 
 #endif
