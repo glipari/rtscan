@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <string>
 
 namespace Scan {
     template <class Container, class Iter1, class Iter2, class Fun>
@@ -52,6 +53,28 @@ namespace Scan {
         }
         return s;
     }
+
+    template <typename OutIt>
+    OutIt string_split(const std::string &text, const std::string seps, OutIt out, bool empty_tokens = false)
+    {
+        size_t start = 0;
+        size_t end   = 0;
+
+        if (!empty_tokens) start = text.find_first_not_of(seps, 0);
+        
+        while((end = text.find_first_of(seps, start)) != std::string::npos)
+        {
+            *out++ = text.substr(start, end - start);
+
+            if (empty_tokens) start = end + 1;
+            else start = text.find_first_not_of(seps, end);
+            
+        }
+        if (start != std::string::npos) *out++ = text.substr(start);
+        
+        return out;
+    }
+
 }
 
 #endif

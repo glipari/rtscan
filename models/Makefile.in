@@ -72,7 +72,8 @@ am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libscan_models_la_LIBADD =
 am_libscan_models_la_OBJECTS = task.lo taskset.lo taskset_parser.lo \
-	transaction.lo has_critical_section.lo has_unique_id.lo
+	transaction.lo has_critical_section.lo has_unique_id.lo \
+	taskres_parser.lo
 libscan_models_la_OBJECTS = $(am_libscan_models_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -254,7 +255,9 @@ EXTRA_DIST =
 AM_CPPFLAGS = -I${top}
 AM_CXXFLAGS = -Wall -std=c++0x
 lib_LTLIBRARIES = libscan_models.la
-libscan_models_la_SOURCES = task.cpp taskset.cpp taskset_parser.cpp transaction.cpp has_critical_section.cpp has_unique_id.cpp
+libscan_models_la_SOURCES = task.cpp taskset.cpp taskset_parser.cpp transaction.cpp has_critical_section.cpp has_unique_id.cpp \
+	taskres_parser.cpp
+
 all: all-recursive
 
 .SUFFIXES:
@@ -332,6 +335,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/has_critical_section.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/has_unique_id.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/task.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taskres_parser.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taskset.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/taskset_parser.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/transaction.Plo@am__quote@

@@ -43,3 +43,31 @@ TEST(Sequence, TestMaxSum)
     
     EXPECT_EQ(21, sum_max_n(v.begin(), v.end(), 3));
 }
+
+TEST(Sequence, SplitString)
+{
+    string str = "10    20";
+    vector<string> res;
+    string_split(str, " ", back_inserter(res));
+    EXPECT_EQ(2, res.size());
+
+    str = "10,,, 20";
+    res.clear();
+    string_split(str, " ", back_inserter(res));
+    EXPECT_EQ(2, res.size());
+
+    res.clear();
+    string_split(str, " ,", back_inserter(res));
+    EXPECT_EQ(2, res.size());
+
+    res.clear();
+    string_split(str, " ,", back_inserter(res), true);
+    EXPECT_EQ(5, res.size());
+
+    str = "10   ";
+    res.clear();
+    string_split(str, " ", back_inserter(res));
+    EXPECT_EQ(1, res.size());
+
+
+}

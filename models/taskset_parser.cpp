@@ -35,7 +35,7 @@ namespace Scan {
         namespace fusion = boost::fusion;
         
         template <typename Iterator>
-        struct taskset_grammar : qi::grammar<Iterator, task_struct(), //double()
+        struct taskset_grammar : qi::grammar<Iterator, task_struct(), 
                                              ascii::space_type>
         {
             taskset_grammar() : taskset_grammar::base_type(task)
@@ -56,6 +56,7 @@ namespace Scan {
                     task %= lit("task") >> (lexeme[alpha >> *alnum])
                                         >> '{' >> property_list >> '}';
                 }
+
             qi::rule<Iterator, std::string(), ascii::space_type> property_name;
             qi::rule<Iterator, prop_struct() , ascii::space_type> property;
             qi::rule<Iterator, std::vector< prop_struct >() , ascii::space_type> property_list;

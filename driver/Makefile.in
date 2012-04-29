@@ -34,7 +34,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = simple$(EXEEXT)
+noinst_PROGRAMS = simple$(EXEEXT) mbwi_simul$(EXEEXT)
 subdir = driver
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -49,6 +49,9 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
+am_mbwi_simul_OBJECTS = mbwi_simul.$(OBJEXT)
+mbwi_simul_OBJECTS = $(am_mbwi_simul_OBJECTS)
+mbwi_simul_DEPENDENCIES =
 am_simple_OBJECTS = simple.$(OBJEXT)
 simple_OBJECTS = $(am_simple_OBJECTS)
 simple_DEPENDENCIES =
@@ -65,8 +68,8 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(simple_SOURCES)
-DIST_SOURCES = $(simple_SOURCES)
+SOURCES = $(mbwi_simul_SOURCES) $(simple_SOURCES)
+DIST_SOURCES = $(mbwi_simul_SOURCES) $(simple_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -194,6 +197,8 @@ AM_CXXFLAGS = -Wall -std=c++0x
 AM_LDFLAGS = -L${top}common -L${top}models -L${top}analysis 
 simple_SOURCES = simple.cpp
 simple_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem 
+mbwi_simul_SOURCES = mbwi_simul.cpp 
+mbwi_simul_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem 
 all: all-am
 
 .SUFFIXES:
@@ -237,6 +242,9 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+mbwi_simul$(EXEEXT): $(mbwi_simul_OBJECTS) $(mbwi_simul_DEPENDENCIES) 
+	@rm -f mbwi_simul$(EXEEXT)
+	$(CXXLINK) $(mbwi_simul_OBJECTS) $(mbwi_simul_LDADD) $(LIBS)
 simple$(EXEEXT): $(simple_OBJECTS) $(simple_DEPENDENCIES) 
 	@rm -f simple$(EXEEXT)
 	$(CXXLINK) $(simple_OBJECTS) $(simple_LDADD) $(LIBS)
@@ -247,6 +255,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbwi_simul.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple.Po@am__quote@
 
 .cpp.o:
