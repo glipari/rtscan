@@ -105,8 +105,6 @@ namespace Scan {
         else return floor((y-x-tsk.get_dline())/tsk.get_period()) + 1;  
     }
 
-
-
     DECL_EXC(NonMonotonicFunction);
     DECL_EXC(FixPointDoesNotConverge);
     /**
