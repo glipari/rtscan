@@ -5,6 +5,11 @@ using namespace std;
 namespace Scan {
     Resource::Resource(/*int rid,*/ bool s) :
         isShort_(s), ceiling_(0) {}
+    Resource::Resource(int rid, bool s) :
+        isShort_(s), ceiling_(0) 
+    {
+        set_id(rid);
+    }
     
     CriticalSection::CriticalSection(int rid, double dur, CriticalSection *p) : 
         res_id(rid), duration(dur), nested(), parent(p) 

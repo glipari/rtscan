@@ -13,8 +13,9 @@ namespace Scan {
         bool isShort_;
         int ceiling_;
      public:
-        explicit Resource(// int rid, 
-                          bool s = false);        
+        explicit Resource(bool s = false);        
+
+        Resource(int rid, bool s);        
         int get_ceiling() const {return ceiling_; }
         void set_ceiling(int ceil) { ceiling_ = ceil; }
         bool isShort()  const { return isShort_; }
