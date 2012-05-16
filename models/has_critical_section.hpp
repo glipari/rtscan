@@ -18,7 +18,7 @@ namespace Scan {
         Resource(int rid, bool s);        
         int get_ceiling() const {return ceiling_; }
         void set_ceiling(int ceil) { ceiling_ = ceil; }
-        bool isShort()  const { return isShort_; }
+        bool is_short()  const { return isShort_; }
         //int get_id() const { return id_; }
     };
 

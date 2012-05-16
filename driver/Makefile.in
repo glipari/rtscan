@@ -49,7 +49,7 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_mbwi_simul_OBJECTS = mbwi_simul.$(OBJEXT)
+am_mbwi_simul_OBJECTS = mbwi_simul.$(OBJEXT) mbwi_sys.$(OBJEXT)
 mbwi_simul_OBJECTS = $(am_mbwi_simul_OBJECTS)
 mbwi_simul_DEPENDENCIES =
 am_simple_OBJECTS = simple.$(OBJEXT)
@@ -197,7 +197,7 @@ AM_CXXFLAGS = -Wall -std=c++0x
 AM_LDFLAGS = -L${top}common -L${top}models -L${top}analysis 
 simple_SOURCES = simple.cpp
 simple_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem 
-mbwi_simul_SOURCES = mbwi_simul.cpp 
+mbwi_simul_SOURCES = mbwi_simul.cpp  mbwi_sys.cpp
 mbwi_simul_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem 
 all: all-am
 
@@ -256,6 +256,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbwi_simul.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbwi_sys.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/simple.Po@am__quote@
 
 .cpp.o:

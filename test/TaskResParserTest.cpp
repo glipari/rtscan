@@ -114,8 +114,8 @@ TEST(TaskResParser, TestResult)
         CSSet cslist3;
         std::copy(cslist2[1].begin(), cslist2[1].end(), std::back_inserter(cslist3));
         EXPECT_EQ(1, cslist3.size());
-        // EXPECT_EQ(1, cslist3[0].get_resource());
-        // EXPECT_EQ(1, cslist3[0].get_duration());
+        EXPECT_EQ(1, cslist3[0].get_resource());
+        EXPECT_EQ(1, cslist3[0].get_duration());
     }
     catch (std::exception &err) {
         std::cerr << err.what() << endl;

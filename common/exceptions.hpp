@@ -26,9 +26,9 @@ namespace Scan {
 #define STRINGIFY(text)      #text
 
 /// Shortcut to declare an exception derived from Exception
-#define DECL_EXC(xxx) class xxx : public Exception {    \
+#define DECL_EXC(xxx) class xxx : public Scan::Exception {      \
          public: \
-           xxx(const std::string &s) : Exception(STRINGIFY(xxx), s) {} \
+         xxx(const std::string &s) : Scan::Exception(STRINGIFY(xxx), s) {} \
          }
 /// shortcurt to throw an exception with the right parameters
 /// sss must be a constant string!
