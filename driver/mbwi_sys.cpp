@@ -184,8 +184,8 @@ void sys_params::generate_crit_sections()
                 }
                 CriticalSection crit_sect(rgroups[gindex][rn].get_id(), dur);
                 double p_nesting = p_cs_dist(RNDGEN());
-                if (p_nesting < nesting_prob) 
-                    create_crit_sect();
+                // if (p_nesting < nesting_prob) 
+                //     create_crit_sect();
             }
         }
         
