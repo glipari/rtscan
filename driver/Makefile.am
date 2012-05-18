@@ -7,5 +7,5 @@ noinst_PROGRAMS = simple mbwi_simul
 simple_SOURCES = simple.cpp
 simple_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem 
 
-mbwi_simul_SOURCES = mbwi_simul.cpp 
+mbwi_simul_SOURCES = mbwi_simul.cpp mbwi_sys.cpp
 mbwi_simul_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem 
