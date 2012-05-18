@@ -33,7 +33,7 @@ namespace Scan {
         typedef typename std::iterator_traits<Iter>::reference Ref;
         typedef typename std::iterator_traits<Iter>::value_type Type;
         
-        sort_by_increasing(b, e, &Type::get_period);        
+        sort_by_increasing(b, e, &Type::get_period);      
         int k=0;
         for_each(b, e, [&k](Ref a) { k++; });
         for_each(b, e, [&k](Ref a) {

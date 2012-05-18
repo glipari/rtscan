@@ -25,7 +25,7 @@ bool myparse(std::istream& input, const std::string filename, DataType &result)
     // convert input iterator to forward iterator, usable by spirit parser
     typedef boost::spirit::multi_pass<base_iterator_type> forward_iterator_type;
     forward_iterator_type fwd_begin = boost::spirit::make_default_multi_pass(in_begin);
-    forward_iterator_type fwd_end;
+    forward_iterator_type fwd_end = boost::spirit::make_default_multi_pass(base_iterator_type());
     
     // wrap forward iterator with position iterator, to record the position
     typedef classic::position_iterator2<forward_iterator_type> pos_iterator_type;
@@ -39,7 +39,7 @@ bool myparse(std::istream& input, const std::string filename, DataType &result)
     {
         r = phrase_parse(position_begin, 
                          position_end, 
-                         g, 
+                         g,
                          ascii::space, //ascii::space | '#' >> *(ascii::char_ - qi::eol) >> qi::eol, // comment skipper, 
                          result);
     }

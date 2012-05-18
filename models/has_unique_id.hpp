@@ -5,8 +5,11 @@ namespace Scan {
     class HasUniqueId {
         int id;
         static int counter;
+    protected:
+        void set_id(int i);
     public:
         HasUniqueId();
+        HasUniqueId(int i);
         HasUniqueId(const HasUniqueId& other);
         HasUniqueId& operator=(const HasUniqueId& other);
         inline int get_id() const { return id; }

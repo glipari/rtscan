@@ -18,6 +18,7 @@ scantest_SOURCES = test_main.cpp \
 	MEDFTest.cpp \
 	HasProcessorTest.cpp \
 	FMLPTest.cpp \
-	TaskResParserTest.cpp
+	TaskResParserTest.cpp \
+	TestCommon.cpp
 
 #TestBasicFunctions.cpp  

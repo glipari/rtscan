@@ -50,9 +50,9 @@ namespace Scan {
         for (CSSet::const_iterator i=begin; i!=end; ++i) {
             int rid = i->get_resource();
             Resource r = get_res(rid);
-            bool res_isshort = r.isShort();
+            bool res_isshort = r.is_short();
             bool parent_isshort = false;
-            if (parent_res_id != -1) parent_isshort = get_res(parent_res_id).isShort();
+            if (parent_res_id != -1) parent_isshort = get_res(parent_res_id).is_short();
             if (parent_res_id == -1 || parent_isshort != res_isshort) {
                 int g_index = fmlp_find_group(gs, r);
                 if (g_index == -1) 
@@ -111,7 +111,7 @@ namespace Scan {
             CriticalSection cs = s.top();
             s.pop();
             Resource r = get_res(cs.get_resource());
-            if (r.isShort()) work.push_back(cs);
+            if (r.is_short()) work.push_back(cs);
             else 
                 for (auto i = cs.begin(); i!=cs.end(); ++i) s.push(*i);
         }
@@ -125,7 +125,7 @@ namespace Scan {
         CSSet work;
         for (auto cs : csset) {
             Resource r = get_res(cs.get_resource());
-            if (!r.isShort()) work.push_back(cs);
+            if (!r.is_short()) work.push_back(cs);
         }
         return work;
     }
