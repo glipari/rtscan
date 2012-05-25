@@ -28,11 +28,14 @@ struct sys_params {
     double min_dur; // = 0.005;        
     double max_dur; // = 0.500;
     double threshold; // = 0.050;
+    int rndseed;
+    int max_tasks_per_group;
+    int min_tasks_per_group;
 
     std::vector<Scan::TaskRes> tset;
     std::vector<std::vector<Scan::Resource>> rgroups;
-    //std::map<Scan::TaskRes&, int> task_groups; 
-
+    std::vector<Scan::Resource> all_res;
+    
     sys_params() : input_filename("tset.txt"), 
                    output_filename("tres.txt"),
                    nproc(2),
@@ -44,15 +47,20 @@ struct sys_params {
                    min_dur(.005),
                    max_dur(.5),
                    threshold(.05),
+                   rndseed(12345),
+                   max_tasks_per_group(6),
+                   min_tasks_per_group(2),
                    tset(),
-                   rgroups() 
+                   rgroups()
         {}
 
     void print_help();
+    void print_params();
     void parse_args(int argc, char *argv[]);
     void check();
     void generate_resources();
     void generate_crit_sections();
+    void create_crit_sections(Scan::CSSet &csset, int res_min, bool upper, int gindex);
 };
 
 DECL_EXC(TooManyGroups);

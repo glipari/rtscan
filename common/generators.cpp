@@ -6,11 +6,19 @@
 namespace Scan {
     using namespace std;
     
-    rndgen_t GeneratorSingleton::rng;
+    rndgen_t *GeneratorSingleton::rng = 0;
 
     rndgen_t &GeneratorSingleton::get() {
-        return rng;
+        if (rng == 0) rng = new rndgen_t();
+        return *rng;
     }
+
+
+    void GeneratorSingleton::init(int seed) {
+        delete rng;
+        rng = new rndgen_t(seed);
+    }
+
 
     /**
        UUniFast Algorithm by Enrico Bini

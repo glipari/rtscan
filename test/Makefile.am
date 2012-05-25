@@ -1,5 +1,5 @@
 top=../
-gtest_dir=${top}../gmock-1.6.0/gtest
+gtest_dir=${top}../gtest/gtest-1.6.0/
 
 SUBDIRS=
 

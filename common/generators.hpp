@@ -12,13 +12,13 @@ namespace Scan {
 
 
     class GeneratorSingleton {
-        static rndgen_t rng;
+        static rndgen_t *rng;
     public:
         static rndgen_t &get();
+        static void init(int seed);
     };
 
     std::vector<double> UUniFast(int nproc, double U_target, rndgen_t &rng = RNDGEN());
-
     std::vector<int> random_bins(const std::vector< std::pair<int, int> >& limits, int sum, rndgen_t &rng = RNDGEN());
     std::vector< std::vector<int> > cartesian_product(const std::vector< std::pair<int, int> >& limits);
     std::vector< std::vector<int> > select_sum_vectors(const std::vector< std::vector<int> > & elems, int sum);

@@ -237,7 +237,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 top = ../
-gtest_dir = ${top}../gmock-1.6.0/gtest
+gtest_dir = ${top}../gtest/gtest-1.6.0/
 SUBDIRS = 
 AM_CXXFLAGS = -Wall -std=c++0x -I${top} -I${gtest_dir}/include/
 scantest_LDFLAGS = -L${gtest_dir}/lib/ -L${top}common -L${top}models -L${top}analysis   
