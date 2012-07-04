@@ -31,6 +31,7 @@ struct sys_params {
     int rndseed;
     int max_tasks_per_group;
     int min_tasks_per_group;
+    bool omlptest;
 
     std::vector<Scan::TaskRes> tset;
     std::vector<std::vector<Scan::Resource>> rgroups;
@@ -50,6 +51,7 @@ struct sys_params {
                    rndseed(12345),
                    max_tasks_per_group(6),
                    min_tasks_per_group(2),
+                   omlptest(false),
                    tset(),
                    rgroups()
         {}

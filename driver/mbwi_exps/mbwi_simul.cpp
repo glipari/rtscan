@@ -7,6 +7,7 @@
 #include <common/sequence.hpp>
 #include <common/generators.hpp>
 #include <analysis/fmlp.hpp>
+#include <analysis/omlp.hpp>
 #include <analysis/mbwi_interference.hpp>
 #include <analysis/medf_rta.hpp>
 
@@ -58,10 +59,14 @@ int main(int argc, char *argv[])
     int nsched = 0;
     int nsched_mbwi = 0;
     int nsched_fmlp = 0;
+    int nsched_omlp = 0;
+
     double util = 0;
 
     sys.parse_args(argc, argv);
     sys.print_params();
+    sys.check();
+
     ifstream is(sys.input_filename.c_str());
     GeneratorSingleton::init(sys.rndseed);
 
@@ -134,30 +139,49 @@ int main(int argc, char *argv[])
                 cout << "Not schedulable with FMLP" << endl;
                 sched_fmlp = false;
             }
+
+            vector<TaskRes> tset_omlp;
+            bool sched_omlp = false;
+            try { 
+                OMLPAnalysis omlp(sys.nproc, 
+                                  sys.tset.begin(), sys.tset.end(), 
+                                  sys.all_res.begin(), sys.all_res.end());
+                for (auto t : sys.tset) { 
+                    double blocking = omlp.blocking_time_global(t);
+                    cout << " OMLP blocking for " << t << " : " << blocking << endl;
+
+                    t.set_wcet(t.get_wcet() + blocking);
+                    tset_omlp.push_back(t);
+                }
+                sched_omlp = gedf_iterative(sys.nproc, tset_omlp.begin(), tset_omlp.end());
+            } catch(IllegalValue &err) {
+                cout << "Not schedulable with OMLP" << endl;
+                sched_omlp = false;
+            }
+
             cout << "Schedulable by mbwi: " << sched_mbwi << endl;
             cout << "Schedulable by fmlp: " << sched_fmlp << endl;
+            cout << "Schedulable by omlp: " << sched_omlp << endl;            
 
             if (sched_mbwi) nsched_mbwi++;
             if (sched_fmlp) nsched_fmlp++;
+            if (sched_omlp) nsched_omlp++;
         }
         else {
             cout << "Task set is not scheduable" << endl;
         }
-        
-        /**
-           Finally, I have to output. 
-           MBWI_INTERF   interf
-           FMLP_BLOCKING blocking 
-           
-           SCHED_NORES  Yes or No
-           SCHED_MBWI   Yes or No
-           SCHED_FMLP   Yes or No
-           TESKSAT
-        */
     }
 
     ofstream os(sys.output_filename.c_str(), ios::app);
-    os << util << ", " << sys.nproc << ", " << sys.tset.size() << ", " << nsets << ", " << nsched << ", " << nsched_mbwi << ", " << nsched_fmlp << endl;
+    os << util << ", " 
+       << sys.nproc << ", " 
+       << sys.tset.size() << ", " 
+       << nsets << ", " 
+       << nsched << ", " 
+       << nsched_mbwi << ", " 
+       << nsched_fmlp << ", " 
+       << nsched_omlp << endl;
+
     os.close();
 
     return 0;

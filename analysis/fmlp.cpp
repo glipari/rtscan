@@ -173,7 +173,7 @@ namespace Scan {
         compute_np();
 
         vector<TaskRes> gperiod;
-        select(gperiod, tset.begin(), tset.end(), [task](const TaskRes &x) { return x.get_period() > task.get_period(); });
+        select(tset.begin(), tset.end(), back_inserter(gperiod), [task](const TaskRes &x) { return x.get_period() > task.get_period(); });
 
         double m1 = 0.0;
         for (auto t: gperiod) m1 = max(m1, np[t.get_id()]);

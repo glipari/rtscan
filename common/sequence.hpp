@@ -6,39 +6,71 @@
 #include <string>
 
 namespace Scan {
-    template <class Container, class Iter1, class Iter2, class Fun>
-    void intersect(Container &c, Iter1 a1, Iter1 b1, Iter2 a2, Iter2 b2, Fun cmp)
+    /**
+       Selects all elements in the intersection between sequence [a1,
+       b1) and [a2, b2) and inserts them in the sequence starting at
+       a3.
+
+       Equality is established by function cmp that must take two
+       elements, one from the first sequence, and the second one from
+       the second sequence.
+
+       The elements inserted in the final sequence are all taken from
+       [a1, b1).
+     */
+    template <class Iter1, class Iter2, class Iter3, class Fun>
+    void intersect(Iter1 a1, Iter1 b1, Iter2 a2, Iter2 b2, Iter3 a3, Fun cmp)
     {
         using namespace std::placeholders;
         for (Iter1 i = a1; i != b1; ++i) {
             auto f = std::bind(cmp, *i, _1);
-            if (find_if(a2, b2, f) != b2) // found it, so insert
-                c.insert(c.end(), *i);
+            if (find_if(a2, b2, f) != b2) { // found it, so insert
+                *a3 = *i;
+                ++a3;
+            }
         }
     }
 
-    template <class Container, class Iter1, class Iter2, class Fun>
-    void subtract(Container &c, Iter1 a1, Iter1 b1, Iter2 a2, Iter2 b2, Fun cmp)
+    /**
+       Given two sequences [a1, b1) and [a2, b2), selects all elements
+       in the first sequence but not in the second sequence, and
+       inserts then in the third sequence starting from a3.
+
+       Equality is established by function cmp that must take two
+       elements, one from the first sequence, and the second one from
+       the second sequence.
+     */
+    template <class Iter1, class Iter2, class Iter3, class Fun>
+    void subtract(Iter1 a1, Iter1 b1, Iter2 a2, Iter2 b2, Iter3 a3, Fun cmp)
     {
         using namespace std::placeholders;
         for (Iter1 i = a1; i != b1; ++i) {
             auto f = std::bind(cmp, *i, _1);
-            if (find_if(a2, b2, f) == b2) // not found it, so insert
-                c.insert(c.end(), *i);
+            if (find_if(a2, b2, f) == b2) {// not found it, so insert
+                *a3 = *i;
+                ++a3;
+            }
         }
     }
 
-    template <class Container, class Iter1, class Fun>
-    void select(Container &c, Iter1 a1, Iter1 b1, Fun pred)
+    /**
+       Selects all the elements from sequence [a1, b1) that verify
+       predicate pred, and inserts them in the sequence starting from
+       position a2.
+    */
+    template <class Iter1, class Iter2, class Fun>
+    void select(Iter1 a1, Iter1 b1, Iter2 a2, Fun pred)
     {
-        for (Iter1 i = a1; i != b1; ++i) {
-            if (pred(*i)) c.insert(c.end(), *i);
+        for (Iter1 i = a1; i != b1; ++i, ++a2) {
+            if (pred(*i)) *a2 = *i;
         }
     }
 
 
-    /** computes the sum of the largest nproc elements in the
-     * sequence */
+    /** 
+        Computes the sum of the largest nproc elements in the
+        sequence 
+    */
     template <class Iter>
     double sum_max_n(Iter v_begin, Iter v_end, unsigned nproc)
     {
@@ -55,7 +87,8 @@ namespace Scan {
     }
 
     template <typename OutIt>
-    OutIt string_split(const std::string &text, const std::string seps, OutIt out, bool empty_tokens = false)
+    OutIt string_split(const std::string &text, const std::string seps, 
+                       OutIt out, bool empty_tokens = false)
     {
         size_t start = 0;
         size_t end   = 0;

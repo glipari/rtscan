@@ -77,7 +77,8 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libscan_analysis_la_LIBADD =
-am_libscan_analysis_la_OBJECTS = dbf.lo mbwi_interference.lo fmlp.lo
+am_libscan_analysis_la_OBJECTS = dbf.lo mbwi_interference.lo fmlp.lo \
+	omlp.lo
 libscan_analysis_la_OBJECTS = $(am_libscan_analysis_la_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -260,7 +261,7 @@ AM_CPPFLAGS = -Wall -std=c++0x -I${top}
 lib_LTLIBRARIES = libscan_analysis.la
 libscan_analysis_la_SOURCES = dbf.cpp \
 	mbwi_interference.cpp \
-	fmlp.cpp
+	fmlp.cpp omlp.cpp
 
 all: all-recursive
 
@@ -339,6 +340,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dbf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fmlp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbwi_interference.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/omlp.Plo@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -688,8 +690,6 @@ uninstall-am: uninstall-libLTLIBRARIES
 	pdf pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
 	uninstall-libLTLIBRARIES
 
-
-#	lg_multi_baker.cpp
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

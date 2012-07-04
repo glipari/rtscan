@@ -1,4 +1,5 @@
 #include <vector>
+#include <list>
 #include <gtest/gtest.h>
 #include <common/sequence.hpp>
 #include <models/task.hpp>
@@ -23,13 +24,16 @@ TEST(TaskSet2, IntersectSubtract)
     EXPECT_EQ(3, v2.size());
 
     vector<Task> inter;
-    intersect(inter, v1.begin(), v1.end(), v2.begin(), v2.end(), task_cmp_ids);
+    intersect(v1.begin(), v1.end(), v2.begin(), v2.end(), back_inserter(inter), 
+              task_cmp_ids);
 
     EXPECT_EQ(1, inter.size());
     EXPECT_EQ(v[2].get_id(), inter[0].get_id());
 
     vector<Task> sub;
-    subtract(sub, v1.begin(), v1.end(), v2.begin(), v2.end(), task_cmp_ids);
+    subtract(v1.begin(), v1.end(), v2.begin(), v2.end(),
+             back_inserter(sub),
+             task_cmp_ids);
     EXPECT_EQ(2, sub.size());
     EXPECT_EQ(v[0].get_id(), sub[0].get_id());
     EXPECT_EQ(v[1].get_id(), sub[1].get_id());
@@ -70,4 +74,17 @@ TEST(Sequence, SplitString)
     EXPECT_EQ(1, res.size());
 
 
+}
+
+TEST(Sequence, Select2)
+{
+    vector<int> v = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    list<int> r;
+
+    select(v.begin(), v.end(), back_inserter(r), [](int x) { return x%2; });
+    auto l = r.begin();
+    for (int i=0; i<5;i++) {
+        EXPECT_EQ(2*i+1, *l);
+        ++l;
+    }
 }

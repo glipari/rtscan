@@ -54,7 +54,8 @@ am_scantest_OBJECTS = test_main.$(OBJEXT) DBFTest.$(OBJEXT) \
 	CriticalSectionsTest.$(OBJEXT) TaskSet2Test.$(OBJEXT) \
 	MBWITest.$(OBJEXT) MEDFTest.$(OBJEXT) \
 	HasProcessorTest.$(OBJEXT) FMLPTest.$(OBJEXT) \
-	TaskResParserTest.$(OBJEXT) TestCommon.$(OBJEXT)
+	OMLPTest.$(OBJEXT) TaskResParserTest.$(OBJEXT) \
+	TestCommon.$(OBJEXT)
 scantest_OBJECTS = $(am_scantest_OBJECTS)
 scantest_DEPENDENCIES =
 scantest_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -251,6 +252,7 @@ scantest_SOURCES = test_main.cpp \
 	MEDFTest.cpp \
 	HasProcessorTest.cpp \
 	FMLPTest.cpp \
+	OMLPTest.cpp \
 	TaskResParserTest.cpp \
 	TestCommon.cpp
 
@@ -313,6 +315,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HasProcessorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MBWITest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MEDFTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OMLPTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ParseTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaskResParserTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaskSet2Test.Po@am__quote@

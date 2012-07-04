@@ -65,8 +65,7 @@ namespace Scan {
         // compute gamma_k (set of tasks that access r_k)
         auto mf = std::bind(std::mem_fn(&TaskRes::uses_resource), _1, r_k);
         vector<TaskRes> gamma_k;
-        select(gamma_k, 
-               taskset.begin(), taskset.end(), 
+        select(taskset.begin(), taskset.end(), back_inserter(gamma_k),
                mf);
         
         return gamma_k;
@@ -92,9 +91,9 @@ namespace Scan {
             // eliminate those tasks that are already in the blocking
             // chain
             vector<TaskRes> valid_tasks;
-            subtract(valid_tasks, 
-                     gamma_k.begin(), gamma_k.end(),
+            subtract(gamma_k.begin(), gamma_k.end(),
                      blocked_tasks.begin(), blocked_tasks.end(),
+                     back_inserter(valid_tasks),
                      task_cmp_ids
                 );
             // now I have the list of tasks that could potentially

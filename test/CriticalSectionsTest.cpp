@@ -205,10 +205,10 @@ TEST_F(TestCSFix, FindTaskRes)
 TEST_F(TestCSFix, TaskSubset)
 {
     TaskSet subset;
-    subset_tasks_use_res(tasks.begin(), tasks.end(), subset, 1);
+    subset_tasks_use_res(tasks.begin(), tasks.end(), back_inserter(subset), 1);
     EXPECT_EQ(1, subset.size());
     subset.clear();
-    subset_tasks_use_res(tasks.begin(), tasks.end(), subset, 2);
+    subset_tasks_use_res(tasks.begin(), tasks.end(), back_inserter(subset), 2);
     EXPECT_EQ(2, subset.size());
     EXPECT_EQ(tid[0], subset[0].get_id());
     EXPECT_EQ(tid[2], subset[1].get_id());

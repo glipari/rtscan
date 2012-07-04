@@ -14,7 +14,7 @@ using namespace Scan;
 
 void sys_params::parse_args(int argc, char *argv[]) {
     int c;
-    while((c = getopt(argc,argv,"hf:m:o:s:l:1:2:3:z:g:r:x:y:t:")) != -1) {
+    while((c = getopt(argc,argv,"hf:m:o:s:l:1:2:3:z:g:r:x:y:t:p")) != -1) {
         switch (c) {
         case 'h' : 
             print_help();
@@ -68,6 +68,9 @@ void sys_params::parse_args(int argc, char *argv[]) {
         case 'y': 
             min_tasks_per_group = atoi(optarg);
             break;
+        case 'p': 
+            omlptest = true;
+            break;
         }
     }
 }
@@ -91,6 +94,7 @@ void sys_params::print_params()
     cout << "threshold short/long (-t): " << threshold << endl;
     cout << "max tasks per group (-x): " << max_tasks_per_group << endl;
     cout << "min tasks per group (-y): " << min_tasks_per_group << endl;
+    cout << "enable omlp test (-p) " << omlptest << endl;
 }
 
 void sys_params::print_help()
@@ -113,11 +117,18 @@ void sys_params::print_help()
     cout << "    -r  : random seed (default = 12345) " << endl; 
     cout << "    -x  : max tasks per group (default = 6) " << endl; 
     cout << "    -y  : min tasks per group (default = 2) " << endl; 
+    cout << "    -p  : enable omlp test (default = false), requires nesting prob = 0" << endl; 
 }
 
 void sys_params::check()
 {
+
+    if (omlptest && nesting_prob > 0) { 
+        cout << "omlp test requires nesting probability = 0" << endl;
+        exit(-1);
+    }
 }
+
 
 void sys_params::generate_resources()
 {    
@@ -226,10 +237,10 @@ void sys_params::create_crit_sections(CSSet &csset, int res_min, bool s, int gin
 {
     csset.clear();
     vector<Resource> temp;
-    select(temp, rgroups[gindex].begin(), rgroups[gindex].end(), 
+    select(rgroups[gindex].begin(), rgroups[gindex].end(), back_inserter(temp),  
            [&res_min](Resource i) { return i.get_id() > res_min;});
     vector<Resource> goodres;
-    select(goodres, temp.begin(), temp.end(), 
+    select(temp.begin(), temp.end(), back_inserter(goodres),
            [&s](Resource i) { return !( !i.is_short() && s);});
     if (goodres.size() == 0) return;
     

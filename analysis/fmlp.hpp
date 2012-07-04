@@ -1,4 +1,5 @@
 #ifndef __FMLP_HPP__
+#define __FMLP_HPP__
 #include <vector>
 #include <set>
 #include <map>

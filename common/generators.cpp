@@ -67,7 +67,7 @@ namespace Scan {
     {
         vector< vector<int> > good;
         
-        select(good, elems.begin(), elems.end(), [sum](const vector<int> &x) {
+        select(elems.begin(), elems.end(), back_inserter(good), [sum](const vector<int> &x) {
                 int y = 0;
                 for (unsigned i=0; i<x.size(); i++) y+=x[i];
                 return y == sum;
