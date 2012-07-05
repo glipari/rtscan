@@ -80,8 +80,10 @@ namespace Scan {
     {
         vector< vector<int> > good = select_sum_vectors(cartesian_product(limits), sum);
         
-        std::uniform_int_distribution<int> dist(1, good.size());
-        
+        if (good.size() < 1) THROW_EXC(UnfeasibleBins, "The limits are unfeasible");
+
+        std::uniform_int_distribution<int> dist(1, good.size());       
+
         return good[dist(rng)-1];
     }
 }

@@ -14949,7 +14949,7 @@ fi
   test -n "$RANLIB" && break
 done
 
-ac_config_files="$ac_config_files Makefile models/Makefile common/Makefile analysis/Makefile driver/Makefile driver/mbwi_exps/Makefile test/Makefile"
+ac_config_files="$ac_config_files Makefile models/Makefile common/Makefile analysis/Makefile driver/Makefile driver/mbwi_exps/Makefile driver/edf_complexity/Makefile test/Makefile"
 
 ac_config_commands="$ac_config_commands default"
 
@@ -16070,6 +16070,7 @@ do
     "analysis/Makefile") CONFIG_FILES="$CONFIG_FILES analysis/Makefile" ;;
     "driver/Makefile") CONFIG_FILES="$CONFIG_FILES driver/Makefile" ;;
     "driver/mbwi_exps/Makefile") CONFIG_FILES="$CONFIG_FILES driver/mbwi_exps/Makefile" ;;
+    "driver/edf_complexity/Makefile") CONFIG_FILES="$CONFIG_FILES driver/edf_complexity/Makefile" ;;
     "test/Makefile") CONFIG_FILES="$CONFIG_FILES test/Makefile" ;;
     "default") CONFIG_COMMANDS="$CONFIG_COMMANDS default" ;;
 
