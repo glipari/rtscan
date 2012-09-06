@@ -39,8 +39,7 @@ namespace Scan {
             std::vector< boost::recursive_wrapper<cs_struct> > nested;
             task_struct() : name(""), w(0), p(0), d(0), off(0) {}
         };
-    
-
+        
         typedef boost::variant<resource, task_struct> sys_elem; 
         typedef std::vector<sys_elem> sys_type;
     }
@@ -69,6 +68,7 @@ BOOST_FUSION_ADAPT_STRUCT(
     (int, off)
     (std::vector< boost::recursive_wrapper< Scan::Model::cs_struct> >, nested)
     )
+
 
 namespace Scan {
     namespace qi = boost::spirit::qi;
