@@ -16,3 +16,20 @@ TEST(TestHET, Points1)
     EXPECT_EQ(p[0], 10);
     EXPECT_EQ(p[1], 12);
 }
+
+TEST(TestHET, PositiveSpace)
+{
+    for (int n=2; n<10; n++) {
+        space_t s = positive_space(n);
+        for (int i=0; i<n; ++i) {
+            for (int j=0; j<n; ++j) {
+                if (j != i) 
+                    EXPECT_EQ(0, s[i].a[j]);
+                else 
+                    EXPECT_EQ(1, s[i].a[j]);
+            }
+            EXPECT_EQ(1, s[i].sign);
+            EXPECT_EQ(0, s[i].b);
+        }
+    }
+}
