@@ -10,7 +10,7 @@ check_PROGRAMS = scantest
 scantest_LDFLAGS=-L${gtest_dir}/lib/ -L${top}common -L${top}models -L${top}analysis   
 scantest_LDADD= -lgtest -lpthread -lscan_analysis -lscan_models -lscan_common -lboost_filesystem 
 scantest_SOURCES = test_main.cpp \
-	DBFTest.cpp ParseTest.cpp  TaskSetTest.cpp  \
+	DBFTest.cpp TaskSetTest.cpp  \
 	TaskTest.cpp TestUtility.cpp TestFP.cpp \
 	CriticalSectionsTest.cpp \
 	TaskSet2Test.cpp \

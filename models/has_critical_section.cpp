@@ -187,4 +187,12 @@ namespace Scan {
         }
         return m;
     }
+
+
+    std::ostream& operator<<(std::ostream &os, const Resource &r)
+    {
+        os << "Resource {id=" << r.get_id() << " short=" << r.is_short() << " ceiling=" << r.get_ceiling() << "} ";
+        return os;
+    }
+
 }

@@ -1,22 +1,24 @@
 #include <iostream>
 #include <string>
+#include <vector>
 
-#include <models/taskset_parser.hpp>
+#include <models/taskres_parser.hpp>
 
 using namespace std;
 using namespace Scan;
 
 int main()
 {
-    string input="task a {c=2, d=10, p=10} task b {c=3, d=8, p=15}";
+    string input="SYS task a {c=2 d=10 p=10} task b {c=3 d=8 p=15} END";
 
-    TaskSet tset = parse_tasks(input);
+    vector<TaskRes> tset;
+    vector<Resource> rset;
+    parse_taskres(input, tset, rset);
     for (unsigned i=0; i<tset.size(); ++i) {
         cout << tset[i] << endl;
     }
-
-    vector<pair< string, int> > v = {{"Paperino", 1}, {"Pluto", 2}};
-    for (auto i : v) 
-        cout << i.first << ", " << i.second << endl;
+    for (unsigned i=0; i<rset.size(); ++i) {
+        cout << rset[i] << endl;
+    }
                                            
 }

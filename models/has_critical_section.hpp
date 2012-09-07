@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include <set>
+#include <ostream>
 
 #include <models/has_unique_id.hpp>
 
@@ -19,7 +20,6 @@ namespace Scan {
         int get_ceiling() const {return ceiling_; }
         void set_ceiling(int ceil) { ceiling_ = ceil; }
         bool is_short()  const { return isShort_; }
-        //int get_id() const { return id_; }
     };
 
     class ResourceIdLessThan {
@@ -165,5 +165,7 @@ namespace Scan {
             i = find_task_uses_res(i+1, b, res);
         }
     }
+
+    std::ostream& operator<<(std::ostream &os, const Resource &r);
 }
 #endif // __HAS_CRITICAL_SECTION_HPP

@@ -9,7 +9,6 @@
 namespace Scan {
     // DECL_EXC(ParseTaskResExc);
     bool parse_taskres(const std::string &total, std::vector<TaskRes> &tset, std::vector<Resource> &rset);
-
     void parse_taskres(std::istream &is, const std::string &filename, std::vector<TaskRes> &tset, std::vector<Resource> &rset);
 }
 
