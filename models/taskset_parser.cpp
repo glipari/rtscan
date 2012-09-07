@@ -5,106 +5,98 @@
  *      Author: lipari
  */
 
-#include <boost/config/warning_disable.hpp>
 #include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/include/phoenix_object.hpp>
+#include <boost/spirit/include/phoenix_fusion.hpp>
+#include <boost/spirit/include/phoenix_stl.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
-#include <boost/fusion/include/io.hpp>
 
-#include <common/exceptions.hpp>
-#include <models/taskset_parser.hpp>
+#include <common/gen_parse.hpp>
+#include <models/taskres_parser.hpp>
+#include <models/task_model.hpp>
 
 BOOST_FUSION_ADAPT_STRUCT(
-    Scan::TaskModel::prop_struct,
+    Scan::Model::resource, 
     (std::string, name)
-    (double, value)
+    (int, id)
+    (bool, is_short)
     )
 
 BOOST_FUSION_ADAPT_STRUCT(
-    Scan::TaskModel::task_struct,
+    Scan::Model::cs_struct,
+    (int, rid)
+    (double, dur)
+    (std::vector< boost::recursive_wrapper< Scan::Model::cs_struct> >, nested)
+    )
+
+BOOST_FUSION_ADAPT_STRUCT(
+    Scan::Model::task_struct,
     (std::string, name)
-    (std::vector< Scan::TaskModel::prop_struct >, properties)
+    (double, w)
+    (int, p)
+    (double, d)
+    (int, off)
+    (std::vector< boost::recursive_wrapper< Scan::Model::cs_struct> >, nested)
     )
 
 namespace Scan {
-    namespace TaskModel {
-        namespace qi = boost::spirit::qi;
-        namespace ascii = boost::spirit::ascii;
-        namespace fusion = boost::fusion;
-        
-        template <typename Iterator>
-        struct taskset_grammar : qi::grammar<Iterator, task_struct(), 
-                                             ascii::space_type>
-        {
-            taskset_grammar() : taskset_grammar::base_type(task)
-                {
-                    using qi::eps;
-                    using qi::lit;
-                    using qi::_val;
-                    using qi::_1;
-                    using ascii::alpha;
-                    using ascii::alnum;
-                    using qi::string;
-                    using qi::double_;
-                    using qi::lexeme;
-                    
-                    property_name %= (lexeme[alpha >> *alnum]);
-                    property %= property_name >> lit('=') >> double_;
-                    property_list %= property % ',';
-                    task %= lit("task") >> (lexeme[alpha >> *alnum])
-                                        >> '{' >> property_list >> '}';
-                }
+    namespace qi = boost::spirit::qi;
+    namespace ascii = boost::spirit::ascii;
+    namespace fusion = boost::fusion;
+    namespace phoenix = boost::phoenix;
 
-            qi::rule<Iterator, std::string(), ascii::space_type> property_name;
-            qi::rule<Iterator, prop_struct() , ascii::space_type> property;
-            qi::rule<Iterator, std::vector< prop_struct >() , ascii::space_type> property_list;
-            qi::rule<Iterator, task_struct(), ascii::space_type> task;
-        };
-    }
+    using namespace Scan::Model;
     
-    Scan::Task create_task(const TaskModel::task_struct &ts)
+    template <typename Iterator>
+    struct taskres_grammar : qi::grammar<Iterator, sys_type(), ascii::space_type>
     {
-	Scan::Task task(ts.name);
-	std::vector< TaskModel::prop_struct >::const_iterator iter = ts.properties.begin();
-	std::vector< TaskModel::prop_struct >::const_iterator end = ts.properties.end();
-	int period = 0, wcet = 0, dline = 0;
-	for (;iter != end; ++iter) {
-            if (iter->name == "p") period = iter->value;
-            else if (iter->name == "d") dline = iter->value;
-            else if (iter->name == "c") wcet = iter->value;
-	}
-	task.set_period(period);
-	if (dline > 0) task.set_dline(dline);
-	else task.set_dline(period);
-	task.set_wcet(wcet);
+        qi::rule<Iterator, cs_struct(), ascii::space_type> crit_sect;
+        qi::rule<Iterator, std::vector<cs_struct>(), ascii::space_type> cs_list;
+        qi::rule<Iterator, resource(), ascii::space_type> res;
+        qi::rule<Iterator, task_struct(), ascii::space_type> task;
+        qi::rule<Iterator, sys_elem(), ascii::space_type> elem;
+        qi::rule<Iterator, sys_type(), ascii::space_type> sys;
 
-	return task;
-    }
-    
-    Scan::TaskSet parse_tasks(const std::string &total)
-    {
-        typedef std::string::const_iterator iterator_type;
-        typedef TaskModel::taskset_grammar<iterator_type> task_grammar;
-        using boost::spirit::ascii::space;
+        qi::rule<Iterator, double(), ascii::space_type> wcet;
+        qi::rule<Iterator, double(), ascii::space_type> dline;
+        qi::rule<Iterator, double(), ascii::space_type> dur;
+        qi::rule<Iterator, int(), ascii::space_type> id;
+        qi::rule<Iterator, int(), ascii::space_type> period;
+        qi::rule<Iterator, int(), ascii::space_type> offset;
+        qi::rule<Iterator, bool(), ascii::space_type> isshort;
+        qi::rule<Iterator, std::string(), ascii::space_type> name;
         
-        Scan::TaskSet ts;
         
-        std::string::const_iterator iter = total.begin();
-        std::string::const_iterator end = total.end();
-        
-        task_grammar grammar; // Our grammar
-        
-        while (iter != end) {
-            TaskModel::task_struct result;
-            bool r = phrase_parse(iter, end, grammar, space, result);
+        taskres_grammar() : taskres_grammar::base_type(sys, "System") {
+            using qi::lit;
+            using qi::int_;
+            using qi::double_;
+            using qi::bool_;
+            using qi::int_;
+            using qi::alpha;
+            using qi::alnum;
+            using qi::lexeme;
             
-            if (r) {
-                Scan::Task task = create_task(result);
-                ts += task;
-            } else throw ParseExc("Error in parsing the task set");
+            wcet = (lit("w") | lit("wcet") | lit("C")) > '=' > double_;
+            dline = (lit("d") | lit("dline") | lit("D")) > '=' > double_;
+            dur = (lit("l") | lit("length") | lit("L")) > '=' > double_;
+            
+            id = lit("id") > '=' > int_;
+            period = (lit("p") | "period" | "T") > '=' > int_;
+            offset = (lit("o") | "offset" | "O") > '=' > int_;
+            
+            isshort = lit("short") > '=' > bool_;
+            name =  lexeme[alpha >> *alnum];
+            
+            res = lit("res") > name > '{' > (id > isshort) > '}';
+            
+            cs_list = *crit_sect;
+            crit_sect = lit("cs") > '{' > id > dur > -cs_list > '}';
+            
+            task = lit("task") > name > '{' > wcet > period > -dline > -offset > -cs_list > '}';
+
+            elem = res | task;
+
+            sys = lit("SYS") >> *elem >> lit("END"); 
         }
-        return ts;
-    }
+    };
 }
