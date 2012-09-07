@@ -25,7 +25,7 @@ TEST(TaskSet2, IntersectSubtract)
 
     vector<Task> inter;
     intersect(v1.begin(), v1.end(), v2.begin(), v2.end(), back_inserter(inter), 
-              task_cmp_ids);
+              cmp_ids<Task>);
 
     EXPECT_EQ(1, inter.size());
     EXPECT_EQ(v[2].get_id(), inter[0].get_id());
@@ -33,7 +33,7 @@ TEST(TaskSet2, IntersectSubtract)
     vector<Task> sub;
     subtract(v1.begin(), v1.end(), v2.begin(), v2.end(),
              back_inserter(sub),
-             task_cmp_ids);
+             cmp_ids<Task>);
     EXPECT_EQ(2, sub.size());
     EXPECT_EQ(v[0].get_id(), sub[0].get_id());
     EXPECT_EQ(v[1].get_id(), sub[1].get_id());

@@ -9,7 +9,7 @@ namespace Scan {
        which the task is allocated; If -1, the task has not been
        allocated yet. If >=0, it represents a real processor.
 
-       It is useful for partitioning algorithms
+       It is useful for partitioning algorithms.
      */
     class HasProcessor {
         int processor;
@@ -18,7 +18,10 @@ namespace Scan {
         inline int get_proc() const { return processor; }
         inline void set_proc(int p) { processor = p; }
     };
-
+    
+    /**
+       True if a task is allocated on a certain processor. 
+     */
     class AllocatedPredicate {
         int proc;
     public:

@@ -8,8 +8,8 @@
 #include <models/has_unique_id.hpp>
 
 namespace Scan {
-    class Resource : public HasUniqueId {
-        //int id_;
+    
+    class Resource : public HasUniqueId<Resource> {
         bool isShort_;
         int ceiling_;
      public:

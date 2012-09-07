@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
     desc.add_options()
         ("help", "Produce help message")
         ("umin,a", po::value<double>(&util_min)->default_value(.5), "minimum utilization")
-        ("umax,b", po::value<double>(&util_max)->default_value(.99), "maximum utilization")
+        ("umax,b", po::value<double>(&util_max)->default_value(.999), "maximum utilization")
         ("ustep,s", po::value<double>(&util_step)->default_value(.01), "utilization step")
         ("tasks,n", po::value<int>(&ntasks)->default_value(3), "number of tasks")
         ("nsamples,m", po::value<int>(&nsamples)->default_value(100), "number of samples per point")
@@ -147,6 +147,28 @@ int main(int argc, char* argv[])
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
+
+    if (vm.count("help"))  {
+        cout << desc << endl;
+        exit(0);
+    }
+
+    cout << "umin = " << util_min << endl;
+    cout << "umax = " << util_max << endl;
+    cout << "ustep = " << util_step << endl;
+    cout << "tasks = " << ntasks << endl;
+    cout << "nsamples = " << nsamples << endl;
+    cout << "nrep = " << nrep << endl;
+    cout << "pmin = " << p_min << endl;
+    cout << "pmax = " << p_max << endl;
+    cout << "dr_min = " << dr_min << endl;
+    cout << "dr_max = " << dr_max << endl;
+    cout << "output file = " << output_filename << endl;
+    cout << "title = " << plot_title << endl; 
+
+    // init random seed
+    GeneratorSingleton::init(12345);
+
 
     // open output file
     ofstream output(output_filename.c_str());
@@ -223,7 +245,9 @@ int main(int argc, char* argv[])
     gp.yaxis = "Count";
     gp.key_pos = "bottom left";
     gp.scriptfile = output_filename + ".gpl";
-    gp.yrange = "[0:1050]";
+    stringstream ss;
+    ss << "[0:" << (nsamples + (int)(nsamples/20)) <<"]";
+    gp.yrange = ss.str();
     gp.xrange = "[0.3:1]";
     gp.title = plot_title;
     PlotElem pe;

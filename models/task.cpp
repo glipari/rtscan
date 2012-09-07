@@ -6,6 +6,9 @@
 using namespace std;
 
 namespace Scan {
+    template<>
+    int HasUniqueId<Task>::counter = 0;
+
     void Task::init_name_()
     {
         stringstream nn;
@@ -116,9 +119,9 @@ namespace Scan {
         return i;
     }
 
-    bool task_cmp_ids(const Task &a, const Task &b)
-    {
-        return (a.get_id() == b.get_id());
-    }
+    // bool task_cmp_ids(const Task &a, const Task &b)
+    // {
+    //     return (a.get_id() == b.get_id());
+    // }
 
 }

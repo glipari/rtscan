@@ -13,7 +13,7 @@ namespace  Scan {
         This class models a sporadic task or a periodic non-concrete
         task (also called offset-free task).
     */
-    class Task : public HasUniqueId {
+    class Task : public HasUniqueId<Task> {
     private:
         std::string name;
         void init_name_();
@@ -102,7 +102,7 @@ namespace  Scan {
     */
     std::istream & operator>>(std::istream &i, Task &t) throw(IllegalValue);
 
-    bool task_cmp_ids(const Task &a, const Task &b); 
+    // bool task_cmp_ids(const Task &a, const Task &b); 
 }
 
 #endif

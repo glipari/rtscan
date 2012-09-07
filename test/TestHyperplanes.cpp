@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
-#include <analysis/hyperplanes.hpp>
+#include <models/fp_task.hpp>
+#include <analysis/hyperplane.hpp>
 
 using namespace Scan;
 using namespace std;
@@ -13,5 +14,5 @@ TEST(TestHET, Points1)
 
     EXPECT_EQ(2, p.size());
     EXPECT_EQ(p[0], 10);
-    EXPECT_EQ(p[0], 12);
+    EXPECT_EQ(p[1], 12);
 }
