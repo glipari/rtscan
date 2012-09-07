@@ -94,13 +94,13 @@ namespace Scan {
             subtract(gamma_k.begin(), gamma_k.end(),
                      blocked_tasks.begin(), blocked_tasks.end(),
                      back_inserter(valid_tasks),
-                     task_cmp_ids
+                     cmp_ids<Task>
                 );
             // now I have the list of tasks that could potentially
             // block the task under analysis on r_k
 
             // sort them, according to the id ordering
-            sort(valid_tasks.begin(), valid_tasks.end(), LessUniqueId());
+            sort(valid_tasks.begin(), valid_tasks.end(), LessUniqueId<Task>());
 
             // compute all possible permutations of valid_tasks
             // then compute a separate sum for each possible 
@@ -112,7 +112,7 @@ namespace Scan {
             while (flag) {
                 max_perm_sum = max(max_perm_sum, 
                                    calc_permutation(taskset, valid_tasks, blocked_tasks, local_blocked_res, r_k));
-                flag = next_permutation(valid_tasks.begin(), valid_tasks.end(), LessUniqueId());
+                flag = next_permutation(valid_tasks.begin(), valid_tasks.end(), LessUniqueId<Task>());
             }
             sum += max_perm_sum;
 

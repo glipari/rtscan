@@ -20,6 +20,7 @@ scantest_SOURCES = test_main.cpp \
 	FMLPTest.cpp \
 	OMLPTest.cpp \
 	TaskResParserTest.cpp \
-	TestCommon.cpp
+	TestCommon.cpp \
+	TestHyperplanes.cpp
 
 #TestBasicFunctions.cpp  

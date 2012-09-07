@@ -203,7 +203,7 @@ namespace Scan {
     
     double FMLPAnalysis::direct_blocking_on_resource(const TaskRes &task, const Resource &res)
     {
-        set<TaskRes, LessUniqueId> tgroup;
+        set<TaskRes, LessUniqueId<Task>> tgroup;
         int gindex = fmlp_find_group(gs, res.get_id());
         for (Resource x : gs[gindex]) {
             for (TaskRes t : tset) if (t.uses_resource(x.get_id())) tgroup.insert(t); 

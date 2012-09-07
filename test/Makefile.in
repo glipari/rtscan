@@ -55,7 +55,7 @@ am_scantest_OBJECTS = test_main.$(OBJEXT) DBFTest.$(OBJEXT) \
 	MBWITest.$(OBJEXT) MEDFTest.$(OBJEXT) \
 	HasProcessorTest.$(OBJEXT) FMLPTest.$(OBJEXT) \
 	OMLPTest.$(OBJEXT) TaskResParserTest.$(OBJEXT) \
-	TestCommon.$(OBJEXT)
+	TestCommon.$(OBJEXT) TestHyperplanes.$(OBJEXT)
 scantest_OBJECTS = $(am_scantest_OBJECTS)
 scantest_DEPENDENCIES =
 scantest_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -254,7 +254,8 @@ scantest_SOURCES = test_main.cpp \
 	FMLPTest.cpp \
 	OMLPTest.cpp \
 	TaskResParserTest.cpp \
-	TestCommon.cpp
+	TestCommon.cpp \
+	TestHyperplanes.cpp
 
 all: all-recursive
 
@@ -323,6 +324,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaskTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestCommon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestFP.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestHyperplanes.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestUtility.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_main.Po@am__quote@
 

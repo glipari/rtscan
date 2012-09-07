@@ -3,8 +3,12 @@
 using namespace std;
 
 namespace Scan {
-    Resource::Resource(/*int rid,*/ bool s) :
+    template<>
+    int HasUniqueId<Resource>::counter = 0;
+
+    Resource::Resource(bool s) :
         isShort_(s), ceiling_(0) {}
+
     Resource::Resource(int rid, bool s) :
         isShort_(s), ceiling_(0) 
     {
@@ -183,5 +187,4 @@ namespace Scan {
         }
         return m;
     }
-
 }

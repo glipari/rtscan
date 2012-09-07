@@ -145,41 +145,41 @@ TEST(MBWITest, Permutations)
     vector<int> ids;
     for (auto t : task) ids.push_back(t.get_id());
 
-    std::sort(task.begin(), task.end(), LessUniqueId());
+    std::sort(task.begin(), task.end(), LessUniqueId<Task>());
     
     for (int i=0; i<3; i++) EXPECT_EQ(ids[i], task[i].get_id());
 
-    bool f = std::next_permutation(task.begin(), task.end(), LessUniqueId());
+    bool f = std::next_permutation(task.begin(), task.end(), LessUniqueId<Task>());
     EXPECT_EQ(true, f);
     EXPECT_EQ(ids[0], task[0].get_id());
     EXPECT_EQ(ids[2], task[1].get_id());
     EXPECT_EQ(ids[1], task[2].get_id());
 
-    f = std::next_permutation(task.begin(), task.end(), LessUniqueId());
+    f = std::next_permutation(task.begin(), task.end(), LessUniqueId<Task>());
     EXPECT_EQ(true, f);
     EXPECT_EQ(ids[1], task[0].get_id());
     EXPECT_EQ(ids[0], task[1].get_id());
     EXPECT_EQ(ids[2], task[2].get_id());
 
-    f = std::next_permutation(task.begin(), task.end(), LessUniqueId());
+    f = std::next_permutation(task.begin(), task.end(), LessUniqueId<Task>());
     EXPECT_EQ(true, f);
     EXPECT_EQ(ids[1], task[0].get_id());
     EXPECT_EQ(ids[2], task[1].get_id());
     EXPECT_EQ(ids[0], task[2].get_id());
 
-    f = std::next_permutation(task.begin(), task.end(), LessUniqueId());
+    f = std::next_permutation(task.begin(), task.end(), LessUniqueId<Task>());
     EXPECT_EQ(true, f);
     EXPECT_EQ(ids[2], task[0].get_id());
     EXPECT_EQ(ids[0], task[1].get_id());
     EXPECT_EQ(ids[1], task[2].get_id());
 
-    f = std::next_permutation(task.begin(), task.end(), LessUniqueId());
+    f = std::next_permutation(task.begin(), task.end(), LessUniqueId<Task>());
     EXPECT_EQ(true, f);
     EXPECT_EQ(ids[2], task[0].get_id());
     EXPECT_EQ(ids[1], task[1].get_id());
     EXPECT_EQ(ids[0], task[2].get_id());
 
-    f = std::next_permutation(task.begin(), task.end(), LessUniqueId());
+    f = std::next_permutation(task.begin(), task.end(), LessUniqueId<Task>());
     EXPECT_EQ(false, f);
 }
 
