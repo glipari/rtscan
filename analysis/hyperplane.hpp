@@ -5,6 +5,7 @@
 #include <cmath>
 #include <ostream>
 #include <analysis/constraint_space.hpp>
+#include <models/task.hpp>
 
 namespace Scan {
     
@@ -27,6 +28,10 @@ namespace Scan {
         points.push_back(d);
         return points;
     }
+
+    std::vector<double> compute_points(const std::vector<Task> &tasks, 
+                                       int i, double d);
+
 }
 
 #endif
