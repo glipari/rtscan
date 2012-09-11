@@ -1,7 +1,15 @@
 #include <cassert>
+#include <iostream>
 #include "constraint_space.hpp"
 
 namespace Scan {
+
+    const int plane_t::lt = -2;
+    const int plane_t::lte = -1;
+    const int plane_t::gt = 2;
+    const int plane_t::gte = 1;
+    const int plane_t::eq = 0;
+    
 
     bool constraint_t::contains(const point_t &p) const
     {
@@ -37,11 +45,11 @@ namespace Scan {
             if (x > 0) os << "+";
             os << x << " X_" << i++;
         } 
-        if (s.sign == -2)      os << " <  ";
-        else if (s.sign == -1) os << " <= ";
-        else if (s.sign == 0)  os << " =  ";
-        else if (s.sign == 1)  os << " >= ";
-        else if (s.sign == 2)  os << " >  ";
+        if (s.sign == plane_t::lt)      os << " <  ";
+        else if (s.sign == plane_t::lte) os << " <= ";
+        else if (s.sign == plane_t::eq)  os << " =  ";
+        else if (s.sign == plane_t::gte)  os << " >= ";
+        else if (s.sign == plane_t::gt)  os << " >  ";
     
         os << s.b;
         return os;
@@ -51,18 +59,22 @@ namespace Scan {
     {
         assert(p.size() == a.size());
         double sum = 0;
+
         for (unsigned i=0; i<a.size(); ++i)
             sum += a[i] * p[i];
+
+        //std::cerr << "Sum = " << sum << std::endl;
+
         switch(sign) {
-        case -2: return sum < b;
+        case lt: return (sum < b);
             break;
-        case -1: return sum <= b;
+        case lte: return (sum <= b);
             break;
-        case 0: return sum == b;
+        case eq: return (sum == b);
             break;
-        case 1: return sum > b;
+        case gt: return (sum > b);
             break;
-        case 2: return sum >= b;
+        case gte: return (sum >= b);
             break;
         }
         assert(false);
@@ -105,6 +117,13 @@ namespace Scan {
     size_t space_t::size() const
     {
         return cs.size();
+    }
+
+    constraint_t *space_t::get(unsigned r) 
+    {
+        assert(r < cs.size());
+        
+        return cs.at(r);
     }
 
     conjunct_space_t * conjunct_space_t::copy() const
@@ -161,7 +180,7 @@ namespace Scan {
             coeff_row_t r;
             for (int j=0; j<n; ++j) r.push_back(0);
             r[i] = 1;
-            plane_t c = {r, 1, 0};
+            plane_t c = {r, plane_t::gte, 0};
             res.add_constraint(c);
         }
         return res;

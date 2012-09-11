@@ -41,7 +41,14 @@ namespace Scan {
         coeff_row_t a;
         int sign;  // lt: -2; lte : -1; eq : 0; gt : 2; gte : 1
         double b;
-                
+
+        static const int lt;
+        static const int lte;
+        static const int gt;
+        static const int gte;
+        static const int eq;
+
+        size_t size() const { return a.size(); }
     protected:
         bool is_in(const point_t &p) const;
         plane_t *negate() const;
@@ -72,6 +79,7 @@ namespace Scan {
 
         void add_constraint(const constraint_t &c);
         void add_constraint(constraint_t *c);
+        constraint_t *get(unsigned r);
         size_t size() const;
     };
   
