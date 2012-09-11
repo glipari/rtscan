@@ -138,3 +138,61 @@ TEST(TestHET, HyperplanePaper_Example1)
     EXPECT_FALSE(space.contains({2,2,2}));
 }
 
+
+TEST(TestHET, GeneratePointsExample1)
+{
+    vector<Task> tasks;
+    tasks.push_back({1,3,3});
+    tasks.push_back({1,20,20});
+    tasks.push_back({1,8,8});
+
+    vector<vector<double>> q;
+    q.push_back({3});
+    q.push_back({18,20});
+    q.push_back({0,6,8});
+
+    for (unsigned i =0; i<tasks.size(); ++i) {
+        vector<double> p = compute_points(tasks, i, tasks[i].get_dline());
+        EXPECT_EQ(q[i].size(), p.size());
+        EXPECT_EQ(q[i], p);
+    }
+
+    conjunct_space_t space = create_space(tasks);
+    EXPECT_EQ(6, space.size());
+    EXPECT_TRUE(space.contains({1,1,1}));
+    EXPECT_TRUE(space.contains({3,0,0}));
+    EXPECT_TRUE(space.contains({0,8,0}));
+    EXPECT_TRUE(space.contains({0,0,8}));
+    EXPECT_FALSE(space.contains({2,2,2}));
+}
+
+TEST(TestHET, GeneratePointsExample2)
+{
+    vector<Task> tasks;
+    tasks.push_back({1,3,3});
+    tasks.push_back({1,7,8});
+    tasks.push_back({1,19,20});
+
+    vector<vector<double>> q;
+    q.push_back({3});
+    q.push_back({0,6,7});
+    q.push_back({0,15,16,18,19});
+
+    for (unsigned i =0; i<tasks.size(); ++i) {
+        vector<double> p = compute_points(tasks, i, tasks[i].get_dline());
+        EXPECT_EQ(q[i].size(), p.size());
+        EXPECT_EQ(q[i], p);
+    }
+
+    conjunct_space_t space = create_space(tasks);
+    EXPECT_EQ(6, space.size());
+    EXPECT_TRUE(space.contains({3,0,0}));
+    EXPECT_TRUE(space.contains({0,6,0}));
+    EXPECT_TRUE(space.contains({0,0,15}));
+    EXPECT_TRUE(space.contains({2,1,3}));
+    EXPECT_FALSE(space.contains({2.1,1,3}));
+}
+
+
+
+

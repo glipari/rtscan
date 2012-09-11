@@ -32,6 +32,8 @@ namespace Scan {
     std::vector<double> compute_points(const std::vector<Task> &tasks, 
                                        int i, double d);
 
+    conjunct_space_t create_space(const std::vector<Task> &tasks);
+
 }
 
 #endif

@@ -49,6 +49,9 @@ namespace Scan {
         static const int eq;
 
         size_t size() const { return a.size(); }
+
+        void change_sign();
+        plane_t normal_form() const;
     protected:
         bool is_in(const point_t &p) const;
         plane_t *negate() const;
@@ -95,6 +98,7 @@ namespace Scan {
         space_t *negate() const;        
     };
 
+
     /**
        This space is the disjunction (OR) of the constraints. That is,
        a point belongs to this space if it verifies at least one of the 
@@ -109,6 +113,13 @@ namespace Scan {
                 
     /// I x >= 0
     conjunct_space_t non_negative_space(int n);
+    
+    /**
+       Uses Fourier Motzkin to see if the system of inequalities is
+       feasible. It requires that space is a system of inequalities
+       (planes), otherwise will trigger a false assertion.
+    */
+    bool is_feasible(conjunct_space_t &space);
 }
 
 #endif

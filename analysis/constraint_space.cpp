@@ -81,6 +81,21 @@ namespace Scan {
         return false;
     }
 
+    void plane_t::change_sign()
+    {
+        for (auto &x : a) x = -x;
+        sign = -sign;
+        b = -b;
+    }
+
+    plane_t plane_t::normal_form() const
+    {
+        plane_t x = *this;
+        if (x.sign == gt || x.sign == gte) x.change_sign();
+        return x;
+    }
+        
+
     plane_t *plane_t::negate() const
     {
         plane_t *p = copy();
@@ -186,4 +201,79 @@ namespace Scan {
         return res;
     }
 
+    std::vector<plane_t> get_normalized_planes(conjunct_space_t &space)
+    {
+        int n = space.size();
+        int m = 0;
+        std::vector<plane_t> planes;
+        for (unsigned i=0; i<n; ++i) {
+            plane_t *q = dynamic_cast<plane_t*>(space.get(i));
+            assert(q!=0);
+
+            if (m==0) m = q->a.size();
+            else assert(m == q->a.size());
+
+            planes.push_back(q->normal_form());
+        }
+        return planes;
+    }
+    
+    void split_planes(const std::vector<plane_t> &p, 
+                      int k,
+                      std::vector<plane_t> &neg, 
+                      std::vector<plane_t> &pos,
+                      std::vector<plane_t> &nix)
+    {
+        for (unsigned j=0; j<p.size(); j++) {
+            if (p[j].a[k] < 0) 
+                neg.push_back(p[j]);
+            else if (p[j].a[k] > 0) 
+                pos.push_back(p[j]);
+            else if (p[j].a[k] == 0) 
+                nix.push_back(p[j]);
+        }        
+    }
+
+    // Here, I am assuming that "space" only consists of planes.
+    // TODO: 
+    bool is_feasible(conjunct_space_t &space) 
+    {
+        int n = space.size();   // number of inequalities
+
+        std::vector<plane_t> planes = get_normalized_planes(space);
+        int m = planes[0].size();
+
+
+        for (unsigned k=0; k<m; ++k) {
+            // eliminate the k-th variable;
+            std::vector<plane_t> neg, pos, nix;
+            split_planes(planes, k, neg, pos, nix);
+            planes.clear();
+            for (auto &x : nix) 
+                planes.push_back(x);
+            for (auto &x : neg) 
+                for (auto &y : pos) {
+                    double xc = x.a[k];
+                    double yc = y.a[k];
+                    coeff_row_t newrow;
+                    for (unsigned h=0; h<m; ++h) 
+                        if (h == k) newrow[h] = 0;
+                        else newrow[h] = x.a[h] - y.a[h] * xc/yc;
+                    int s = plane_t::lt; 
+                    if (x.sign == plane_t::lte && x.sign == plane_t::lte) 
+                        s = plane_t::lte;
+                    double b = x.b - y.b *xc/yc;
+                    plane_t newplane(newrow, s, b);
+                    planes.push_back(newplane);
+                }
+        }
+        // all variables have been eliminated, now there remain only
+        // tautologies (0 <= b) or contradictions
+ 
+        // look for contradictions
+        for (auto &x : planes) {
+            if (x.b < 0) return false;
+        }
+        return true;
+    }
 }

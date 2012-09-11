@@ -9,7 +9,7 @@ namespace Scan {
     vector<double> compute_points(const vector<Task> &tasks, int i, double d)
     {
         vector<double> points;
-        if (i == 0) {
+        if (i == -1) {
             points.push_back(d);
         }
         else {
@@ -24,5 +24,26 @@ namespace Scan {
         return points;
     }
 
-
+    conjunct_space_t create_space(const vector<Task> &tasks)
+    {
+        conjunct_space_t nn = non_negative_space(tasks.size());
+        for (unsigned i=0; i<tasks.size(); i++) {
+            vector<double> points = compute_points(tasks, i, tasks[i].get_dline());
+            disjunct_space_t ds;
+            for (auto t : points) {
+                vector<double> row;
+                for (unsigned k=0; k<i; k++) {
+                    row.push_back(compute_coeff(t, tasks[k].get_period()));
+                }
+                row.push_back(1);
+                for (unsigned k=i+1; k<tasks.size(); k++) {
+                    row.push_back(0);
+                }
+                plane_t plane(row, plane_t::lte, t);
+                ds.add_constraint(plane);
+            }
+            nn.add_constraint(ds);
+        }
+        return nn;
+    }
 }
