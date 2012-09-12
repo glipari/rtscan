@@ -16,13 +16,20 @@ namespace Scan {
         to build a complement of this constraint. 
     */ 
     class constraint_t {
+    protected:
         virtual bool is_in(const point_t &p) const = 0;
+
+        size_t num_vars;
     public:
+        constraint_t(size_t nvars);
+
         virtual constraint_t *copy() const = 0;
         virtual constraint_t *negate() const = 0;
 
         bool contains(const point_t &p) const;
         constraint_t *complement() const;
+        size_t get_nvars() const { return num_vars; }
+
     };    
 
     /** 
@@ -49,7 +56,7 @@ namespace Scan {
         static const int eq;
 
         size_t size() const { return a.size(); }
-
+        
         void change_sign();
         plane_t normal_form() const;
     protected:
@@ -76,7 +83,7 @@ namespace Scan {
 
         space_t *copy() const = 0;
     public:
-        space_t();
+        space_t(size_t n);
         space_t(const space_t &s);
         ~space_t(); 
 
@@ -85,6 +92,7 @@ namespace Scan {
         constraint_t *get(unsigned r);
         size_t size() const;
     };
+
   
     /**
        This space is the conjunction (AND) of the constraints. That is, 
@@ -96,10 +104,11 @@ namespace Scan {
         conjunct_space_t *copy() const;
         bool is_in(const point_t &p) const;
         space_t *negate() const;        
+    public:
+        conjunct_space_t(size_t n);
     };
 
-
-    /**
+     /**
        This space is the disjunction (OR) of the constraints. That is,
        a point belongs to this space if it verifies at least one of the 
        included constraints.
@@ -109,6 +118,10 @@ namespace Scan {
         disjunct_space_t *copy() const;
         bool is_in(const point_t &p) const;
         space_t *negate() const;
+
+    public:
+        disjunct_space_t(size_t n);
+
     };
                 
     /// I x >= 0

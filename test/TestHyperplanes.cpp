@@ -92,7 +92,7 @@ TEST(TestHET, Disjunctive)
     EXPECT_FALSE(p1.contains(point));
     EXPECT_FALSE(p2.contains(point));
 
-    disjunct_space_t s1;
+    disjunct_space_t s1(2);
     s1.add_constraint(p1);
     s1.add_constraint(p2);
     conjunct_space_t s = non_negative_space(2);
@@ -113,7 +113,7 @@ TEST(TestHET, HyperplanePaper_Example1)
 
     plane_t p2({6, 1, 0}, plane_t::lte, 18);
     plane_t p3({7, 1, 0}, plane_t::lte, 20);
-    disjunct_space_t s1;
+    disjunct_space_t s1(3);
     s1.add_constraint(p2);
     s1.add_constraint(p3);
 
@@ -121,7 +121,7 @@ TEST(TestHET, HyperplanePaper_Example1)
     plane_t p5({2, 1, 1}, plane_t::lte, 6);
     plane_t p6({3, 1, 1}, plane_t::lte, 8);
 
-    disjunct_space_t s2;
+    disjunct_space_t s2(3);
     s2.add_constraint(p4);
     s2.add_constraint(p5);
     s2.add_constraint(p6);
@@ -194,5 +194,32 @@ TEST(TestHET, GeneratePointsExample2)
 }
 
 
+TEST(TestHET, FMEtest1)
+{
+    conjunct_space_t space = non_negative_space(2);
+    plane_t p1({.5,1}, plane_t::lte, .5);
+    plane_t p2({1,.5}, plane_t::lte, .5);
+    space.add_constraint(p1);
+    space.add_constraint(p2);
+
+    plane_t p3({1, 1}, plane_t::gte, 1);
+    space.add_constraint(p3);
+
+    EXPECT_FALSE(is_feasible(space));
+}
+
+TEST(TestHET, FMEtest2)
+{
+    conjunct_space_t space = non_negative_space(2);
+    plane_t p1({.5,1}, plane_t::lte, .5);
+    plane_t p2({1,.5}, plane_t::lte, .5);
+    space.add_constraint(p1);
+    space.add_constraint(p2);
+
+    plane_t p3({1, 1}, plane_t::gte, .5);
+    space.add_constraint(p3);
+
+    EXPECT_TRUE(is_feasible(space));
+}
 
 

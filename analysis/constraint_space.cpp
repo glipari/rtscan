@@ -10,6 +10,7 @@ namespace Scan {
     const int plane_t::gte = 1;
     const int plane_t::eq = 0;
     
+    constraint_t::constraint_t(size_t n) : num_vars(n) {}
 
     bool constraint_t::contains(const point_t &p) const
     {
@@ -22,16 +23,15 @@ namespace Scan {
     }
 
 
-    plane_t::plane_t(size_t n) : a(n), sign(0), b(0)
+    plane_t::plane_t(size_t n) : constraint_t(n), a(n), sign(0), b(0)
     {
         for (auto &x : a) x = 0; 
     }
     
     plane_t::plane_t(const coeff_row_t &coeff, int s, double c) :
-        a(coeff), sign(s), b(c)
+        constraint_t(coeff.size()), a(coeff), sign(s), b(c)
     {
     }
-
 
     plane_t * plane_t::copy() const
     {
@@ -42,8 +42,12 @@ namespace Scan {
     {
         int i = 1;
         for (auto x : s.a) {
-            if (x > 0) os << "+";
-            os << x << " X_" << i++;
+            if (x > 0) 
+                os << " + " << x << " x(" << i << ")";
+            else if (x < 0) 
+                os << " " << x << " x(" << i << ")";
+            else os << " + 0 "; 
+            i++;
         } 
         if (s.sign == plane_t::lt)      os << " <  ";
         else if (s.sign == plane_t::lte) os << " <= ";
@@ -103,7 +107,7 @@ namespace Scan {
         return p;
     }
 
-    space_t::space_t() : cs()
+    space_t::space_t(size_t n) : constraint_t(n), cs()
     {
     }
 
@@ -112,7 +116,7 @@ namespace Scan {
         for (auto x : cs) delete x;
     }
 
-    space_t::space_t(const space_t &s) 
+    space_t::space_t(const space_t &s) : constraint_t(s)
     {
         for (auto x : s.cs) 
             cs.push_back(x->copy());
@@ -120,12 +124,14 @@ namespace Scan {
     
     void space_t::add_constraint(const constraint_t &c)
     {
+        assert(c.get_nvars() == num_vars);
         constraint_t *p = c.copy();
         cs.push_back(p);
     }
 
     void space_t::add_constraint(constraint_t *c)
     {
+        assert(c->get_nvars() == num_vars);
         cs.push_back(c);
     }
 
@@ -133,6 +139,11 @@ namespace Scan {
     {
         return cs.size();
     }
+
+    conjunct_space_t::conjunct_space_t(size_t n) : space_t(n)
+    {
+    }
+
 
     constraint_t *space_t::get(unsigned r) 
     {
@@ -158,12 +169,16 @@ namespace Scan {
     
     space_t * conjunct_space_t::negate() const
     {
-        disjunct_space_t *space = new disjunct_space_t();
+        disjunct_space_t *space = new disjunct_space_t(num_vars);
         for (auto c : cs) 
             space->add_constraint(c->negate());
         return space;
     }
 
+
+    disjunct_space_t::disjunct_space_t(size_t n) : space_t(n)
+    {
+    }
 
     disjunct_space_t * disjunct_space_t::copy() const
     {
@@ -182,7 +197,7 @@ namespace Scan {
 
     space_t * disjunct_space_t::negate() const
     {
-        conjunct_space_t *space = new conjunct_space_t();
+        conjunct_space_t *space = new conjunct_space_t(num_vars);
         for (auto c : cs) 
             space->add_constraint(c->negate());
         return space;
@@ -190,7 +205,7 @@ namespace Scan {
 
     conjunct_space_t non_negative_space(int n)
     {
-        conjunct_space_t res;
+        conjunct_space_t res(n);
         for (int i=0; i<n; ++i) {
             coeff_row_t r;
             for (int j=0; j<n; ++j) r.push_back(0);
@@ -241,24 +256,38 @@ namespace Scan {
         int n = space.size();   // number of inequalities
 
         std::vector<plane_t> planes = get_normalized_planes(space);
+        assert(planes.size() == n);
         int m = planes[0].size();
 
+        //std::cout << "Size is " << n << " x " << m << std::endl;
 
         for (unsigned k=0; k<m; ++k) {
             // eliminate the k-th variable;
             std::vector<plane_t> neg, pos, nix;
             split_planes(planes, k, neg, pos, nix);
+            // std::cout << "neg: " << neg.size() << std::endl;
+            // for (auto &pp : neg) std::cout << pp << std::endl;
+            // std::cout << "pos: " << pos.size() << std::endl;
+            // for (auto &pp : pos) std::cout << pp << std::endl;
+            // std::cout << "nix: " << nix.size() << std::endl;
+            // for (auto &pp : nix) std::cout << pp << std::endl;
+
             planes.clear();
             for (auto &x : nix) 
                 planes.push_back(x);
-            for (auto &x : neg) 
+            
+            // std::cout << "Current content of planes: " << std::endl;
+            // for (auto &pp : planes) std::cout << pp << std::endl;
+
+            for (auto &x : neg) {
                 for (auto &y : pos) {
                     double xc = x.a[k];
                     double yc = y.a[k];
-                    coeff_row_t newrow;
+                    coeff_row_t newrow(m);
                     for (unsigned h=0; h<m; ++h) 
-                        if (h == k) newrow[h] = 0;
-                        else newrow[h] = x.a[h] - y.a[h] * xc/yc;
+                        //if (h == k) newrow[h] = 0;
+                        //else 
+                        newrow[h] = x.a[h] - y.a[h] * xc/yc;
                     int s = plane_t::lt; 
                     if (x.sign == plane_t::lte && x.sign == plane_t::lte) 
                         s = plane_t::lte;
@@ -266,6 +295,9 @@ namespace Scan {
                     plane_t newplane(newrow, s, b);
                     planes.push_back(newplane);
                 }
+            }
+            // std::cout << "Current content of planes: " << std::endl;
+            // for (auto &pp : planes) std::cout << pp << std::endl;                
         }
         // all variables have been eliminated, now there remain only
         // tautologies (0 <= b) or contradictions
@@ -276,4 +308,5 @@ namespace Scan {
         }
         return true;
     }
+
 }
