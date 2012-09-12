@@ -308,5 +308,4 @@ namespace Scan {
         }
         return true;
     }
-
 }
