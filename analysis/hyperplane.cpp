@@ -24,14 +24,14 @@ namespace Scan {
         return points;
     }
 
-    conjunct_space_t create_space(const vector<Task> &tasks)
+    ConjunctionSet create_space(const vector<Task> &tasks)
     {
         Conjunction nn = non_negative_space(tasks.size());
-        conjunct_space_t space(tasks.size());
+        ConjunctionSet space(tasks.size());
         space.add_constraint(nn);
         for (unsigned i=0; i<tasks.size(); i++) {
             vector<double> points = compute_points(tasks, i, tasks[i].get_dline());
-            disjunct_space_t ds(tasks.size());
+            DisjunctionSet ds(tasks.size());
             for (auto t : points) {
                 vector<double> row;
                 for (unsigned k=0; k<i; k++) {

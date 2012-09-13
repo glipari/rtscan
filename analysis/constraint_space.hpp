@@ -99,15 +99,15 @@ namespace Scan {
         @todo see if it is necessary to provide an assignment operator
         as well.
     */
-    class space_t : public AbstractConstraintSet {
+    class ConstraintSet : public AbstractConstraintSet {
     protected:
         std::vector<AbstractConstraint *> cs;
 
-        space_t *copy() const = 0;
+        ConstraintSet *copy() const = 0;
     public:
-        space_t(size_t n);
-        space_t(const space_t &s);
-        ~space_t(); 
+        ConstraintSet(size_t n);
+        ConstraintSet(const ConstraintSet &s);
+        ~ConstraintSet(); 
 
         void add_constraint(const AbstractConstraint &c);
         void add_constraint(AbstractConstraint *c);
@@ -121,13 +121,13 @@ namespace Scan {
        a point belongs to this region if it verifies all the included 
        constraints.
     */
-    class conjunct_space_t : public space_t {
+    class ConjunctionSet : public ConstraintSet {
     protected:
-        conjunct_space_t *copy() const;
+        ConjunctionSet *copy() const;
         bool is_in(const point_t &p) const;
-        space_t *negate() const;        
+        ConstraintSet *negate() const;        
     public:
-        conjunct_space_t(size_t n);
+        ConjunctionSet(size_t n);
     };
 
      /**
@@ -135,14 +135,14 @@ namespace Scan {
        a point belongs to this space if it verifies at least one of the 
        included constraints.
      */
-    class disjunct_space_t : public space_t {
+    class DisjunctionSet : public ConstraintSet {
     protected:
-        disjunct_space_t *copy() const;
+        DisjunctionSet *copy() const;
         bool is_in(const point_t &p) const;
-        space_t *negate() const;
+        ConstraintSet *negate() const;
 
     public:
-        disjunct_space_t(size_t n);
+        DisjunctionSet(size_t n);
 
     };
                 

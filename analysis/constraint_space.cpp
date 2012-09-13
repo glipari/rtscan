@@ -1,5 +1,6 @@
 #include <cassert>
 #include <iostream>
+#include <iomanip>
 #include "constraint_space.hpp"
 
 namespace Scan {
@@ -43,10 +44,10 @@ namespace Scan {
         int i = 1;
         for (auto x : s.a) {
             if (x > 0) 
-                os << " + " << x << " x(" << i << ")";
+                os << " +" << std::setw(4) << x << " x(" << i << ")";
             else if (x < 0) 
-                os << " " << x << " x(" << i << ")";
-            else os << " + 0 "; 
+                os << " " << std::setw(5) << x << " x(" << i << ")";
+            else os << "           "; 
             i++;
         } 
         if (s.sign == Plane::lt)      os << " <  ";
@@ -55,7 +56,7 @@ namespace Scan {
         else if (s.sign == Plane::gte)  os << " >= ";
         else if (s.sign == Plane::gt)  os << " >  ";
     
-        os << s.b;
+        os << std::setw(5) << s.b;
         return os;
     }
     
@@ -123,7 +124,7 @@ namespace Scan {
 
     AbstractConstraintSet *Conjunction::negate() const
     {
-        disjunct_space_t *s = new disjunct_space_t(num_vars);
+        DisjunctionSet *s = new DisjunctionSet(num_vars);
         for (auto &pp : planes) 
             s->add_constraint(pp.negate());
         return s;
@@ -148,59 +149,69 @@ namespace Scan {
         return planes[i];        
     }
 
-    space_t::space_t(size_t n) : AbstractConstraintSet(n), cs()
+
+    std::ostream& operator<<(std::ostream &os, const Conjunction &s)
+    {
+        for (unsigned i=0; i<s.size(); ++i) 
+            os << s.get(i) << std::endl;
+
+        return os;
+    }
+
+
+    ConstraintSet::ConstraintSet(size_t n) : AbstractConstraintSet(n), cs()
     {
     }
 
-    space_t::~space_t() 
+    ConstraintSet::~ConstraintSet() 
     {
         for (auto x : cs) delete x;
     }
 
-    space_t::space_t(const space_t &s) : AbstractConstraintSet(s)
+    ConstraintSet::ConstraintSet(const ConstraintSet &s) : AbstractConstraintSet(s)
     {
         for (auto x : s.cs) 
             cs.push_back(x->copy());
     }
     
-    void space_t::add_constraint(const AbstractConstraint &c)
+    void ConstraintSet::add_constraint(const AbstractConstraint &c)
     {
         assert(c.get_nvars() == num_vars);
         AbstractConstraint *p = c.copy();
         cs.push_back(p);
     }
 
-    void space_t::add_constraint(AbstractConstraint *c)
+    void ConstraintSet::add_constraint(AbstractConstraint *c)
     {
         assert(c->get_nvars() == num_vars);
         cs.push_back(c);
     }
 
-    size_t space_t::size() const
+    size_t ConstraintSet::size() const
     {
         return cs.size();
     }
 
-    conjunct_space_t::conjunct_space_t(size_t n) : space_t(n)
+    ConjunctionSet::ConjunctionSet(size_t n) : ConstraintSet(n)
     {
     }
 
 
-    AbstractConstraint *space_t::get(unsigned r) 
+    AbstractConstraint *ConstraintSet::get(unsigned r) 
     {
         assert(r < cs.size());
         
         return cs.at(r);
     }
 
-    conjunct_space_t * conjunct_space_t::copy() const
+    ConjunctionSet * ConjunctionSet::copy() const
     {
-        conjunct_space_t *p = new conjunct_space_t(*this);
+        ConjunctionSet *p = new ConjunctionSet(*this);
         return p;
     }
     
     
-    bool conjunct_space_t::is_in(const point_t &p) const
+    bool ConjunctionSet::is_in(const point_t &p) const
     {
         for (auto x : cs) 
             if (!x->contains(p)) return false;
@@ -208,27 +219,27 @@ namespace Scan {
         return true;
     }
     
-    space_t * conjunct_space_t::negate() const
+    ConstraintSet * ConjunctionSet::negate() const
     {
-        disjunct_space_t *space = new disjunct_space_t(num_vars);
+        DisjunctionSet *space = new DisjunctionSet(num_vars);
         for (auto c : cs) 
             space->add_constraint(c->negate());
         return space;
     }
 
 
-    disjunct_space_t::disjunct_space_t(size_t n) : space_t(n)
+    DisjunctionSet::DisjunctionSet(size_t n) : ConstraintSet(n)
     {
     }
 
-    disjunct_space_t * disjunct_space_t::copy() const
+    DisjunctionSet * DisjunctionSet::copy() const
     {
-        disjunct_space_t *p = new disjunct_space_t(*this);
+        DisjunctionSet *p = new DisjunctionSet(*this);
         return p;
     }
     
 
-    bool disjunct_space_t::is_in(const point_t &p) const
+    bool DisjunctionSet::is_in(const point_t &p) const
     {
         for (auto x : cs) 
             if (x->contains(p)) return true;
@@ -236,9 +247,9 @@ namespace Scan {
         return false;
     }
 
-    space_t * disjunct_space_t::negate() const
+    ConstraintSet * DisjunctionSet::negate() const
     {
-        conjunct_space_t *space = new conjunct_space_t(num_vars);
+        ConjunctionSet *space = new ConjunctionSet(num_vars);
         for (auto c : cs) 
             space->add_constraint(c->negate());
         return space;
