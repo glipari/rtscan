@@ -20,21 +20,21 @@ TEST(TestHET, Points1)
 TEST(TestHET, PositiveSpace)
 {
     for (int n=2; n<10; n++) {
-        conjunct_space_t s = non_negative_space(n);
+        Conjunction s = non_negative_space(n);
         for (int i=0; i<n; ++i) {
-            plane_t p = *(static_cast<plane_t*>(s.get(i)));
+            Plane p = s.get(i);
             for (int j=0; j<n; ++j) {
                 if (j != i) 
                     EXPECT_EQ(0, p.a[j]);
                 else 
                     EXPECT_EQ(1, p.a[j]);
             }
-            EXPECT_EQ(plane_t::gte, p.sign);
+            EXPECT_EQ(Plane::gte, p.sign);
             EXPECT_EQ(0, p.b);
         }
     }
     
-    conjunct_space_t s1 = non_negative_space(2);
+    Conjunction s1 = non_negative_space(2);
     
     EXPECT_TRUE(s1.contains({1,1}));
     EXPECT_TRUE(s1.contains({1,0}));
@@ -47,21 +47,21 @@ TEST(TestHET, PositiveSpace)
 
 TEST(TestHET, Plane1)
 {
-    plane_t p1({1,0}, plane_t::gte, 1);
+    Plane p1({1,0}, Plane::gte, 1);
     EXPECT_FALSE(p1.contains({0,0}));
     EXPECT_TRUE(p1.contains({2,2}));
     EXPECT_TRUE(p1.contains({1,0}));
     EXPECT_FALSE(p1.contains({0,1}));
 
 
-    plane_t p2({1,1}, plane_t::gte, 1);
+    Plane p2({1,1}, Plane::gte, 1);
     EXPECT_FALSE(p2.contains({0,0}));
     EXPECT_TRUE(p2.contains({2,2}));
     EXPECT_TRUE(p2.contains({1,0}));
     EXPECT_TRUE(p2.contains({0,1}));
     EXPECT_TRUE(p2.contains({.5,.5}));
 
-    plane_t p3({1,1}, plane_t::gt, 1);
+    Plane p3({1,1}, Plane::gt, 1);
     EXPECT_FALSE(p3.contains({0,0}));
     EXPECT_TRUE(p3.contains({2,2}));
     EXPECT_FALSE(p3.contains({1,0}));
@@ -71,9 +71,9 @@ TEST(TestHET, Plane1)
 
 TEST(TestHET, Plane2)
 {
-    conjunct_space_t s = non_negative_space(2);
-    plane_t p({1,1}, plane_t::lte, 1);
-    s.add_constraint(p);
+    Conjunction s = non_negative_space(2);
+    Plane p({1,1}, Plane::lte, 1);
+    s.add_plane(p);
 
     EXPECT_TRUE(s.contains({0,0}));
     EXPECT_TRUE(s.contains({1,0}));
@@ -85,8 +85,8 @@ TEST(TestHET, Plane2)
 
 TEST(TestHET, Disjunctive)
 {
-    plane_t p1({1, .5}, plane_t::lte, .5); 
-    plane_t p2({.5, 1}, plane_t::lte, .5);
+    Plane p1({1, .5}, Plane::lte, .5); 
+    Plane p2({.5, 1}, Plane::lte, .5);
     point_t point = {.5, .5};   
 
     EXPECT_FALSE(p1.contains(point));
@@ -95,7 +95,9 @@ TEST(TestHET, Disjunctive)
     disjunct_space_t s1(2);
     s1.add_constraint(p1);
     s1.add_constraint(p2);
-    conjunct_space_t s = non_negative_space(2);
+    Conjunction nn = non_negative_space(2);
+    conjunct_space_t s(2);
+    s.add_constraint(nn);
     s.add_constraint(s1);
 
     EXPECT_TRUE(s.contains({0,0}));
@@ -109,24 +111,26 @@ TEST(TestHET, Disjunctive)
 
 TEST(TestHET, HyperplanePaper_Example1)
 {
-    plane_t p1({1, 0, 0}, plane_t::lte, 3);
-
-    plane_t p2({6, 1, 0}, plane_t::lte, 18);
-    plane_t p3({7, 1, 0}, plane_t::lte, 20);
+    Plane p1({1, 0, 0}, Plane::lte, 3);
+    Plane p2({6, 1, 0}, Plane::lte, 18);
+    Plane p3({7, 1, 0}, Plane::lte, 20);
     disjunct_space_t s1(3);
     s1.add_constraint(p2);
     s1.add_constraint(p3);
 
-    plane_t p4({0, 0, 1}, plane_t::lte, 0);
-    plane_t p5({2, 1, 1}, plane_t::lte, 6);
-    plane_t p6({3, 1, 1}, plane_t::lte, 8);
+    Plane p4({0, 0, 1}, Plane::lte, 0);
+    Plane p5({2, 1, 1}, Plane::lte, 6);
+    Plane p6({3, 1, 1}, Plane::lte, 8);
 
     disjunct_space_t s2(3);
     s2.add_constraint(p4);
     s2.add_constraint(p5);
     s2.add_constraint(p6);
     
-    conjunct_space_t space = non_negative_space(3);
+    
+    conjunct_space_t space(3); 
+    Conjunction nn = non_negative_space(3);
+    space.add_constraint(nn);
     space.add_constraint(p1);
     space.add_constraint(s1);
     space.add_constraint(s2);
@@ -158,7 +162,7 @@ TEST(TestHET, GeneratePointsExample1)
     }
 
     conjunct_space_t space = create_space(tasks);
-    EXPECT_EQ(6, space.size());
+    EXPECT_EQ(4, space.size());
     EXPECT_TRUE(space.contains({1,1,1}));
     EXPECT_TRUE(space.contains({3,0,0}));
     EXPECT_TRUE(space.contains({0,8,0}));
@@ -185,7 +189,7 @@ TEST(TestHET, GeneratePointsExample2)
     }
 
     conjunct_space_t space = create_space(tasks);
-    EXPECT_EQ(6, space.size());
+    EXPECT_EQ(4, space.size());
     EXPECT_TRUE(space.contains({3,0,0}));
     EXPECT_TRUE(space.contains({0,6,0}));
     EXPECT_TRUE(space.contains({0,0,15}));
@@ -196,28 +200,28 @@ TEST(TestHET, GeneratePointsExample2)
 
 TEST(TestHET, FMEtest1)
 {
-    conjunct_space_t space = non_negative_space(2);
-    plane_t p1({.5,1}, plane_t::lte, .5);
-    plane_t p2({1,.5}, plane_t::lte, .5);
-    space.add_constraint(p1);
-    space.add_constraint(p2);
+    Conjunction space = non_negative_space(2);
+    Plane p1({.5,1}, Plane::lte, .5);
+    Plane p2({1,.5}, Plane::lte, .5);
+    space.add_plane(p1);
+    space.add_plane(p2);
 
-    plane_t p3({1, 1}, plane_t::gte, 1);
-    space.add_constraint(p3);
+    Plane p3({1, 1}, Plane::gte, 1);
+    space.add_plane(p3);
 
     EXPECT_FALSE(is_feasible(space));
 }
 
 TEST(TestHET, FMEtest2)
 {
-    conjunct_space_t space = non_negative_space(2);
-    plane_t p1({.5,1}, plane_t::lte, .5);
-    plane_t p2({1,.5}, plane_t::lte, .5);
-    space.add_constraint(p1);
-    space.add_constraint(p2);
+    Conjunction space = non_negative_space(2);
+    Plane p1({.5,1}, Plane::lte, .5);
+    Plane p2({1,.5}, Plane::lte, .5);
+    space.add_plane(p1);
+    space.add_plane(p2);
 
-    plane_t p3({1, 1}, plane_t::gte, .5);
-    space.add_constraint(p3);
+    Plane p3({1, 1}, Plane::gte, .5);
+    space.add_plane(p3);
 
     EXPECT_TRUE(is_feasible(space));
 }

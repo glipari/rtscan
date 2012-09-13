@@ -26,7 +26,9 @@ namespace Scan {
 
     conjunct_space_t create_space(const vector<Task> &tasks)
     {
-        conjunct_space_t nn = non_negative_space(tasks.size());
+        Conjunction nn = non_negative_space(tasks.size());
+        conjunct_space_t space(tasks.size());
+        space.add_constraint(nn);
         for (unsigned i=0; i<tasks.size(); i++) {
             vector<double> points = compute_points(tasks, i, tasks[i].get_dline());
             disjunct_space_t ds(tasks.size());
@@ -39,11 +41,11 @@ namespace Scan {
                 for (unsigned k=i+1; k<tasks.size(); k++) {
                     row.push_back(0);
                 }
-                plane_t plane(row, plane_t::lte, t);
+                Plane plane(row, Plane::lte, t);
                 ds.add_constraint(plane);
             }
-            nn.add_constraint(ds);
+            space.add_constraint(ds);
         }
-        return nn;
+        return space;
     }
 }

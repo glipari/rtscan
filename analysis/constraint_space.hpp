@@ -15,19 +15,18 @@ namespace Scan {
         check that a point respects the constraint (method contains), and
         to build a complement of this constraint. 
     */ 
-    class constraint_t {
+    class AbstractConstraint {
     protected:
         virtual bool is_in(const point_t &p) const = 0;
-
         size_t num_vars;
     public:
-        constraint_t(size_t nvars);
+        AbstractConstraint(size_t nvars);
 
-        virtual constraint_t *copy() const = 0;
-        virtual constraint_t *negate() const = 0;
+        virtual AbstractConstraint *copy() const = 0;
+        virtual AbstractConstraint *negate() const = 0;
 
         bool contains(const point_t &p) const;
-        constraint_t *complement() const;
+        AbstractConstraint *complement() const;
         size_t get_nvars() const { return num_vars; }
 
     };    
@@ -40,10 +39,10 @@ namespace Scan {
         been choosen to so to make sure that it is possible to
         complement the constraint by changing sign.
     */ 
-    class plane_t : public constraint_t {
+    class Plane : public AbstractConstraint {
     public:
-        plane_t(size_t n);
-        plane_t(const coeff_row_t &coeff, int s, double c);
+        Plane(size_t n);
+        Plane(const coeff_row_t &coeff, int s, double c);
 
         coeff_row_t a;
         int sign;  // lt: -2; lte : -1; eq : 0; gt : 2; gte : 1
@@ -58,28 +57,51 @@ namespace Scan {
         size_t size() const { return a.size(); }
         
         void change_sign();
-        plane_t normal_form() const;
+        Plane normal_form() const;
+
+        Plane *negate() const;
+        Plane *copy() const;
+
     protected:
         bool is_in(const point_t &p) const;
-        plane_t *negate() const;
-        plane_t *copy() const;
     };   
     
     /** Pretty print of the linear inequality */
-    std::ostream& operator<<(std::ostream &os, const plane_t &s);
+    std::ostream& operator<<(std::ostream &os, const Plane &s);
 
+    class AbstractConstraintSet : public AbstractConstraint {
+    public:
+        AbstractConstraintSet(size_t n) : AbstractConstraint(n) {}
+        // here I should add the intersection functions
+    };
+
+    class Conjunction : public AbstractConstraintSet {
+        std::vector<Plane> planes;
+        bool is_in(const point_t &p) const;
+    public:
+        Conjunction(size_t n) : AbstractConstraintSet(n) {}
+        void add_plane(const Plane &p);
+        Plane get(unsigned i) const;
+        Plane& at(unsigned i);
+        size_t size() const { return planes.size(); }
+
+        Conjunction *copy() const;
+        AbstractConstraintSet *negate() const;
+    };
+
+    std::ostream& operator<<(std::ostream &os, const Conjunction &s);
     /** 
         This class models a set of constraints.  The copy constructor
         works as expected. Notice that it is not possible to
         instantiate objects of this type, as the virtual functions
         is_in() and negate() are virtual. 
-
+        
         @todo see if it is necessary to provide an assignment operator
         as well.
     */
-    class space_t : public constraint_t {
+    class space_t : public AbstractConstraintSet {
     protected:
-        std::vector<constraint_t *> cs;
+        std::vector<AbstractConstraint *> cs;
 
         space_t *copy() const = 0;
     public:
@@ -87,9 +109,9 @@ namespace Scan {
         space_t(const space_t &s);
         ~space_t(); 
 
-        void add_constraint(const constraint_t &c);
-        void add_constraint(constraint_t *c);
-        constraint_t *get(unsigned r);
+        void add_constraint(const AbstractConstraint &c);
+        void add_constraint(AbstractConstraint *c);
+        AbstractConstraint *get(unsigned r);
         size_t size() const;
     };
 
@@ -125,14 +147,14 @@ namespace Scan {
     };
                 
     /// I x >= 0
-    conjunct_space_t non_negative_space(int n);
+    Conjunction non_negative_space(int n);
     
     /**
        Uses Fourier Motzkin to see if the system of inequalities is
        feasible. It requires that space is a system of inequalities
        (planes), otherwise will trigger a false assertion.
     */
-    bool is_feasible(conjunct_space_t &space);
+    bool is_feasible(Conjunction &space);
 }
 
 #endif
