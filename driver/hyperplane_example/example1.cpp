@@ -15,4 +15,5 @@ int main()
     };
 
     ConjunctionSet space = create_space(tasks);
+    cout << space << endl;
 }

@@ -39,10 +39,10 @@ namespace Scan {
         return new Plane(*this);
     }
     
-    std::ostream& operator<<(std::ostream &os, const Plane &s)
+    void Plane::print(std::ostream &os) const
     {
         int i = 1;
-        for (auto x : s.a) {
+        for (auto x : a) {
             if (x > 0) 
                 os << " +" << std::setw(4) << x << " x(" << i << ")";
             else if (x < 0) 
@@ -50,14 +50,13 @@ namespace Scan {
             else os << "           "; 
             i++;
         } 
-        if (s.sign == Plane::lt)      os << " <  ";
-        else if (s.sign == Plane::lte) os << " <= ";
-        else if (s.sign == Plane::eq)  os << " =  ";
-        else if (s.sign == Plane::gte)  os << " >= ";
-        else if (s.sign == Plane::gt)  os << " >  ";
+        if (sign == Plane::lt)      os << " <  ";
+        else if (sign == Plane::lte) os << " <= ";
+        else if (sign == Plane::eq)  os << " =  ";
+        else if (sign == Plane::gte)  os << " >= ";
+        else if (sign == Plane::gt)  os << " >  ";
     
-        os << std::setw(5) << s.b;
-        return os;
+        os << std::setw(5) << b;
     }
     
     bool Plane::is_in(const point_t &p) const
@@ -150,12 +149,10 @@ namespace Scan {
     }
 
 
-    std::ostream& operator<<(std::ostream &os, const Conjunction &s)
+    void Conjunction::print(std::ostream &os) const
     {
-        for (unsigned i=0; i<s.size(); ++i) 
-            os << s.get(i) << std::endl;
-
-        return os;
+        for (unsigned i=0; i<size(); ++i) 
+            os << planes[i] << std::endl;
     }
 
 
@@ -354,5 +351,29 @@ namespace Scan {
             if (x.b < 0) return false;
         }
         return true;
+    }
+
+    void ConjunctionSet::print(std::ostream &os) const
+    {
+        os << "AND { " << std::endl;
+        for (unsigned i = 0; i<size(); ++i) {            
+            os << *(cs[i]) << std::endl << std::endl;
+        }
+        os << "}";
+    }
+
+    void DisjunctionSet::print(std::ostream &os) const
+    {
+        os << "OR { " << std::endl;
+        for (unsigned i = 0; i<size(); ++i) {            
+            os << *(cs[i]) << std::endl << std::endl;
+        }
+        os << "}";
+    }    
+
+    std::ostream& operator<<(std::ostream &os, const AbstractConstraint &s)
+    {
+        s.print(os);
+        return os;
     }
 }

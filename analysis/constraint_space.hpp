@@ -28,7 +28,7 @@ namespace Scan {
         bool contains(const point_t &p) const;
         AbstractConstraint *complement() const;
         size_t get_nvars() const { return num_vars; }
-
+        virtual void print(std::ostream &os) const = 0;
     };    
 
     /** 
@@ -61,18 +61,21 @@ namespace Scan {
 
         Plane *negate() const;
         Plane *copy() const;
+        void print(std::ostream &os) const;
 
     protected:
         bool is_in(const point_t &p) const;
     };   
     
-    /** Pretty print of the linear inequality */
-    std::ostream& operator<<(std::ostream &os, const Plane &s);
+    // /** Pretty print of the linear inequality */
+    // std::ostream& operator<<(std::ostream &os, const Plane &s);
 
     class AbstractConstraintSet : public AbstractConstraint {
     public:
         AbstractConstraintSet(size_t n) : AbstractConstraint(n) {}
         // here I should add the intersection functions
+
+        // virtual void print(std::ostream &os) const ;
     };
 
     class Conjunction : public AbstractConstraintSet {
@@ -87,9 +90,9 @@ namespace Scan {
 
         Conjunction *copy() const;
         AbstractConstraintSet *negate() const;
+        void print(std::ostream &os) const;        
     };
 
-    std::ostream& operator<<(std::ostream &os, const Conjunction &s);
     /** 
         This class models a set of constraints.  The copy constructor
         works as expected. Notice that it is not possible to
@@ -113,6 +116,7 @@ namespace Scan {
         void add_constraint(AbstractConstraint *c);
         AbstractConstraint *get(unsigned r);
         size_t size() const;
+        //void print(std::ostream &os) const;        
     };
 
   
@@ -128,6 +132,7 @@ namespace Scan {
         ConstraintSet *negate() const;        
     public:
         ConjunctionSet(size_t n);
+        void print(std::ostream &os) const;
     };
 
      /**
@@ -143,8 +148,11 @@ namespace Scan {
 
     public:
         DisjunctionSet(size_t n);
-
+        void print(std::ostream &os) const;
     };
+
+    /** Pretty print of the sets */
+    std::ostream& operator<<(std::ostream &os, const AbstractConstraint &s);
                 
     /// I x >= 0
     Conjunction non_negative_space(int n);
