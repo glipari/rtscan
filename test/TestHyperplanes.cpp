@@ -209,7 +209,7 @@ TEST(TestHET, FMEtest1)
     Plane p3({1, 1}, Plane::gte, 1);
     space.add_plane(p3);
 
-    EXPECT_FALSE(is_feasible(space));
+    EXPECT_FALSE(fme_is_feasible(space));
 }
 
 TEST(TestHET, FMEtest2)
@@ -223,7 +223,7 @@ TEST(TestHET, FMEtest2)
     Plane p3({1, 1}, Plane::gte, .5);
     space.add_plane(p3);
 
-    EXPECT_TRUE(is_feasible(space));
+    EXPECT_TRUE(fme_is_feasible(space));
 }
 
 

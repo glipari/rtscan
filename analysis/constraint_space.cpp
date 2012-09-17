@@ -108,6 +108,14 @@ namespace Scan {
     }
 
 
+    void Plane::reduce(unsigned varindex, double val)
+    {
+        assert(varindex <= num_vars);
+        b = b - a[varindex] * val;
+        a[varindex] = 0;
+    }
+
+
     bool Conjunction::is_in(const point_t &p) const
     {
         for (auto &pl : planes) 
@@ -118,6 +126,11 @@ namespace Scan {
     Conjunction *Conjunction::copy() const
     {
         return new Conjunction(*this);
+    }
+
+    void Conjunction::reduce(unsigned varindex, double val)
+    {
+        for (auto &x:planes) x.reduce(varindex, val);
     }
 
 
@@ -189,6 +202,13 @@ namespace Scan {
         return cs.size();
     }
 
+
+    void ConstraintSet::reduce(unsigned varindex, double val)
+    {
+        for (auto x : cs) x->reduce(varindex, val);
+    }
+
+    
     ConjunctionSet::ConjunctionSet(size_t n) : ConstraintSet(n)
     {
     }
@@ -293,9 +313,7 @@ namespace Scan {
         }        
     }
 
-    // Here, I am assuming that "space" only consists of planes.
-    // TODO: 
-    bool is_feasible(Conjunction &space) 
+    bool fme_is_feasible(Conjunction &space) 
     {
         int n = space.size();   // number of inequalities
 
@@ -352,7 +370,7 @@ namespace Scan {
         }
         return true;
     }
-
+    
     void ConjunctionSet::print(std::ostream &os) const
     {
         os << "AND { " << std::endl;

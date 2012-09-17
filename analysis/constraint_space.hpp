@@ -24,6 +24,7 @@ namespace Scan {
 
         virtual AbstractConstraint *copy() const = 0;
         virtual AbstractConstraint *negate() const = 0;
+        virtual void reduce(unsigned varindex, double val) = 0;
 
         bool contains(const point_t &p) const;
         AbstractConstraint *complement() const;
@@ -61,23 +62,24 @@ namespace Scan {
 
         Plane *negate() const;
         Plane *copy() const;
+        void reduce(unsigned varindex, double val);
         void print(std::ostream &os) const;
 
     protected:
         bool is_in(const point_t &p) const;
     };   
     
-    // /** Pretty print of the linear inequality */
-    // std::ostream& operator<<(std::ostream &os, const Plane &s);
-
     class AbstractConstraintSet : public AbstractConstraint {
     public:
         AbstractConstraintSet(size_t n) : AbstractConstraint(n) {}
         // here I should add the intersection functions
-
-        // virtual void print(std::ostream &os) const ;
     };
 
+    /** 
+        This class models a set of linear inequalities in conjunctive
+        form. The resulting subspace is convex.  It is possible to
+        check properties more efficiently for this class.
+    */
     class Conjunction : public AbstractConstraintSet {
         std::vector<Plane> planes;
         bool is_in(const point_t &p) const;
@@ -90,7 +92,8 @@ namespace Scan {
 
         Conjunction *copy() const;
         AbstractConstraintSet *negate() const;
-        void print(std::ostream &os) const;        
+        void print(std::ostream &os) const;
+        void reduce(unsigned varindex, double val);
     };
 
     /** 
@@ -116,14 +119,15 @@ namespace Scan {
         void add_constraint(AbstractConstraint *c);
         AbstractConstraint *get(unsigned r);
         size_t size() const;
-        //void print(std::ostream &os) const;        
+
+        void reduce(unsigned varindex, double val);
     };
 
   
     /**
-       This space is the conjunction (AND) of the constraints. That is, 
-       a point belongs to this region if it verifies all the included 
-       constraints.
+       This space is the conjunction (AND) of the constraints. That
+       is, a point belongs to this region if it verifies all the
+       included constraints.
     */
     class ConjunctionSet : public ConstraintSet {
     protected:
@@ -137,8 +141,8 @@ namespace Scan {
 
      /**
        This space is the disjunction (OR) of the constraints. That is,
-       a point belongs to this space if it verifies at least one of the 
-       included constraints.
+       a point belongs to this space if it verifies at least one of
+       the included constraints.
      */
     class DisjunctionSet : public ConstraintSet {
     protected:
@@ -154,15 +158,16 @@ namespace Scan {
     /** Pretty print of the sets */
     std::ostream& operator<<(std::ostream &os, const AbstractConstraint &s);
                 
-    /// I x >= 0
+    /**
+       Generates the constraints   I x >= 0
+    */
     Conjunction non_negative_space(int n);
     
     /**
        Uses Fourier Motzkin to see if the system of inequalities is
-       feasible. It requires that space is a system of inequalities
-       (planes), otherwise will trigger a false assertion.
+       feasible.
     */
-    bool is_feasible(Conjunction &space);
+    bool fme_is_feasible(Conjunction &space);
 }
 
 #endif
