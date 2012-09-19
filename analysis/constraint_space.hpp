@@ -17,18 +17,38 @@ namespace Scan {
     */ 
     class AbstractConstraint {
     protected:
-        virtual bool is_in(const point_t &p) const = 0;
         size_t num_vars;
     public:
         AbstractConstraint(size_t nvars);
 
+        /**
+           Creates an object which is a copy of the current object
+        */
         virtual AbstractConstraint *copy() const = 0;
+        /**
+           Creates an object which is the complement of the current
+           object
+         */
         virtual AbstractConstraint *negate() const = 0;
-        virtual void reduce(unsigned varindex, double val) = 0;
 
-        bool contains(const point_t &p) const;
-        AbstractConstraint *complement() const;
+        /**
+           Assigns a value val at variable at position varindex
+         */
+        virtual void project(unsigned varindex, double val) = 0;
+
+        /**
+           Returns true is the point p is inside the constraints
+         */
+        virtual bool is_in(const point_t &p) const = 0;
+
+        /**
+           Returns the number of variables in the constraints
+         */
         size_t get_nvars() const { return num_vars; }
+        
+        /**
+           prints this constraint
+         */
         virtual void print(std::ostream &os) const = 0;
     };    
 
@@ -36,9 +56,10 @@ namespace Scan {
         This class models a linear inequality, and it is one type of
         constraint, which is made by one single inequality.
 
-        sign represents the sign of the inequality. The constants have
-        been choosen to so to make sure that it is possible to
-        complement the constraint by changing sign.
+        sign represents the sign of the inequality, which can be one
+        of the constants lte, lt, gt, gte. Notice that it is not
+        possible to specify equality (this must be done with two
+        different inequalities.
     */ 
     class Plane : public AbstractConstraint {
     public:
@@ -46,26 +67,32 @@ namespace Scan {
         Plane(const coeff_row_t &coeff, int s, double c);
 
         coeff_row_t a;
-        int sign;  // lt: -2; lte : -1; eq : 0; gt : 2; gte : 1
+        int sign;  
         double b;
 
         static const int lt;
         static const int lte;
         static const int gt;
         static const int gte;
-        static const int eq;
 
         size_t size() const { return a.size(); }
         
+        /** 
+            Changes sign to all coefficient, to the constant b and to
+            the inequality sign. The resulting constraint is perfectly
+            equivalent to the previous one */
         void change_sign();
-        Plane normal_form() const;
-
+        
+        /**
+           Returns a new plane in normal form (which has lt or lte as
+           sign). If sign == gt or sign == gte, it calls change sign.
+        */
+        Plane& normal_form();
+        
         Plane *negate() const;
         Plane *copy() const;
-        void reduce(unsigned varindex, double val);
+        void project(unsigned varindex, double val);
         void print(std::ostream &os) const;
-
-    protected:
         bool is_in(const point_t &p) const;
     };   
     
@@ -75,35 +102,79 @@ namespace Scan {
         // here I should add the intersection functions
     };
 
+
+    class PlaneSet : public AbstractConstraintSet {
+    protected:
+        std::vector<Plane> planes;
+    public:
+        PlaneSet(size_t n) : AbstractConstraintSet(n) {}
+
+        /**
+           Add a plane to the set of constraints
+         */
+        void add_plane(const Plane &p);
+        /**
+           Returns a copy of the plane at position i
+         */
+        Plane get(unsigned i) const;
+        /**
+           Returns a reference to the plane at position i
+         */
+        Plane& at(unsigned i);
+        /**
+           Returns the number of inequalities inside the set
+         */
+        size_t size() const { return planes.size(); }
+
+        /**
+           All planes are modified in normal form.
+         */
+        void normalize();
+
+        void project(unsigned varindex, double val);
+    };
+
     /** 
         This class models a set of linear inequalities in conjunctive
         form. The resulting subspace is convex.  It is possible to
         check properties more efficiently for this class.
     */
-    class Conjunction : public AbstractConstraintSet {
-        std::vector<Plane> planes;
-        bool is_in(const point_t &p) const;
+    class Conjunction : public PlaneSet {
     public:
-        Conjunction(size_t n) : AbstractConstraintSet(n) {}
-        void add_plane(const Plane &p);
-        Plane get(unsigned i) const;
-        Plane& at(unsigned i);
-        size_t size() const { return planes.size(); }
+        Conjunction(size_t n) : PlaneSet(n) {}
 
         Conjunction *copy() const;
         AbstractConstraintSet *negate() const;
         void print(std::ostream &os) const;
-        void reduce(unsigned varindex, double val);
+        bool is_in(const point_t &p) const;
+
+        /**
+           Reduces the number of inequalities by eliminating redundant ones.
+         */
+        void tighen();
+    };
+
+    /** 
+        This class models a set of linear inequalities in conjunctive
+        form. The resulting subspace is convex.  It is possible to
+        check properties more efficiently for this class.
+    */
+    class Disjunction : public PlaneSet {
+    public:
+        Disjunction(size_t n) : PlaneSet(n) {}
+
+        Disjunction *copy() const;
+        AbstractConstraintSet *negate() const;
+        void print(std::ostream &os) const;
+        void tighen(); // eliminates redundant planes
+        bool is_in(const point_t &p) const;
     };
 
     /** 
         This class models a set of constraints.  The copy constructor
         works as expected. Notice that it is not possible to
         instantiate objects of this type, as the virtual functions
-        is_in() and negate() are virtual. 
-        
-        @todo see if it is necessary to provide an assignment operator
-        as well.
+        is_in() and negate() are virtual.         
     */
     class ConstraintSet : public AbstractConstraintSet {
     protected:
@@ -115,12 +186,14 @@ namespace Scan {
         ConstraintSet(const ConstraintSet &s);
         ~ConstraintSet(); 
 
+        ConstraintSet &operator=(const ConstraintSet &other);
+
         void add_constraint(const AbstractConstraint &c);
         void add_constraint(AbstractConstraint *c);
         AbstractConstraint *get(unsigned r);
         size_t size() const;
 
-        void reduce(unsigned varindex, double val);
+        void project(unsigned varindex, double val);
     };
 
   
@@ -132,11 +205,11 @@ namespace Scan {
     class ConjunctionSet : public ConstraintSet {
     protected:
         ConjunctionSet *copy() const;
-        bool is_in(const point_t &p) const;
         ConstraintSet *negate() const;        
     public:
         ConjunctionSet(size_t n);
         void print(std::ostream &os) const;
+        bool is_in(const point_t &p) const;
     };
 
      /**
@@ -147,19 +220,19 @@ namespace Scan {
     class DisjunctionSet : public ConstraintSet {
     protected:
         DisjunctionSet *copy() const;
-        bool is_in(const point_t &p) const;
         ConstraintSet *negate() const;
 
     public:
         DisjunctionSet(size_t n);
         void print(std::ostream &os) const;
+        bool is_in(const point_t &p) const;
     };
 
     /** Pretty print of the sets */
     std::ostream& operator<<(std::ostream &os, const AbstractConstraint &s);
                 
     /**
-       Generates the constraints   I x >= 0
+       Generates the constraint set I x >= 0
     */
     Conjunction non_negative_space(int n);
     
@@ -167,7 +240,7 @@ namespace Scan {
        Uses Fourier Motzkin to see if the system of inequalities is
        feasible.
     */
-    bool fme_is_feasible(Conjunction &space);
+    bool fme_is_feasible(const Conjunction &space);
 }
 
 #endif
