@@ -1,8 +1,7 @@
 /*
  * test_main.cpp
  *
- *  Created on: May 11, 2011
- *      Author: lipari
+ *      Author: Angela Italiano
  */
 
 #include <gtest/gtest.h>

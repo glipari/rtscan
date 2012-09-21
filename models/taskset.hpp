@@ -45,6 +45,7 @@ namespace Scan {
 
         template<class Type>
         void sort_property(const std::string &name);
+        void clear();
     };
 
     TaskSet operator+(const TaskSet &ts1, const TaskSet &ts2);
@@ -63,6 +64,12 @@ namespace Scan {
         }
     };
 
+    class TaskCmpWcet : public std::less<Task> {
+    public:
+        bool operator()(const Task &a, const Task &b) {
+             return a.get_wcet()< b.get_wcet();
+        }
+    };
     class TaskCmpName : public std::less<Task> {
     public:
         bool operator()(const Task &a, const Task &b) {
@@ -75,6 +82,7 @@ namespace Scan {
     {
         std::sort(s.begin(),s.end(), Cmp());
     }
+
 
 }
 

@@ -10,17 +10,17 @@ namespace Scan {
     {
     }
 
-    TaskSet::~TaskSet() 
+    TaskSet::~TaskSet()
     {
     }
 
-    TaskSet::TaskSet(const TaskSet &ts) 
+    TaskSet::TaskSet(const TaskSet &ts)
     {
         s = ts.s;
         //m = ts.m;
     }
-    
-    TaskSet& TaskSet::operator=(const TaskSet &ts) 
+
+    TaskSet& TaskSet::operator=(const TaskSet &ts)
     {
         s = ts.s;
         //m = ts.m;
@@ -39,10 +39,10 @@ namespace Scan {
         for (unsigned int i=0; i < ts.size(); ++i) {
             s.push_back(ts.at(i));
             //m[ts.at(i).get_name()] = &(s[k+i]);
-        } 
+        }
         return *this;
     }
-    
+
 	Task& TaskSet::operator[](unsigned int i) throw (IndexOutOfBound) {
 		if (i >= size())
 			throw IndexOutOfBound("Index out of bound in accessing task set");
@@ -76,7 +76,7 @@ namespace Scan {
 
         return v;
     }
-    
+
     std::vector<double> TaskSet::get_dlines() const
     {
         unsigned int i;
@@ -113,4 +113,9 @@ namespace Scan {
 			u += s[i].get_wcet() / double(s[i].get_period());
 		return u;
     }
+     void TaskSet::clear()
+    {
+        s.clear();
+    }
+
 }

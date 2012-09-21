@@ -48,13 +48,9 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am_scantest_OBJECTS = test_main.$(OBJEXT) DBFTest.$(OBJEXT) \
-	TaskSetTest.$(OBJEXT) TaskTest.$(OBJEXT) TestUtility.$(OBJEXT) \
-	TestFP.$(OBJEXT) CriticalSectionsTest.$(OBJEXT) \
-	TaskSet2Test.$(OBJEXT) MBWITest.$(OBJEXT) MEDFTest.$(OBJEXT) \
-	HasProcessorTest.$(OBJEXT) FMLPTest.$(OBJEXT) \
-	OMLPTest.$(OBJEXT) TaskResParserTest.$(OBJEXT) \
-	TestCommon.$(OBJEXT) TestHyperplanes.$(OBJEXT)
+am_scantest_OBJECTS = test_main.$(OBJEXT) TestStage_Set.$(OBJEXT) \
+	TestProcessor.$(OBJEXT) Test_Struct_Alloc.$(OBJEXT) \
+	Test_CheckFeasibility.$(OBJEXT)
 scantest_OBJECTS = $(am_scantest_OBJECTS)
 scantest_DEPENDENCIES =
 scantest_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -237,24 +233,16 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 top = ../
-gtest_dir = ${top}../gtest/gtest-1.6.0/
+gtest_dir = ${top}../gtest/
 SUBDIRS = 
 AM_CXXFLAGS = -Wall -std=c++0x -I${top} -I${gtest_dir}/include/
-scantest_LDFLAGS = -L${gtest_dir}/lib/ -L${top}common -L${top}models -L${top}analysis   
-scantest_LDADD = -lgtest -lpthread -lscan_analysis -lscan_models -lscan_common -lboost_filesystem 
+scantest_LDFLAGS = -L${gtest_dir}/lib/ -L${top}common -L${top}models  
+scantest_LDADD = -lgtest -lpthread -lscan_models -lscan_common -lboost_filesystem 
 scantest_SOURCES = test_main.cpp \
-	DBFTest.cpp TaskSetTest.cpp  \
-	TaskTest.cpp TestUtility.cpp TestFP.cpp \
-	CriticalSectionsTest.cpp \
-	TaskSet2Test.cpp \
-	MBWITest.cpp \
-	MEDFTest.cpp \
-	HasProcessorTest.cpp \
-	FMLPTest.cpp \
-	OMLPTest.cpp \
-	TaskResParserTest.cpp \
-	TestCommon.cpp \
-	TestHyperplanes.cpp
+	TestStage_Set.cpp  \
+	TestProcessor.cpp  \
+	Test_Struct_Alloc.cpp  \
+	Test_CheckFeasibility.cpp
 
 all: all-recursive
 
@@ -309,21 +297,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/CriticalSectionsTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DBFTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FMLPTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HasProcessorTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MBWITest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MEDFTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/OMLPTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaskResParserTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaskSet2Test.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaskSetTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TaskTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestCommon.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestFP.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestHyperplanes.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestUtility.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestProcessor.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestStage_Set.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Test_CheckFeasibility.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Test_Struct_Alloc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_main.Po@am__quote@
 
 .cpp.o:

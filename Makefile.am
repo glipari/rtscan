@@ -9,7 +9,7 @@
 top="$(CURDIR)"/
 
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS= models/ common/ analysis/ driver/ test/
+SUBDIRS= models/ common/ driver2/ test/
 EXTRA_DIST =
 
 # End of Makefile.am

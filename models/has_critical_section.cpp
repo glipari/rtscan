@@ -1,14 +1,10 @@
-#include "has_critical_section.hpp"
+#include "models/has_critical_section.hpp"
 
 using namespace std;
 
 namespace Scan {
-    template<>
-    int HasUniqueId<Resource>::counter = 0;
-
-    Resource::Resource(bool s) :
+    Resource::Resource(/*int rid,*/ bool s) :
         isShort_(s), ceiling_(0) {}
-
     Resource::Resource(int rid, bool s) :
         isShort_(s), ceiling_(0) 
     {
@@ -186,13 +182,6 @@ namespace Scan {
             }
         }
         return m;
-    }
-
-
-    std::ostream& operator<<(std::ostream &os, const Resource &r)
-    {
-        os << "Resource {id=" << r.get_id() << " short=" << r.is_short() << " ceiling=" << r.get_ceiling() << "} ";
-        return os;
     }
 
 }

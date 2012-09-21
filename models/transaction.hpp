@@ -162,10 +162,9 @@ double get_task_offset(unsigned int i);
 		*/
 		std::vector<double> get_utils() const;
 
-		/**
-		   Conversion operator
-		*/
-		//operator EDFholistic::Transaction();
+
+
+		void clear();
 	};
 
 	/**

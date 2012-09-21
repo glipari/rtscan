@@ -236,7 +236,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 top = "$(CURDIR)"/
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = models/ common/ analysis/ driver/ test/
+SUBDIRS = models/ common/ driver2/ test/
 EXTRA_DIST = 
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive

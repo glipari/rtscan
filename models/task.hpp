@@ -9,15 +9,15 @@
 #include <models/has_unique_id.hpp>
 
 namespace  Scan {
-    /** 
+    /**
         This class models a sporadic task or a periodic non-concrete
         task (also called offset-free task).
     */
-    class Task : public HasUniqueId<Task> {
+    class Task : public HasUniqueId {
     private:
         std::string name;
         void init_name_();
-    public: 
+    public:
         /**
            Default constructor, all values init to 0. The name will be
            a number initialized to a increasing value
@@ -44,7 +44,7 @@ namespace  Scan {
 
         /// assignment operator
         Task & operator=(const Task &t);
-        
+
         /// returns the task period
         int get_period() const;
 
@@ -64,20 +64,20 @@ namespace  Scan {
         std::string get_name() const { return name; }
 
         /// sets the period
-        void set_period(int t) throw(IllegalValue); 
+        void set_period(int t) throw(IllegalValue);
 
         /// sets the worst-case execution time
-        void set_wcet(double w) throw(IllegalValue); 
+        void set_wcet(double w) throw(IllegalValue);
 
         /// sets the deadline
-        void set_dline(double d) throw(IllegalValue);     
+        void set_dline(double d) throw(IllegalValue);
 
         /// sets the offset
-        void set_offset(int o) { offset = o; }     
+        void set_offset(int o) { offset = o; }
 
         /// sets the offset
-        void set_jitter(int j) { jitter = j; }     
-            
+        void set_jitter(int j) { jitter = j; }
+
     private:
         int period;
         double wcet;
@@ -86,7 +86,7 @@ namespace  Scan {
         double jitter;
     };
 
-    /** 
+    /**
         Outputs the task parameters on a file. The output consists of
         the wcet value, the relative deadline, the task period, and
         the index on f the node on which the task is allocated,
@@ -102,7 +102,7 @@ namespace  Scan {
     */
     std::istream & operator>>(std::istream &i, Task &t) throw(IllegalValue);
 
-    // bool task_cmp_ids(const Task &a, const Task &b); 
+    bool task_cmp_ids(const Task &a, const Task &b);
 }
 
 #endif

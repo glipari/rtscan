@@ -7,6 +7,5 @@ AM_CPPFLAGS=-I${top}
 AM_CXXFLAGS=-Wall -std=c++0x
 
 lib_LTLIBRARIES=libscan_models.la
-libscan_models_la_SOURCES=task.cpp taskset.cpp \
-	transaction.cpp has_critical_section.cpp \
-	taskres_parser.cpp
+libscan_models_la_SOURCES=task.cpp taskset.cpp Stage_Set.cpp transaction.cpp has_unique_id.cpp Stage.cpp Proc_Allocation.cpp Processor.cpp Sym_Param.cpp CheckFeasibility.cpp Pipe_Generator.cpp  \
+	has_critical_section.cpp 

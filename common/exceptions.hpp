@@ -18,9 +18,9 @@ namespace Scan {
         std::string what();
     };
 
-    /**
+	/**
        Transforms a number into a string
-    */
+	 */
 #define NUM_TO_STR_1(line)   #line
 #define NUM_TO_STR_2(line)   NUM_TO_STR_1(line)
 #define STRINGIFY(text)      #text
@@ -31,7 +31,7 @@ namespace Scan {
          xxx(const std::string &s) : Scan::Exception(STRINGIFY(xxx), s) {} \
          }
 /// shortcurt to throw an exception with the right parameters
-/// sss must be a constant string
+/// sss must be a constant string!
 #define THROW_EXC(xxx, sss) throw xxx(NUM_TO_STR_2(__LINE__) ": " sss)
 
 /// debugging macros

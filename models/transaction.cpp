@@ -207,6 +207,15 @@ namespace Scan {
 		return c;
 	}
 
+	void Transaction::clear()
+	{
+        allocated.clear();
+        offsets.clear();
+        tasks.clear();
+
+
+	}
+
 
 /*        Transaction::operator EDFholistic::Transaction()
 	{
