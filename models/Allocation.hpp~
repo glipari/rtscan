@@ -1,0 +1,44 @@
+#ifndef ALLOCATION_HPP_INCLUDED
+#define ALLOCATION_HPP_INCLUDED
+
+
+#include <string>
+
+#include <map>
+#include <vector>
+#include <common/exceptions.hpp>
+#include <utility>
+#include <models/transaction.hpp>
+
+
+using namespace std;
+using namespace Scan;
+namespace Scan{
+class Allocation
+{
+    private:
+    vector<Transaction> pipes;
+    int minNumProc;
+    bool feasible;
+
+    public:
+    Allocation();
+    Allocation(vector< pair<double,double> >period_deadline);
+    Allocation(const Allocation &a);
+    bool get_feas()const;
+
+    int get_minNumProc()const;
+
+    Transaction& get_transaction(int i);
+
+    void allocTask(const Task&t, int node,int pipe_index);
+
+    void setMinProc(int i);
+    void setFeasible(bool f);
+    void printAllocation();
+    void clear();
+
+
+};
+}
+#endif // ALLOCATION_HPP_INCLUDED

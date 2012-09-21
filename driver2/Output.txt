@@ -1,0 +1,3597 @@
+
+
+---------- ------>>>>>>>>>>>  RISULTATO FINALE :: -------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.635
+free bw :0.365
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.72
+free bw :0.28
+-------------------
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :1
+free bw :0
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.786667
+free bw :0.213333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.966667
+free bw :0.0333333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.861667
+free bw :0.138333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.986667
+free bw :0.0133333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.8
+free bw :0.2
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.71
+free bw :0.29
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.92
+free bw :0.08
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.5
+free bw :0.5
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.966667
+free bw :0.0333333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.962857
+free bw :0.0371429
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.916667
+free bw :0.0833333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.944444
+free bw :0.0555556
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.52
+free bw :0.48
+-------------------
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.676667
+free bw :0.323333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.933333
+free bw :0.0666667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.631111
+free bw :0.368889
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.966667
+free bw :0.0333333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.886667
+free bw :0.113333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.986667
+free bw :0.0133333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.8
+free bw :0.2
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.92
+free bw :0.08
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.9
+free bw :0.1
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.7
+free bw :0.3
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.933333
+free bw :0.0666667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.92
+free bw :0.08
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.733333
+free bw :0.266667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.953333
+free bw :0.0466667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.833333
+free bw :0.166667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.816667
+free bw :0.183333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.92
+free bw :0.08
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.9
+free bw :0.1
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.7
+free bw :0.3
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.933333
+free bw :0.0666667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.92
+free bw :0.08
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.866667
+free bw :0.133333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :3
+UtilisedBW :0.833333
+free bw :0.166667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.676667
+free bw :0.323333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.885714
+free bw :0.114286
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.52
+free bw :0.48
+-------------------
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.626667
+free bw :0.373333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.931111
+free bw :0.0688889
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.6
+free bw :0.4
+-------------------
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.776667
+free bw :0.223333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.983333
+free bw :0.0166667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.647778
+free bw :0.352222
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.953333
+free bw :0.0466667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.66
+free bw :0.34
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.6
+free bw :0.4
+-------------------
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.953333
+free bw :0.0466667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.701667
+free bw :0.298333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.858333
+free bw :0.141667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.71
+free bw :0.29
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.94
+free bw :0.06
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.88
+free bw :0.12
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.933333
+free bw :0.0666667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.933333
+free bw :0.0666667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.986667
+free bw :0.0133333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.9
+free bw :0.1
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.975
+free bw :0.025
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.895
+free bw :0.105
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.643333
+free bw :0.356667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.995
+free bw :0.005
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.916667
+free bw :0.0833333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.558333
+free bw :0.441667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.966667
+free bw :0.0333333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.95
+free bw :0.05
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.52
+free bw :0.48
+-------------------
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.880952
+free bw :0.119048
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.665556
+free bw :0.334444
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.52
+free bw :0.48
+-------------------
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.966667
+free bw :0.0333333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.743333
+free bw :0.256667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.642222
+free bw :0.357778
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.886667
+free bw :0.113333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.676667
+free bw :0.323333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.786667
+free bw :0.213333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :1
+free bw :0
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.82
+free bw :0.18
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.81
+free bw :0.19
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.5
+free bw :0.5
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.953333
+free bw :0.0466667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.71
+free bw :0.29
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.633333
+free bw :0.366667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.824762
+free bw :0.175238
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.743333
+free bw :0.256667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.609524
+free bw :0.390476
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.82
+free bw :0.18
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.61
+free bw :0.39
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.7
+free bw :0.3
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.853333
+free bw :0.146667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.81
+free bw :0.19
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.666667
+free bw :0.333333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.533333
+free bw :0.466667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.9
+free bw :0.1
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.975
+free bw :0.025
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.895
+free bw :0.105
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.991667
+free bw :0.00833333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.922222
+free bw :0.0777778
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.911667
+free bw :0.0883333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.991667
+free bw :0.00833333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.911667
+free bw :0.0883333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.922222
+free bw :0.0777778
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.986667
+free bw :0.0133333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.866667
+free bw :0.133333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.866667
+free bw :0.133333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :3
+UtilisedBW :0.855556
+free bw :0.144444
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.21
+free bw :0.79
+-------------------
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.98
+free bw :0.02
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.66
+free bw :0.34
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.79
+free bw :0.21
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.836667
+free bw :0.163333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.71
+free bw :0.29
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.75
+free bw :0.25
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.841667
+free bw :0.158333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.618333
+free bw :0.381667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.886667
+free bw :0.113333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.866667
+free bw :0.133333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.743333
+free bw :0.256667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.84
+free bw :0.16
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.546667
+free bw :0.453333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.953333
+free bw :0.0466667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.75
+free bw :0.25
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.983333
+free bw :0.0166667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.828333
+free bw :0.171667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.833333
+free bw :0.166667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.941667
+free bw :0.0583333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.82
+free bw :0.18
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.7
+free bw :0.3
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.61
+free bw :0.39
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.853333
+free bw :0.146667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.8
+free bw :0.2
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.676667
+free bw :0.323333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.533333
+free bw :0.466667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.9
+free bw :0.1
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.97
+free bw :0.03
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.85
+free bw :0.15
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :3
+UtilisedBW :1
+free bw :5.55112e-17
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.861667
+free bw :0.138333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.966667
+free bw :0.0333333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.825
+free bw :0.175
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :3
+UtilisedBW :0.983333
+free bw :0.0166667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.861667
+free bw :0.138333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.825
+free bw :0.175
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.966667
+free bw :0.0333333
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :3
+UtilisedBW :0.983333
+free bw :0.0166667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+
+******************       New feasible tasks combinations and allocation     ****************:
+ ############ Allocation on processor ################:
+**ID** :0
+UtilisedBW :0.853333
+free bw :0.146667
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 4
+wcet task in Stage: 1
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 1  --------
+Index  pipe: 1
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 1
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+------  TASKS OF PIPE 2  --------
+Index  pipe: 2
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 2
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :1
+UtilisedBW :0.8
+free bw :0.2
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 3
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :2
+UtilisedBW :0.8
+free bw :0.2
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 2
+wcet task in Stage: 3
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+ ############ Allocation on processor ################:
+**ID** :4
+UtilisedBW :0.41
+free bw :0.59
+-------------------
+------  TASKS OF PIPE 0  --------
+Index  pipe: 0
+Index in pipe: 0
+wcet task in Stage: 1
+-------------------
+Index  pipe: 0
+Index in pipe: 1
+wcet task in Stage: 2
+-------------------
+-------END Stage SET ASSIGNED TO A PROCESSOR-----
+
+
+*****   END COMBINATION   ****
+----------------------------
+
+

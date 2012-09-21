@@ -1,0 +1,3 @@
+has_unique_id.lo: has_unique_id.cpp ../models/has_unique_id.hpp
+
+../models/has_unique_id.hpp:
