@@ -21,6 +21,7 @@ scantest_SOURCES = test_main.cpp \
 	OMLPTest.cpp \
 	TaskResParserTest.cpp \
 	TestCommon.cpp \
-	TestHyperplanes.cpp
+	TestHyperplanes.cpp \
+	TestPropertyParser.cpp
 
 #TestBasicFunctions.cpp  
