@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <cstdlib>
 
 #include <common/exceptions.hpp>
 
@@ -22,9 +23,11 @@ namespace Scan {
         Property(const std::string &n, const std::string &v = "") :
             name(n), value(v) {}       
 
-        std::string get_value() { return value; }
+        std::string get_value() const { return value; }
         void set_value(const std::string &v) { value = v; }
-        std::string get_name() { return name; }
+        std::string get_name() const { return name; }
+        int get_int() const { return std::atoi(get_value().c_str()); } 
+        double get_double() const { return std::atof(get_value().c_str()); } 
     };
     
     struct PropertyList { 
