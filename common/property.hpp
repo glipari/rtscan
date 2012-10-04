@@ -16,8 +16,8 @@ namespace Scan {
     DECL_EXC(PropertyWrongType);
 
     struct Property { 
-        std::string value;
         std::string name; 
+        std::string value;
 
         Property() {}
         Property(const std::string &n, const std::string &v = "") :
