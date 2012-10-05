@@ -9,6 +9,8 @@
 
 #include <models/task.hpp>
 #include <analysis/task_utility.hpp>
+#include <common/property_parser.hpp>
+
 
 using namespace std;
 using namespace Scan;
@@ -115,4 +117,22 @@ TEST_F(TaskTestFix, TaskName)
     EXPECT_EQ(std::string("MyTask"), task2.get_name());
     Task task3 = task2;
     EXPECT_EQ(std::string("MyTask"), task3.get_name());
+}
+
+TEST(TaskTestNoFix, TaskFromProperties)
+{
+    string spec = "task(mytask){ c=1 T=10 dline=8 }";
+    stringstream ss(spec);
+    PropertyList pset;
+    parse_properties(ss, "string", pset);
+    
+    EXPECT_EQ("mytask", pset.name);
+    EXPECT_EQ("task", pset.type);
+
+    Task task = create_task(pset);
+    EXPECT_EQ(1, task.get_wcet());
+    EXPECT_EQ(10, task.get_period());
+    EXPECT_EQ(8, task.get_dline());
+    EXPECT_EQ(0, task.get_jitter());
+    EXPECT_EQ(0, task.get_offset());
 }

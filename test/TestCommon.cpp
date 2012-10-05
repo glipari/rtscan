@@ -62,8 +62,5 @@ TEST(Generators, SelectSum)
     EXPECT_EQ(1, good.size());
 
     good = select_sum_vectors(cartesian_product(v2), 2);
-    EXPECT_EQ(1, good.size());
-    
-    
+    EXPECT_EQ(1, good.size());   
 }
-

@@ -9,4 +9,4 @@ AC_PROG_LIBTOOL
 
 dnl End the configure script.
 AC_CHECK_PROGS(RANLIB, ranlib)
-AC_OUTPUT(Makefile models/Makefile common/Makefile analysis/Makefile driver/Makefile driver/mbwi_exps/Makefile driver/edf_complexity/Makefile test/Makefile, [date > stamp-h] )
+AC_OUTPUT(Makefile models/Makefile common/Makefile analysis/Makefile driver/Makefile driver/mbwi_exps/Makefile driver/edf_complexity/Makefile driver/hyperplane_example/Makefile test/Makefile, [date > stamp-h] )

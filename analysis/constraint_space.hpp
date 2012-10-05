@@ -15,124 +15,232 @@ namespace Scan {
         check that a point respects the constraint (method contains), and
         to build a complement of this constraint. 
     */ 
-    class constraint_t {
+    class AbstractConstraint {
     protected:
-        virtual bool is_in(const point_t &p) const = 0;
-
         size_t num_vars;
     public:
-        constraint_t(size_t nvars);
+        AbstractConstraint(size_t nvars);
 
-        virtual constraint_t *copy() const = 0;
-        virtual constraint_t *negate() const = 0;
+        /**
+           Creates an object which is a copy of the current object
+        */
+        virtual AbstractConstraint *copy() const = 0;
+        /**
+           Creates an object which is the complement of the current
+           object
+         */
+        virtual AbstractConstraint *negate() const = 0;
 
-        bool contains(const point_t &p) const;
-        constraint_t *complement() const;
+        /**
+           Assigns a value val at variable at position varindex
+         */
+        virtual void project(unsigned varindex, double val) = 0;
+
+        /**
+           Returns true is the point p is inside the constraints
+         */
+        virtual bool is_in(const point_t &p) const = 0;
+
+        /**
+           Returns the number of variables in the constraints
+         */
         size_t get_nvars() const { return num_vars; }
-
+        
+        /**
+           prints this constraint
+         */
+        virtual void print(std::ostream &os) const = 0;
     };    
 
     /** 
         This class models a linear inequality, and it is one type of
         constraint, which is made by one single inequality.
 
-        sign represents the sign of the inequality. The constants have
-        been choosen to so to make sure that it is possible to
-        complement the constraint by changing sign.
+        sign represents the sign of the inequality, which can be one
+        of the constants lte, lt, gt, gte. Notice that it is not
+        possible to specify equality (this must be done with two
+        different inequalities.
     */ 
-    class plane_t : public constraint_t {
+    class Plane : public AbstractConstraint {
     public:
-        plane_t(size_t n);
-        plane_t(const coeff_row_t &coeff, int s, double c);
+        Plane(size_t n);
+        Plane(const coeff_row_t &coeff, int s, double c);
 
         coeff_row_t a;
-        int sign;  // lt: -2; lte : -1; eq : 0; gt : 2; gte : 1
+        int sign;  
         double b;
 
         static const int lt;
         static const int lte;
         static const int gt;
         static const int gte;
-        static const int eq;
 
         size_t size() const { return a.size(); }
         
+        /** 
+            Changes sign to all coefficient, to the constant b and to
+            the inequality sign. The resulting constraint is perfectly
+            equivalent to the previous one */
         void change_sign();
-        plane_t normal_form() const;
-    protected:
+        
+        /**
+           Returns a new plane in normal form (which has lt or lte as
+           sign). If sign == gt or sign == gte, it calls change sign.
+        */
+        Plane& normal_form();
+        
+        Plane *negate() const;
+        Plane *copy() const;
+        void project(unsigned varindex, double val);
+        void print(std::ostream &os) const;
         bool is_in(const point_t &p) const;
-        plane_t *negate() const;
-        plane_t *copy() const;
     };   
     
-    /** Pretty print of the linear inequality */
-    std::ostream& operator<<(std::ostream &os, const plane_t &s);
+    class AbstractConstraintSet : public AbstractConstraint {
+    public:
+        AbstractConstraintSet(size_t n) : AbstractConstraint(n) {}
+        // here I should add the intersection functions
+    };
+
+
+    class PlaneSet : public AbstractConstraintSet {
+    protected:
+        std::vector<Plane> planes;
+    public:
+        PlaneSet(size_t n) : AbstractConstraintSet(n) {}
+
+        /**
+           Add a plane to the set of constraints
+         */
+        void add_plane(const Plane &p);
+        /**
+           Returns a copy of the plane at position i
+         */
+        Plane get(unsigned i) const;
+        /**
+           Returns a reference to the plane at position i
+         */
+        Plane& at(unsigned i);
+        /**
+           Returns the number of inequalities inside the set
+         */
+        size_t size() const { return planes.size(); }
+
+        /**
+           All planes are modified in normal form.
+         */
+        void normalize();
+
+        void project(unsigned varindex, double val);
+    };
+
+    /** 
+        This class models a set of linear inequalities in conjunctive
+        form. The resulting subspace is convex.  It is possible to
+        check properties more efficiently for this class.
+    */
+    class Conjunction : public PlaneSet {
+    public:
+        Conjunction(size_t n) : PlaneSet(n) {}
+
+        Conjunction *copy() const;
+        AbstractConstraintSet *negate() const;
+        void print(std::ostream &os) const;
+        bool is_in(const point_t &p) const;
+
+        /**
+           Reduces the number of inequalities by eliminating redundant ones.
+         */
+        void tighen();
+    };
+
+    /** 
+        This class models a set of linear inequalities in conjunctive
+        form. The resulting subspace is convex.  It is possible to
+        check properties more efficiently for this class.
+    */
+    class Disjunction : public PlaneSet {
+    public:
+        Disjunction(size_t n) : PlaneSet(n) {}
+
+        Disjunction *copy() const;
+        AbstractConstraintSet *negate() const;
+        void print(std::ostream &os) const;
+        void tighen(); // eliminates redundant planes
+        bool is_in(const point_t &p) const;
+    };
 
     /** 
         This class models a set of constraints.  The copy constructor
         works as expected. Notice that it is not possible to
         instantiate objects of this type, as the virtual functions
-        is_in() and negate() are virtual. 
-
-        @todo see if it is necessary to provide an assignment operator
-        as well.
+        is_in() and negate() are virtual.         
     */
-    class space_t : public constraint_t {
+    class ConstraintSet : public AbstractConstraintSet {
     protected:
-        std::vector<constraint_t *> cs;
+        std::vector<AbstractConstraint *> cs;
 
-        space_t *copy() const = 0;
+        ConstraintSet *copy() const = 0;
     public:
-        space_t(size_t n);
-        space_t(const space_t &s);
-        ~space_t(); 
+        ConstraintSet(size_t n);
+        ConstraintSet(const ConstraintSet &s);
+        ~ConstraintSet(); 
 
-        void add_constraint(const constraint_t &c);
-        void add_constraint(constraint_t *c);
-        constraint_t *get(unsigned r);
+        ConstraintSet &operator=(const ConstraintSet &other);
+
+        void add_constraint(const AbstractConstraint &c);
+        void add_constraint(AbstractConstraint *c);
+        AbstractConstraint *get(unsigned r);
         size_t size() const;
+
+        void project(unsigned varindex, double val);
     };
 
   
     /**
-       This space is the conjunction (AND) of the constraints. That is, 
-       a point belongs to this region if it verifies all the included 
-       constraints.
+       This space is the conjunction (AND) of the constraints. That
+       is, a point belongs to this region if it verifies all the
+       included constraints.
     */
-    class conjunct_space_t : public space_t {
+    class ConjunctionSet : public ConstraintSet {
     protected:
-        conjunct_space_t *copy() const;
-        bool is_in(const point_t &p) const;
-        space_t *negate() const;        
+        ConjunctionSet *copy() const;
+        ConstraintSet *negate() const;        
     public:
-        conjunct_space_t(size_t n);
+        ConjunctionSet(size_t n);
+        void print(std::ostream &os) const;
+        bool is_in(const point_t &p) const;
     };
 
      /**
        This space is the disjunction (OR) of the constraints. That is,
-       a point belongs to this space if it verifies at least one of the 
-       included constraints.
+       a point belongs to this space if it verifies at least one of
+       the included constraints.
      */
-    class disjunct_space_t : public space_t {
+    class DisjunctionSet : public ConstraintSet {
     protected:
-        disjunct_space_t *copy() const;
-        bool is_in(const point_t &p) const;
-        space_t *negate() const;
+        DisjunctionSet *copy() const;
+        ConstraintSet *negate() const;
 
     public:
-        disjunct_space_t(size_t n);
-
+        DisjunctionSet(size_t n);
+        void print(std::ostream &os) const;
+        bool is_in(const point_t &p) const;
     };
+
+    /** Pretty print of the sets */
+    std::ostream& operator<<(std::ostream &os, const AbstractConstraint &s);
                 
-    /// I x >= 0
-    conjunct_space_t non_negative_space(int n);
+    /**
+       Generates the constraint set I x >= 0
+    */
+    Conjunction non_negative_space(int n);
     
     /**
        Uses Fourier Motzkin to see if the system of inequalities is
-       feasible. It requires that space is a system of inequalities
-       (planes), otherwise will trigger a false assertion.
+       feasible.
     */
-    bool is_feasible(conjunct_space_t &space);
+    bool fme_is_feasible(const Conjunction &space);
 }
 
 #endif

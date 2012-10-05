@@ -7,6 +7,7 @@
 
 #include <common/exceptions.hpp>
 #include <models/has_unique_id.hpp>
+#include <common/property.hpp>
 
 namespace  Scan {
     /** 
@@ -62,6 +63,9 @@ namespace  Scan {
 
         /// returns the task name
         std::string get_name() const { return name; }
+        
+        /// sets the task name
+        void set_name(const std::string &n) { name = n; } 
 
         /// sets the period
         void set_period(int t) throw(IllegalValue); 
@@ -102,7 +106,9 @@ namespace  Scan {
     */
     std::istream & operator>>(std::istream &i, Task &t) throw(IllegalValue);
 
-    // bool task_cmp_ids(const Task &a, const Task &b); 
+    DECL_EXC(ValueAlreadySet);
+
+    Task create_task(const PropertyList &p);
 }
 
 #endif

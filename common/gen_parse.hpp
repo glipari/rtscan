@@ -16,7 +16,6 @@ bool myparse(std::istream& input, const std::string filename, DataType &result)
     namespace qi = boost::spirit::qi;
     namespace ascii = boost::spirit::ascii;
     namespace classic = boost::spirit::classic;
-    // using boost::spirit::ascii::space;
    
     typedef std::istreambuf_iterator<char> base_iterator_type;
     base_iterator_type in_begin(input);

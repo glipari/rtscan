@@ -1,65 +1,53 @@
 #include <cassert>
 #include <iostream>
+#include <iomanip>
+#include <memory>
 #include "constraint_space.hpp"
 
 namespace Scan {
 
-    const int plane_t::lt = -2;
-    const int plane_t::lte = -1;
-    const int plane_t::gt = 2;
-    const int plane_t::gte = 1;
-    const int plane_t::eq = 0;
+    const int Plane::lt = -2;
+    const int Plane::lte = -1;
+    const int Plane::gt = 2;
+    const int Plane::gte = 1;
     
-    constraint_t::constraint_t(size_t n) : num_vars(n) {}
+    AbstractConstraint::AbstractConstraint(size_t n) : num_vars(n) {}
 
-    bool constraint_t::contains(const point_t &p) const
-    {
-        return is_in(p);
-    }
-
-    constraint_t *constraint_t::complement() const
-    {
-        return negate();
-    }
-
-
-    plane_t::plane_t(size_t n) : constraint_t(n), a(n), sign(0), b(0)
+    Plane::Plane(size_t n) : AbstractConstraint(n), a(n), sign(0), b(0)
     {
         for (auto &x : a) x = 0; 
     }
     
-    plane_t::plane_t(const coeff_row_t &coeff, int s, double c) :
-        constraint_t(coeff.size()), a(coeff), sign(s), b(c)
+    Plane::Plane(const coeff_row_t &coeff, int s, double c) :
+        AbstractConstraint(coeff.size()), a(coeff), sign(s), b(c)
     {
     }
 
-    plane_t * plane_t::copy() const
+    Plane * Plane::copy() const
     {
-        return new plane_t(*this);
+        return new Plane(*this);
     }
     
-    std::ostream& operator<<(std::ostream &os, const plane_t &s)
+    void Plane::print(std::ostream &os) const
     {
         int i = 1;
-        for (auto x : s.a) {
+        for (auto x : a) {
             if (x > 0) 
-                os << " + " << x << " x(" << i << ")";
+                os << " +" << std::setw(4) << x << " x(" << i << ")";
             else if (x < 0) 
-                os << " " << x << " x(" << i << ")";
-            else os << " + 0 "; 
+                os << " " << std::setw(5) << x << " x(" << i << ")";
+            else os << "           "; 
             i++;
         } 
-        if (s.sign == plane_t::lt)      os << " <  ";
-        else if (s.sign == plane_t::lte) os << " <= ";
-        else if (s.sign == plane_t::eq)  os << " =  ";
-        else if (s.sign == plane_t::gte)  os << " >= ";
-        else if (s.sign == plane_t::gt)  os << " >  ";
+        if (sign == Plane::lt)      os << " <  ";
+        else if (sign == Plane::lte) os << " <= ";
+        else if (sign == Plane::gte)  os << " >= ";
+        else if (sign == Plane::gt)  os << " >  ";
     
-        os << s.b;
-        return os;
+        os << std::setw(5) << b;
     }
     
-    bool plane_t::is_in(const point_t &p) const
+    bool Plane::is_in(const point_t &p) const
     {
         assert(p.size() == a.size());
         double sum = 0;
@@ -74,8 +62,6 @@ namespace Scan {
             break;
         case lte: return (sum <= b);
             break;
-        case eq: return (sum == b);
-            break;
         case gt: return (sum > b);
             break;
         case gte: return (sum >= b);
@@ -85,159 +71,310 @@ namespace Scan {
         return false;
     }
 
-    void plane_t::change_sign()
+    void Plane::change_sign()
     {
         for (auto &x : a) x = -x;
         sign = -sign;
         b = -b;
     }
 
-    plane_t plane_t::normal_form() const
+    Plane& Plane::normal_form()
     {
-        plane_t x = *this;
-        if (x.sign == gt || x.sign == gte) x.change_sign();
-        return x;
+        //Plane x = *this;
+        if (sign == gt || sign == gte) change_sign();
+        return *this;
     }
         
 
-    plane_t *plane_t::negate() const
+    Plane *Plane::negate() const
     {
-        plane_t *p = copy();
-        p->sign = -sign;
+        Plane *p = copy();
+        if (sign == lt) p->sign = gte;
+        else if (sign == lte) p->sign = gt;
+        else if (sign == gte) p->sign = lt;
+        else if (sign == gt) p->sign = lte;
         return p;
     }
 
-    space_t::space_t(size_t n) : constraint_t(n), cs()
+
+    void Plane::project(unsigned varindex, double val)
+    {
+        assert(varindex < num_vars);
+        b = b - a[varindex] * val;
+        a[varindex] = 0;
+    }
+
+
+    bool Conjunction::is_in(const point_t &p) const
+    {
+        for (auto &pl : planes) 
+            if (!pl.is_in(p)) return false;
+        return true;
+    }
+
+    Conjunction *Conjunction::copy() const
+    {
+        return new Conjunction(*this);
+    }
+
+    void PlaneSet::project(unsigned varindex, double val)
+    {
+        for (auto &x:planes) x.project(varindex, val);
+    }
+
+
+    void PlaneSet::add_plane(const Plane &p)
+    {
+        assert(p.get_nvars() == get_nvars());
+        planes.push_back(p);        
+    }
+
+    Plane PlaneSet::get(unsigned i) const
+    {
+        assert(i < planes.size());
+        return planes[i];
+    }
+    
+    Plane & PlaneSet::at(unsigned i) 
+    {
+        assert(i < planes.size());
+        return planes[i];        
+    }
+
+
+    AbstractConstraintSet *Conjunction::negate() const
+    {
+        Disjunction *s = new Disjunction(num_vars);
+        for (auto &pp : planes) {
+            std::unique_ptr<Plane> ptr(pp.negate());
+            s->add_plane(*ptr);
+        }
+        return s;
+    }
+    
+    void PlaneSet::normalize()
+    {
+        for (auto &x : planes) x.normal_form();
+    }
+    
+
+
+    void Conjunction::print(std::ostream &os) const
+    {
+        for (unsigned i=0; i<size(); ++i) 
+            os << planes[i] << std::endl;
+    }
+
+
+    void Conjunction::tighen()
+    {
+        unsigned k = size();
+        unsigned i=0;
+        while (i<k) {
+            Conjunction s2(*this);
+            std::unique_ptr<Plane> ptr(s2.planes[i].negate());
+            s2.planes[i] = *ptr;
+            if (!fme_is_feasible(s2)) {
+                std::vector<Plane>::iterator it = planes.begin() + i;
+                planes.erase(it);
+                k--;
+            }
+            else i++;
+        }
+    }
+
+
+
+    bool Disjunction::is_in(const point_t &p) const
+    {
+        for (auto &pl : planes) 
+            if (pl.is_in(p)) return true;
+        return false;
+    }
+
+    Disjunction *Disjunction::copy() const
+    {
+        return new Disjunction(*this);
+    }
+
+
+    AbstractConstraintSet *Disjunction::negate() const
+    {
+        Conjunction *s = new Conjunction(num_vars);
+        for (auto &pp : planes) {
+            std::unique_ptr<Plane> ptr(pp.negate());
+            s->add_plane(*ptr);
+        }
+        return s;
+    }
+    
+    
+
+    void Disjunction::print(std::ostream &os) const
+    {
+        os << "OR {" << std::endl;
+        for (unsigned i=0; i<size(); ++i) 
+            os << planes[i] << std::endl;
+        os << "}" << std::endl;
+    }
+
+    void Disjunction::tighen()
+    {
+        std::unique_ptr<Conjunction> s1((Conjunction *)negate());
+        s1->tighen();
+        std::unique_ptr<Disjunction> s2((Disjunction *)s1->negate());
+        
+        planes.clear();
+        for (unsigned i = 0; i<s2->size(); i++) 
+            add_plane(s2->get(i));
+    }
+
+
+    ConstraintSet::ConstraintSet(size_t n) : AbstractConstraintSet(n), cs()
     {
     }
 
-    space_t::~space_t() 
+    ConstraintSet::~ConstraintSet() 
     {
         for (auto x : cs) delete x;
     }
 
-    space_t::space_t(const space_t &s) : constraint_t(s)
+    ConstraintSet::ConstraintSet(const ConstraintSet &s) : AbstractConstraintSet(s)
     {
         for (auto x : s.cs) 
             cs.push_back(x->copy());
     }
+
+    ConstraintSet &ConstraintSet::operator=(const ConstraintSet &other)
+    {
+        if (this != &other) {
+            for (auto x : cs) delete x;
+            cs.clear();
+            for (auto x : other.cs) 
+                cs.push_back(x->copy());
+        }
+        return *this;
+    }
     
-    void space_t::add_constraint(const constraint_t &c)
+    
+    void ConstraintSet::add_constraint(const AbstractConstraint &c)
     {
         assert(c.get_nvars() == num_vars);
-        constraint_t *p = c.copy();
+        AbstractConstraint *p = c.copy();
         cs.push_back(p);
     }
 
-    void space_t::add_constraint(constraint_t *c)
+    void ConstraintSet::add_constraint(AbstractConstraint *c)
     {
         assert(c->get_nvars() == num_vars);
         cs.push_back(c);
     }
 
-    size_t space_t::size() const
+    size_t ConstraintSet::size() const
     {
         return cs.size();
     }
 
-    conjunct_space_t::conjunct_space_t(size_t n) : space_t(n)
+
+    void ConstraintSet::project(unsigned varindex, double val)
+    {
+        for (auto x : cs) x->project(varindex, val);
+    }
+
+    
+    ConjunctionSet::ConjunctionSet(size_t n) : ConstraintSet(n)
     {
     }
 
 
-    constraint_t *space_t::get(unsigned r) 
+    AbstractConstraint *ConstraintSet::get(unsigned r) 
     {
         assert(r < cs.size());
         
         return cs.at(r);
     }
 
-    conjunct_space_t * conjunct_space_t::copy() const
+    ConjunctionSet * ConjunctionSet::copy() const
     {
-        conjunct_space_t *p = new conjunct_space_t(*this);
+        ConjunctionSet *p = new ConjunctionSet(*this);
         return p;
     }
     
     
-    bool conjunct_space_t::is_in(const point_t &p) const
+    bool ConjunctionSet::is_in(const point_t &p) const
     {
         for (auto x : cs) 
-            if (!x->contains(p)) return false;
+            if (!x->is_in(p)) return false;
         
         return true;
     }
     
-    space_t * conjunct_space_t::negate() const
+    ConstraintSet * ConjunctionSet::negate() const
     {
-        disjunct_space_t *space = new disjunct_space_t(num_vars);
+        DisjunctionSet *space = new DisjunctionSet(num_vars);
         for (auto c : cs) 
             space->add_constraint(c->negate());
         return space;
     }
 
 
-    disjunct_space_t::disjunct_space_t(size_t n) : space_t(n)
+    DisjunctionSet::DisjunctionSet(size_t n) : ConstraintSet(n)
     {
     }
 
-    disjunct_space_t * disjunct_space_t::copy() const
+    DisjunctionSet * DisjunctionSet::copy() const
     {
-        disjunct_space_t *p = new disjunct_space_t(*this);
+        DisjunctionSet *p = new DisjunctionSet(*this);
         return p;
     }
     
 
-    bool disjunct_space_t::is_in(const point_t &p) const
+    bool DisjunctionSet::is_in(const point_t &p) const
     {
         for (auto x : cs) 
-            if (x->contains(p)) return true;
+            if (x->is_in(p)) return true;
         
         return false;
     }
 
-    space_t * disjunct_space_t::negate() const
+    ConstraintSet * DisjunctionSet::negate() const
     {
-        conjunct_space_t *space = new conjunct_space_t(num_vars);
+        ConjunctionSet *space = new ConjunctionSet(num_vars);
         for (auto c : cs) 
             space->add_constraint(c->negate());
         return space;
     }
 
-    conjunct_space_t non_negative_space(int n)
+    Conjunction non_negative_space(int n)
     {
-        conjunct_space_t res(n);
+        Conjunction res(n);
         for (int i=0; i<n; ++i) {
             coeff_row_t r;
             for (int j=0; j<n; ++j) r.push_back(0);
             r[i] = 1;
-            plane_t c = {r, plane_t::gte, 0};
-            res.add_constraint(c);
+            Plane c = {r, Plane::gte, 0};
+            res.add_plane(c);
         }
         return res;
     }
 
-    std::vector<plane_t> get_normalized_planes(conjunct_space_t &space)
+    std::vector<Plane> get_normalized_planes(const Conjunction &space)
     {
         int n = space.size();
-        int m = 0;
-        std::vector<plane_t> planes;
-        for (unsigned i=0; i<n; ++i) {
-            plane_t *q = dynamic_cast<plane_t*>(space.get(i));
-            assert(q!=0);
+        int m = space.get_nvars();
 
-            if (m==0) m = q->a.size();
-            else assert(m == q->a.size());
-
-            planes.push_back(q->normal_form());
-        }
+        std::vector<Plane> planes;
+        for (unsigned i=0; i<n; ++i) 
+            planes.push_back(space.get(i).normal_form());
+        
         return planes;
     }
     
-    void split_planes(const std::vector<plane_t> &p, 
+    void split_planes(const std::vector<Plane> &p, 
                       int k,
-                      std::vector<plane_t> &neg, 
-                      std::vector<plane_t> &pos,
-                      std::vector<plane_t> &nix)
+                      std::vector<Plane> &neg, 
+                      std::vector<Plane> &pos,
+                      std::vector<Plane> &nix)
     {
         for (unsigned j=0; j<p.size(); j++) {
             if (p[j].a[k] < 0) 
@@ -249,13 +386,11 @@ namespace Scan {
         }        
     }
 
-    // Here, I am assuming that "space" only consists of planes.
-    // TODO: 
-    bool is_feasible(conjunct_space_t &space) 
+    bool fme_is_feasible(const Conjunction &space) 
     {
         int n = space.size();   // number of inequalities
 
-        std::vector<plane_t> planes = get_normalized_planes(space);
+        std::vector<Plane> planes = get_normalized_planes(space);
         assert(planes.size() == n);
         int m = planes[0].size();
 
@@ -263,49 +398,61 @@ namespace Scan {
 
         for (unsigned k=0; k<m; ++k) {
             // eliminate the k-th variable;
-            std::vector<plane_t> neg, pos, nix;
+            std::vector<Plane> neg, pos, nix;
             split_planes(planes, k, neg, pos, nix);
-            // std::cout << "neg: " << neg.size() << std::endl;
-            // for (auto &pp : neg) std::cout << pp << std::endl;
-            // std::cout << "pos: " << pos.size() << std::endl;
-            // for (auto &pp : pos) std::cout << pp << std::endl;
-            // std::cout << "nix: " << nix.size() << std::endl;
-            // for (auto &pp : nix) std::cout << pp << std::endl;
 
             planes.clear();
             for (auto &x : nix) 
                 planes.push_back(x);
             
-            // std::cout << "Current content of planes: " << std::endl;
-            // for (auto &pp : planes) std::cout << pp << std::endl;
-
             for (auto &x : neg) {
                 for (auto &y : pos) {
                     double xc = x.a[k];
                     double yc = y.a[k];
                     coeff_row_t newrow(m);
                     for (unsigned h=0; h<m; ++h) 
-                        //if (h == k) newrow[h] = 0;
-                        //else 
                         newrow[h] = x.a[h] - y.a[h] * xc/yc;
-                    int s = plane_t::lt; 
-                    if (x.sign == plane_t::lte && x.sign == plane_t::lte) 
-                        s = plane_t::lte;
+                    int s = Plane::lt; 
+                    if (x.sign == Plane::lte && y.sign == Plane::lte) 
+                        s = Plane::lte;
                     double b = x.b - y.b *xc/yc;
-                    plane_t newplane(newrow, s, b);
+                    Plane newplane(newrow, s, b);
                     planes.push_back(newplane);
                 }
             }
-            // std::cout << "Current content of planes: " << std::endl;
-            // for (auto &pp : planes) std::cout << pp << std::endl;                
         }
         // all variables have been eliminated, now there remain only
         // tautologies (0 <= b) or contradictions
  
         // look for contradictions
         for (auto &x : planes) {
-            if (x.b < 0) return false;
+            if (x.sign == Plane::lte && x.b < 0) return false;
+            else if (x.sign == Plane::lt && x.b <=0) return false;
         }
         return true;
+    }
+    
+    void ConjunctionSet::print(std::ostream &os) const
+    {
+        os << "AND { " << std::endl;
+        for (unsigned i = 0; i<size(); ++i) {            
+            os << *(cs[i]) << std::endl << std::endl;
+        }
+        os << "}";
+    }
+
+    void DisjunctionSet::print(std::ostream &os) const
+    {
+        os << "OR { " << std::endl;
+        for (unsigned i = 0; i<size(); ++i) {            
+            os << *(cs[i]) << std::endl << std::endl;
+        }
+        os << "}";
+    }    
+
+    std::ostream& operator<<(std::ostream &os, const AbstractConstraint &s)
+    {
+        s.print(os);
+        return os;
     }
 }
