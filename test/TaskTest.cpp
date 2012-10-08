@@ -9,7 +9,7 @@
 
 #include <models/task.hpp>
 #include <analysis/task_utility.hpp>
-#include <common/property_parser.hpp>
+#include <models/task_parser.hpp>
 
 
 using namespace std;

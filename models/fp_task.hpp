@@ -3,6 +3,7 @@
 
 #include <models/task_ex.hpp>
 #include <models/haspriority.hpp>
+#include <common/property.hpp>
 
 namespace Scan {
     typedef TaskEx<HasPriority> FPTask;

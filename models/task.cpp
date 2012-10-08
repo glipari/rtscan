@@ -5,6 +5,7 @@
 #include <string>
 
 #include <models/task.hpp>
+#include <common/property_parser.hpp>
 
 using namespace std;
 
@@ -123,106 +124,4 @@ namespace Scan {
     }
 
     using namespace std;
-
-
-    template<class T>
-    bool check_value(const map<string, T> &m, const string &n)
-    {
-        return m.find(n) != m.end();
-    }
-
-    template <class T>
-    void check_and_store_value(map<string, T> &m, const string &n, T v)
-    {
-        if (check_value(m, n)) THROW_EXC(ValueAlreadySet, "value already set");
-        else m[n] = v;
-    }
-    
-    template <class T> 
-    void store_value(map<string, T> &m, const string &n, T v)
-    {
-        m[n] = v;
-    } 
-
-
-    struct TaskVisitor : public boost::static_visitor<> 
-    {
-        map<string, double> d_values;
-        map<string, int> i_values;
-        vector< vector<string> > md_keys;
-        vector< vector<string> > od_keys;
-        vector< vector<string> > mi_keys;
-        vector< vector<string> > oi_keys;
-
-        string name;
-        string type;
-        
-        TaskVisitor() : name(""), type("") {
-            md_keys.push_back({"c", "C", "wcet"}); 
-            od_keys.push_back({"d", "D", "dline"}); 
-            od_keys.push_back({"j", "J", "jitter"}); 
-            mi_keys.push_back({"p", "T", "period"}); 
-            oi_keys.push_back({"o", "O", "offset"}); 
-        }
-        
-        void operator()(const PropertyList &plist) {
-            // nothing to do right now
-            name = plist.name;
-            type = plist.type;
-            for (auto &x : plist.children) 
-                boost::apply_visitor(std::ref(*this), x);
-        }
-        
-        string check_keyword(const vector< vector<string> > &v, const string &name) {
-            for (auto const &x : v) {
-                string k = x[0];
-                for (auto const &y : x)
-                    if (name ==  y) return k;
-            } 
-            return "";
-        }
-
-        void operator()(const Property &p) {
-            // if the p.name is equal to one of the keywords, then 
-            // store that in the appropriate data structure
-            string k = check_keyword(md_keys, p.name);
-            if (k != "") check_and_store_value(d_values, k, p.get_double());
-            else {
-                k = check_keyword(od_keys, p.name);
-                if (k != "") check_and_store_value(d_values, k, p.get_double());
-                else {
-                    k = check_keyword(mi_keys, p.name);
-                    if (k != "") check_and_store_value(i_values, k, p.get_int());
-                    else {
-                        k = check_keyword(oi_keys, p.name);
-                        if (k != "") check_and_store_value(i_values, k, p.get_int());
-                    }
-                }
-            }
-        }
-
-        Task create_task() {
-            if (check_value(d_values, "d")) d_values["d"] = d_values["p"];
-            if (check_value(d_values, "j")) d_values["j"] = 0;
-            if (check_value(d_values, "o")) d_values["o"] = 0;
-            
-            Task t(d_values["c"], 
-                   d_values["d"],
-                   i_values["p"], 
-                   d_values["j"], 
-                   d_values["o"]);
-            t.set_name(name);
-            return t;
-        }
-    };
-
-    Task create_task(const PropertyList &p)
-    {
-        TaskVisitor vis;
-        vis(p);
-        return vis.create_task();
-    }
-
-
-
 }
