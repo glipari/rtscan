@@ -6,7 +6,7 @@
 #include <common/property.hpp>
 
 namespace Scan {
-    typedef TaskEx<HasPriority> FPTask;
+    typedef TaskEx<HasPriority> FPTask;    
 }
 
 #endif

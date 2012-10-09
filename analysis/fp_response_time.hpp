@@ -9,22 +9,42 @@
 #include <analysis/task_utility.hpp>
 
 namespace Scan {
+    template<class Type, class Prop>
+    struct CmpFunctorIncr {
+        Prop fun;
+        CmpFunctorIncr(Prop f) : fun(f) {}
+        bool operator()(Type x, Type y) {
+            return (x.*fun)() < (y.*fun)();
+        }
+    };
+
+    template<class Type, class Prop>
+    struct CmpFunctorDecr {
+        Prop fun;
+        CmpFunctorDecr(Prop f) : fun(f) {}
+        bool operator()(Type x, Type y) {
+            return (x.*fun)() < (y.*fun)();
+        }
+    };
+
     template <typename Iter, typename Prop>
     void sort_by_increasing(Iter b, Iter e, Prop f) 
     {
         typedef typename std::iterator_traits<Iter>::value_type Type;
-        std::sort(b, e, [f](Type x, Type y) {
+        /**std::sort(b, e, [f](Type x, Type y) {
                 return (x.*f)() < (y.*f)();
-            });
+                });*/
+        sort(b, e, CmpFunctorIncr<Type, Prop>(f));
     }
 
     template <typename Iter, typename Prop>
     void sort_by_decreasing(Iter b, Iter e, Prop f) 
     {
         typedef typename std::iterator_traits<Iter>::value_type Type;
-        std::sort(b, e, [f](Type x, Type y) {
+        /**std::sort(b, e, [f](Type x, Type y) {
                 return (x.*f)() > (y.*f)();
-            });
+                });*/
+        sort(b, e, CmpFunctorDecr<Type, Prop>(f));
     }
  
     template <typename Iter>
@@ -35,10 +55,12 @@ namespace Scan {
         
         sort_by_increasing(b, e, &Type::get_period);      
         int k=0;
-        for_each(b, e, [&k](Ref a) { k++; });
+        /**for_each(b, e, [&k](Ref a) { k++; });
         for_each(b, e, [&k](Ref a) {
                 a.set_priority(k); --k; 
-            });
+                });*/
+        for (Iter i=b; i!=e; i++) k++;
+        for (Iter i=b; i!=e; i++) { i->set_priority(k); k--;}
     }
 
     template <typename Iter>
@@ -50,10 +72,12 @@ namespace Scan {
         sort_by_increasing(b, e, &Type::get_dline);        
         
         int k=0;
-        for_each(b, e, [&k](Ref a) { k++; });
-        for_each(b, e, [&k](Ref a) {
-                a.set_priority(k); --k; 
-            });
+        for (Iter i=b; i!=e; i++) k++;
+        for (Iter i=b; i!=e; i++) { i->set_priority(k); k--;}
+        // for_each(b, e, [&k](Ref a) { k++; });
+        // for_each(b, e, [&k](Ref a) {
+        //         a.set_priority(k); --k; 
+        //     });
     }
 
     DECL_EXC(RespTimeTooLarge);

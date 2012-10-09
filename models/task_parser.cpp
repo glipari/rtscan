@@ -5,13 +5,15 @@ namespace Scan {
     {
         add_double_parameter({"wcet", "c", "C"}, 0, true);
         add_double_parameter({"jitter", "j", "J"}, 0);
-        add_double_parameter({"dline", "d", "D"}, 0);
+        add_double_parameter({"dline", "d", "D", "deadline"}, -1);
         add_int_parameter({"period", "T", "p"}, 0, true);
         add_int_parameter({"offset", "o", "off"}, 0);
     }
 
     Task TaskVisitor::create_task() {
         if (!check_mandatory()) THROW_EXC(IllegalValue, "Mandatory parameter is missing");
+        if (d_values["dline"] < 0.0) 
+            d_values["dline"] = i_values["period"];
         
         Task t(d_values["wcet"], 
                d_values["dline"],
@@ -31,14 +33,17 @@ namespace Scan {
     }
 
 
-    FPTaskVisitor::FPTaskVisitor()
+    FPTaskVisitor::FPTaskVisitor() : TaskVisitor()
     {
         add_int_parameter({"priority", "prio"}, 1, true);
-        
     }
+
     FPTask FPTaskVisitor::create_task()
     {
-        if (!check_mandatory()) THROW_EXC(IllegalValue, "Mandatory parameter is missing");
+        if (!check_mandatory()) 
+            THROW_EXC(IllegalValue, "Mandatory parameter is missing");
+        if (d_values["dline"] < 0.0) 
+            d_values["dline"] = i_values["period"];
         
         FPTask t(d_values["wcet"], 
                  d_values["dline"],
