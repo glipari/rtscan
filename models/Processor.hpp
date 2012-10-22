@@ -18,6 +18,7 @@ private:
     double free; /** free bandwidth **/
     int id; /** processor id **/
     bool used_flag; /** true if processor is used **/
+   std::vector<int> neighbour;
 
 
 
@@ -36,6 +37,7 @@ public:
        @param u : start value of processor utilisation bandwidth .
     */
     Processor(double u);
+    Processor(double u, vector<int> near);
     /*** Copy constructor */
     Processor(const Processor &p);
 
@@ -49,6 +51,9 @@ public:
     bool update(double bw);
     void set_flag_utilised(bool f) ;
     bool get_flag_utilised() const;
+    vector<int> get_neighbour() ;
+     Processor& operator=(const Processor &p);
+     void subtraction_bw(double bw);
 
 };
 /**
@@ -72,7 +77,7 @@ class ProcCmpUtilizeIncr : public std::less<Processor>
 public:
     bool operator()(const Processor &a,  const  Processor &b)
     {
-        return a.get_free() <= b.get_free();
+        return a.get_free() < b.get_free();
     }
 };
 
@@ -82,7 +87,7 @@ class ProcCmpUtilizeDecr : public std::less<Processor>
 public:
     bool operator()(const Processor &a,  const  Processor &b)
     {
-        return a.get_free() >= b.get_free();
+        return a.get_free() > b.get_free();
     }
 };
 

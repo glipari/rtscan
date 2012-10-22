@@ -9,8 +9,11 @@
 #include <models/taskset.hpp>
 #include <models/Stage.hpp>
 #include <models/Proc_Allocation.hpp>
+#include <common/UsefulF.hpp>
 #include <sstream>
 #include <fstream>
+
+
 
 
 
@@ -30,13 +33,21 @@ void sort_proc(vector<Processor> proc)
     /*** check if pipes are feasible */
 class CheckFeasibility
 {
-
     vector<vector<int>> positions_combinations;
-    vector <Feasible_Allcoation> feasible_all;
+    /** contains all feasible combination of allocation tasks;
+        after the execution of check_feasibility_greedy the
+        all_feasible_combinations[0] contains the solution
+        founded from greedy algorithm
+    **/
+    vector <Feasible_Allcoation> all_feasible_combinations;
+    vector<int> index_allocated_pipe;
+    vector<int>index_not_allocated_pipe;
     vector< pair<double,double> >period_deadline;
     int verbose;
-    /* type of algorithm used to select taks*/
+    bool deallocation_reallocation;
+    /** type of algorithm used to select tasks **/
     orderTaskSelection order_task;
+     /** type of algorithm used to select processor **/
     precSelectionAlg proc_algorithm;
     vector<Processor> processors;
     vector <TaskSet> task_sets;
@@ -45,6 +56,7 @@ class CheckFeasibility
     void print_feasible_combination();
     int select_Processor(vector<Processor> *proc,  double sigma);
     double compute_partialBW(vector<Stage_Set>sets);
+    vector<Processor> give_neighbour_processors(vector<Processor> pr);
     /** Given a combinations, return tasks of pipe grouping
      according split combination
      @param position: is a combination (for example
@@ -72,7 +84,13 @@ class CheckFeasibility
     int get_index_of_proc(vector <Procs_Allocation> v,Processor p);
     vector<Stage_Set>  give_task_order(vector<Stage_Set>  sets_of_tasks);
     void create_final_file();
-bool check_feasibility_greedy( vector<Processor> *pro,int max_split);
+    bool check_feasibility_greedy( vector<Processor> *pro,int max_split);
+    void create_final_file_greedy(string file_name);
+    bool check_one_pipe(int index_pipe,int max_split, vector<Processor>*pro,vector <Procs_Allocation>* one_feas_all_final ,ofstream &u_file);
+    void remove_pipe(int index_pipe);
+    void recombine_allocation(int max_split, vector<Processor>*proc,ofstream &u_file);
+
+
 
 
 
@@ -89,14 +107,14 @@ public:
       @param period_deadline: used to inizialized Allocation result.
       @param ps: assigned to processors.
         */
-    CheckFeasibility( int orderTask, int Alg,  vector<  TaskSet> tss,vector< pair<double,double> >period_deadline, vector<Processor> ps,int v);
-    //  void initTaskSelectionSet();
-
+    CheckFeasibility( int orderTask, int Alg,  vector<  TaskSet> tss,vector< pair<double,double> >period_deadline, vector<Processor> ps,vector<vector<int>> neigh,int v);
     void check();
-
+    void recombine_allocation();
+    inline void set_realloc_flag(bool flag){ deallocation_reallocation=flag;}
 
 
 };
+
 
 }
 #endif // CHEACKFEASIBILITY_HPP_INCLUDED
