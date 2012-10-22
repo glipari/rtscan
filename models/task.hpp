@@ -7,7 +7,6 @@
 
 #include <common/exceptions.hpp>
 #include <models/has_unique_id.hpp>
-#include <common/property.hpp>
 
 namespace  Scan {
     /** 
@@ -105,10 +104,6 @@ namespace  Scan {
        case this is not true.
     */
     std::istream & operator>>(std::istream &i, Task &t) throw(IllegalValue);
-
-    DECL_EXC(ValueAlreadySet);
-
-    Task create_task(const PropertyList &p);
 }
 
 #endif

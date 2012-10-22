@@ -79,4 +79,89 @@ namespace Scan {
         for (int i=0; i<indent_level; ++i) std::cout << "  ";
         std::cout << "}" << std::endl;
     }
+
+    
+    GenPropertyVisitor::GenPropertyVisitor() : name(""), type("") 
+    {
+    }
+
+    std::string GenPropertyVisitor::check_keyword(const std::vector<SVDouble> &v, const std::string &name) const
+    {
+        for (auto const &x : v) {
+            std::string k = x.first[0];
+            for (auto const &y : x.first)
+                if (name ==  y) return k;
+        } 
+        return "";
+    }
+        
+    std::string GenPropertyVisitor::check_keyword(const std::vector<SVInt> &v, const std::string &name) const
+    {
+        for (auto const &x : v) {
+            std::string k = x.first[0];
+            for (auto const &y : x.first)
+                if (name ==  y) return k;
+        } 
+        return "";
+    }
+
+
+    template <class T>
+    void check_and_store_values(std::map<std::string, T> &m, const std::string &n, T v)
+    {
+        if (m.find(n) != m.end()) THROW_EXC(ValueAlreadySet, "value already set");
+        else m[n] = v;
+    }
+
+    void GenPropertyVisitor::operator()(const Property &p) 
+    {
+        std::string kd = check_keyword(keywords_double, p.name);
+        std::string ki = check_keyword(keywords_int, p.name);
+        if (kd != "") {
+            if (d_values.find(kd) != d_values.end()) THROW_EXC(ValueAlreadySet, "value already set");
+            else d_values[kd] = p.get_double();
+        }
+        if (ki != "") {
+            if (i_values.find(ki) != i_values.end()) THROW_EXC(ValueAlreadySet, "value already set");
+            else i_values[ki] = p.get_int();
+        }
+    }
+
+    void GenPropertyVisitor::operator()(const PropertyList &pl) 
+    {
+        name = pl.name;
+        type = pl.type;
+        for (auto &x : pl.children) 
+            boost::apply_visitor(std::ref(*this), x);            
+    } 
+
+
+    bool GenPropertyVisitor::check_mandatory() const
+    {
+        // for every mandatory field, there must be a field in d_values or i_values
+        for (auto &x : mandatory_keys) {
+            bool f = false;
+            for (auto &y : d_values) 
+                if (x == y.first) f = true;
+            for (auto &y : i_values) 
+                if (x == y.first) f = true;
+            if (!f) {
+                std::cerr << "Mandatory property " << x << " not set in " 
+                          << type << "(" << name << ")" << std::endl;
+                return false;
+            }
+        }
+    }
+   
+    void GenPropertyVisitor::add_double_parameter(const SVector &v, double x, bool mandatory) 
+    {
+        keywords_double.push_back(make_pair(v, x));
+        if (mandatory) mandatory_keys.push_back(v[0]);
+    }
+
+    void GenPropertyVisitor::add_int_parameter(const SVector &v, int x, bool mandatory) 
+    {
+        keywords_int.push_back(make_pair(v, x));
+        if (mandatory) mandatory_keys.push_back(v[0]);
+    }
 }
