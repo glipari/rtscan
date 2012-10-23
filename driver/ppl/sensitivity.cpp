@@ -51,13 +51,13 @@ public:
 };
 
 
-Pointset_Powerset<C_Polyhedron> create_powerset(std::vector<FPTask> &v)
-{
-    //sort_by_decreasing(v.begin(), v.end(), &FPTask::get_priority);
 
-    const int ntasks = v.size(); 
-    Pointset_Powerset<C_Polyhedron> final(ntasks, EMPTY);
-    // the base polyhedron
+Pointset_Powerset<C_Polyhedron> build_hyperplanes_powerset(vector<FPTask> &v)
+{
+    int ntasks = v.size();
+
+    PPL::Pointset_Powerset<PPL::C_Polyhedron> final_ps(ntasks, EMPTY);
+
     PPL::C_Polyhedron base(ntasks);
     for (int i=0;i<ntasks;i++) {
         PPL::Variable xx(i);
@@ -67,9 +67,28 @@ Pointset_Powerset<C_Polyhedron> create_powerset(std::vector<FPTask> &v)
         base.add_constraint(cs_max);
     }
     
-    std::vector<Task> v2;
-    copy(v.begin(), v.end(), v2.begin());
-
+    final_ps.add_disjunct(base);
+    for (int j=1; j<ntasks;j++) {
+        PPL::Pointset_Powerset<PPL::C_Polyhedron> ps(ntasks, EMPTY);
+        
+        double dline = v[j].get_dline();
+        vector<double> points = compute_points(v.begin(), v.end()-(ntasks-j), dline);
+        for (int k=0; k<points.size(); k++) {
+            PPL::C_Polyhedron cp = base; 
+            PPL::Linear_Expression le;
+            for (int i=0; i<=j; i++) {
+                PPL::Variable xx(i); 
+                le += xx * ((int)compute_coeff(points[k], v[i].get_period()));
+            }
+            
+            PPL::Constraint cs = (le <= (int)points[k]);
+            cp.add_constraint(cs);
+            ps.add_disjunct(cp);
+        }
+        // at this point, I have a ps. I have to intersect with the previous one
+        final_ps.intersection_assign(ps);
+    }
+    return final_ps;
 }
 
 int main(int argc, char *argv[])
@@ -96,31 +115,7 @@ int main(int argc, char *argv[])
         cout << *i << endl;
 
     // tasks have been read, now create the Pointset_Powerset
-    int ntasks = sv.v.size();
-    
-    PPL::Pointset_Powerset<PPL::C_Polyhedron> ps(ntasks, EMPTY);
-    PPL::C_Polyhedron base(ntasks);
-    for (int i=0;i<ntasks;i++) {
-        PPL::Variable xx(i);
-        PPL::Constraint cs_min = (xx >= 0);
-        base.add_constraint(cs_min);
-        PPL::Constraint cs_max = (xx <= (int)sv.v[i].get_dline());
-        base.add_constraint(cs_max);
-    }
-    
-    double dline = sv.v[ntasks-1].get_dline();
-    vector<double> points = compute_points(sv.v.begin(), sv.v.end()-1, dline);
-    for (int k=0; k<points.size(); k++) {
-        PPL::C_Polyhedron cp = base; 
-        PPL::Linear_Expression le;
-        for (int i=0; i<ntasks; i++) {
-            PPL::Variable xx(i); 
-            le += xx * ((int)compute_coeff(points[k], sv.v[i].get_period()));
-        }
-        PPL::Constraint cs = (le <= (int)points[k]);
-        cp.add_constraint(cs);
-        ps.add_disjunct(cp);
-    }
+    PPL::Pointset_Powerset<PPL::C_Polyhedron> ps = build_hyperplanes_powerset(sv.v);
 
     using namespace PPL::IO_Operators;
     cout << ps << endl;
