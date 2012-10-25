@@ -34,7 +34,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = sensitivity$(EXEEXT)
+noinst_PROGRAMS = sensitivity$(EXEEXT) distributed$(EXEEXT)
 subdir = driver/ppl
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -49,7 +49,10 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_sensitivity_OBJECTS = sensitivity.$(OBJEXT)
+am_distributed_OBJECTS = distributed.$(OBJEXT) ppl_utils.$(OBJEXT)
+distributed_OBJECTS = $(am_distributed_OBJECTS)
+distributed_DEPENDENCIES =
+am_sensitivity_OBJECTS = sensitivity.$(OBJEXT) ppl_utils.$(OBJEXT)
 sensitivity_OBJECTS = $(am_sensitivity_OBJECTS)
 sensitivity_DEPENDENCIES =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
@@ -65,8 +68,8 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(sensitivity_SOURCES)
-DIST_SOURCES = $(sensitivity_SOURCES)
+SOURCES = $(distributed_SOURCES) $(sensitivity_SOURCES)
+DIST_SOURCES = $(distributed_SOURCES) $(sensitivity_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -192,8 +195,10 @@ top = ../../
 AM_CPPFLAGS = -I${top} -I/usr/include/ppl
 AM_CXXFLAGS = -Wall
 AM_LDFLAGS = -L${top}common -L${top}models -L${top}analysis -L/usr/local/lib/
-sensitivity_SOURCES = sensitivity.cpp
+sensitivity_SOURCES = sensitivity.cpp ppl_utils.cpp
 sensitivity_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem -lboost_program_options -lppl
+distributed_SOURCES = distributed.cpp ppl_utils.cpp
+distributed_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem -lboost_program_options -lppl
 all: all-am
 
 .SUFFIXES:
@@ -237,6 +242,9 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+distributed$(EXEEXT): $(distributed_OBJECTS) $(distributed_DEPENDENCIES) $(EXTRA_distributed_DEPENDENCIES) 
+	@rm -f distributed$(EXEEXT)
+	$(CXXLINK) $(distributed_OBJECTS) $(distributed_LDADD) $(LIBS)
 sensitivity$(EXEEXT): $(sensitivity_OBJECTS) $(sensitivity_DEPENDENCIES) $(EXTRA_sensitivity_DEPENDENCIES) 
 	@rm -f sensitivity$(EXEEXT)
 	$(CXXLINK) $(sensitivity_OBJECTS) $(sensitivity_LDADD) $(LIBS)
@@ -247,6 +255,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/distributed.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ppl_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sensitivity.Po@am__quote@
 
 .cpp.o:

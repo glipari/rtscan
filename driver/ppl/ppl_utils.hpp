@@ -2,16 +2,15 @@
 #define PPL_UTILS_HPP
 #include <ppl.hh>
 #include <vector>
+#include <string>
 #include <iostream>
 #include <models/fp_task.hpp>
 #include <models/task_parser.hpp>
 
 namespace PPL = Parma_Polyhedra_Library;
 
-
-bool check_point_contains(const PPL::Pointset_Powerset<PPL::C_Polyhedron> &ps, 
-                          int xn, int xd, int yn, int yd);
-
+// bool check_point_contains(const PPL::Pointset_Powerset<PPL::C_Polyhedron> &ps, 
+//                           int xn, int xd, int yn, int yd);
 
 class SysVisitor : public boost::static_visitor<> {
 public:
@@ -35,6 +34,10 @@ public:
     
 };
 
-PPL::Pointset_Powerset<PPL::C_Polyhedron> build_hyperplanes_powerset(std::vector<Scan::FPTask> &v);
+PPL::Pointset_Powerset<PPL::C_Polyhedron> build_hyperplanes_powerset(std::vector<Scan::FPTask> &v,
+                                                                     std::vector<std::string> &vars);
+
+PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(std::vector<Scan::FPTask> &v,
+                                                                     std::vector<std::string> &vars);
 
 #endif
