@@ -15,9 +15,9 @@ namespace Scan {
     }
 
     template <class Iter>
-    std::vector<double> compute_points(Iter b, Iter e, double d)
+    std::vector<int> compute_points(Iter b, Iter e, double d)
     {
-        std::vector<double> points;
+        std::vector<int> points;
         // first try: all points
         for (Iter i=b; i !=e; i++) {
             int k=1; 
