@@ -180,8 +180,11 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(vector<FPTas
                         PPL::Variable xx(3*j); 
                         le += xx * myn[n][j];
                     }
+                    PPL::Variable xx(3*i); 
+                    PPL::Variable xj(3*k+2);
+                    le += h * xx;
+                    le += xj;
                     PPL::Constraint cs = (le <= myn[n][k]*v[k].get_period());
-                    //                    cout << cs << endl;
                     cp.add_constraint(cs);
                 }
                 
@@ -191,9 +194,10 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(vector<FPTas
                     le += xx * myn[n][j];
                 }
                 PPL::Variable xx(3*i);
-                le += h * xx;
                 PPL::Variable xd(3*i+1);
-                le += -xd;
+                PPL::Variable xj(3*i+2);
+                le += h * xx;
+                le += -xd+xj;
                 PPL::Constraint cs = (le <= (h-1)*v[i].get_period());
                 cp.add_constraint(cs);
 
@@ -207,6 +211,7 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(vector<FPTas
             cout << "... completed!" << endl;
 
             cout << "Partial pointset: " << final_ps << endl;
+            cout << "Number of sets:" << final_ps.
         }
     }
     return final_ps;
