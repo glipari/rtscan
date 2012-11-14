@@ -8,6 +8,7 @@
 #include <models/Processor.hpp>
 #include <models/taskset.hpp>
 #include <models/Stage.hpp>
+#include<models/Proc_Priority_Comunication.hpp>
 #include <models/Proc_Allocation.hpp>
 #include <common/UsefulF.hpp>
 #include <sstream>
@@ -40,6 +41,7 @@ class CheckFeasibility
         founded from greedy algorithm
     **/
     vector <Feasible_Allcoation> all_feasible_combinations;
+    vector<Proc_Priority_Comunication> proc_comunication_priority_data;
     vector<int> index_allocated_pipe;
     vector<int>index_not_allocated_pipe;
     vector< pair<double,double> >period_deadline;
@@ -56,7 +58,7 @@ class CheckFeasibility
     void print_feasible_combination();
     int select_Processor(vector<Processor> *proc,  double sigma);
     double compute_partialBW(vector<Stage_Set>sets);
-    vector<Processor> give_neighbour_processors(vector<Processor> pr);
+    vector<Processor> give_neighbour_processors(vector<Processor> pr,int level);
     /** Given a combinations, return tasks of pipe grouping
      according split combination
      @param position: is a combination (for example
@@ -89,7 +91,7 @@ class CheckFeasibility
     bool check_one_pipe(int index_pipe,int max_split, vector<Processor>*pro,vector <Procs_Allocation>* one_feas_all_final ,ofstream &u_file);
     void remove_pipe(int index_pipe);
     void recombine_allocation(int max_split, vector<Processor>*proc,ofstream &u_file);
-
+   bool find_processor_using_priority(int level,double deadline,int index_task_set,vector<Stage_Set>sets_of_tasks,double first, vector<Processor> *temp, vector <Procs_Allocation> *one_feas_all,int index_pipe );
 
 
 
@@ -107,7 +109,7 @@ public:
       @param period_deadline: used to inizialized Allocation result.
       @param ps: assigned to processors.
         */
-    CheckFeasibility( int orderTask, int Alg,  vector<  TaskSet> tss,vector< pair<double,double> >period_deadline, vector<Processor> ps,vector<vector<int>> neigh,int v);
+    CheckFeasibility( int orderTask, int Alg,  vector<  TaskSet> tss,vector< pair<double,double> >period_deadline, vector<Processor> ps,vector<vector<int>> neigh,int v, vector<Proc_Priority_Comunication>pr);
     void check();
     void recombine_allocation();
     inline void set_realloc_flag(bool flag){ deallocation_reallocation=flag;}

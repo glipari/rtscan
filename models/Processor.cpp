@@ -13,26 +13,15 @@ Processor::Processor(double u): utilised_Bw(u),free(1-u),id(increment),used_flag
     increment++;
 }
 
-Processor::Processor(double u, vector<int> near): utilised_Bw(u),free(1-u),id(increment),used_flag(false)/**,init_free(1-u)**/
-{
-    increment++;
-    int size=near.size();
-    for(int i=0; i <near.size();i++)
-    neighbour.push_back(near.at(i));
-}
+
 Processor::Processor(const Processor &p)
 {
     utilised_Bw=p.utilised_Bw;
     free= p.free;
     id= p.id;
     used_flag=p.used_flag;
-    for(int i =0; i< p.neighbour.size(); i++)
-    neighbour.push_back(p.neighbour.at(i));
 }
 
-vector<int> Processor::get_neighbour() {
-    return neighbour;
-}
 double Processor::get_free()const
 {
     return free;
@@ -76,9 +65,7 @@ bool Processor::update(double bw)
     free= p.free;
     id= p.id;
     used_flag=p.used_flag;
-    neighbour.clear();
-    for(int i =0; i< p.neighbour.size(); i++)
-    neighbour.push_back(p.neighbour.at(i));
+
         return *this;
     }
 
@@ -89,12 +76,10 @@ bool Processor::update(double bw)
     s<<"UtilisedBW :"<<p.get_utilised_Bw()<<endl;
     s<<"free bw :"<<p.get_free()<<endl;
     s<<"neighbour"<<endl;
-    for(int i=0;i< p.get_neighbour().size();i++)
-    {
-        s<<p.get_neighbour().at(i);
-        s<<";";
-        s<<endl;
-    }
+    if(p.get_flag_utilised())
+    s<<"is used"<<endl;
+    else
+    s<<"is not used"<<endl;
     s << "-------------------" << endl;
     return s;
 }
@@ -102,16 +87,3 @@ bool Processor::update(double bw)
 
 }
 
-
-    std::ostream &operator<<(ostream &s, Processor &p)
-{
-     s<<"**ID** :"<<p.get_Id()<<endl;
-    s<<"UtilisedBW :"<<p.get_utilised_Bw()<<endl;
-    s<<"free bw :"<<p.get_free()<<endl;
-
-    s << "-------------------" << endl;
-    return s;
-}
-
-
-}

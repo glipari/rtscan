@@ -11,12 +11,14 @@ CheckFeasibility::CheckFeasibility(): verbose(0)
 
 }
 
-CheckFeasibility::CheckFeasibility( int orderTask, int Alg,  vector<  TaskSet> tss,vector< pair<double,double> >p_d,vector<Processor> ps,vector<vector<int>> neigh,int v)
+CheckFeasibility::CheckFeasibility( int orderTask, int Alg,  vector<  TaskSet> tss,vector< pair<double,double> >p_d,vector<Processor> ps,vector<vector<int>> neigh,int v,vector<Proc_Priority_Comunication>pr)
     :task_sets(tss), processors(ps),verbose(v)
 {
     output_file.open("Output.txt");
     for(int j=0; j<p_d.size(); j++)
         period_deadline.push_back(p_d.at(j));
+    for(int h=0; h< pr.size(); h++)
+        proc_comunication_priority_data.push_back(pr.at(h));
 
     switch ( orderTask )
     {
@@ -274,36 +276,7 @@ void CheckFeasibility::check()
     output_file.close();
 }
 
-vector<Processor> CheckFeasibility::give_neighbour_processors(vector<Processor> pr)
-{
-    vector<Processor> proc;
-    vector <int> index;
-    for(int i=0; i<pr.size(); i++)
-    {
-        if(pr.at(i).get_flag_utilised()==true)
-        {
 
-            for(int k=0; k<pr.at(i).get_neighbour().size(); k++)
-            {
-                std::vector <int>::iterator it;
-                int neig=pr.at(i).get_neighbour().at(k);
-                it = std::find( index.begin(), index.end(), neig);
-
-                if ( it == index.end() )
-                {
-                    index.push_back(neig );
-                }
-            }
-        }
-    }
-    for(int j=0; j<index.size(); j++)
-    {
-        int h= get_position_in_proc_vector(index.at(j),pr);
-        proc.push_back(pr.at(h));
-    }
-    return proc;
-
-}
 
 int CheckFeasibility::select_Processor(vector<Processor> *proc, double bw)
 {
@@ -568,12 +541,12 @@ vector<Stage_Set> CheckFeasibility:: give_task_order(vector<Stage_Set>  sets_of_
 
 bool CheckFeasibility::check_feasibility_combinations( vector<Processor> *pro,int index_pipe,int max_split,vector<Procs_Allocation  >feasible_other_pipe)
 {
-    double sigma=0;
+
     double bw=0;
     double first= true;
     bool feasible=false;
     vector <Processor > proc;
-    vector<Processor>neighbour;
+
     vector<Procs_Allocation>::iterator it;
     int stage_number= task_sets.at(index_pipe).size();
     int i=0;
@@ -582,6 +555,7 @@ bool CheckFeasibility::check_feasibility_combinations( vector<Processor> *pro,in
     double deadline=period_deadline.at(index_pipe).second;
     while(is_last!=true|| first==true)
     {
+
         is_last=is_last_combination(i,stage_number,max_split);
         proc=create_procs_copy(*pro);
         vector<Stage_Set>sets_of_tasks= give_task_order(get_Stage_Set(combination,index_pipe));
@@ -602,20 +576,8 @@ bool CheckFeasibility::check_feasibility_combinations( vector<Processor> *pro,in
             }
             else
                 bw=sets_of_tasks.at(k).get_util()*sigma;
-            neighbour.clear();
-            neighbour=give_neighbour_processors(proc);
-            if(neighbour.size()!=0)
-            {
-                id_proc=select_Processor(&neighbour,bw);
-                int i_update=get_position_in_proc_vector(id_proc,proc);
-                int j_from_update=get_position_in_proc_vector(id_proc,neighbour);
-                proc[i_update]=neighbour[j_from_update];
-            }
 
-            if(id_proc==-1)
-            {
-                id_proc=select_Processor(&proc,bw);
-            }
+            id_proc=select_Processor(&proc,bw);
             if(id_proc!=-1)
             {
 
@@ -629,7 +591,6 @@ bool CheckFeasibility::check_feasibility_combinations( vector<Processor> *pro,in
                 {
                     Procs_Allocation *one_feas= new Procs_Allocation(proc.at(index_proc),index_pipe, sets_of_tasks.at(k),bw);
                     one_feas_all.push_back(*one_feas);
-
                 }
             }
             else
@@ -660,17 +621,42 @@ bool CheckFeasibility::check_feasibility_combinations( vector<Processor> *pro,in
 }
 
 
+vector<Processor> CheckFeasibility::give_neighbour_processors(vector<Processor> pr,int level)
+{
+    vector<Processor> proc;
+    vector <int> id_neighbour;
+    int index;
+    bool one_used= false;
+    for(int j=0; j<pr.size(); j++)
+    {
+        if(pr.at(j).get_flag_utilised())
+        {
+            id_neighbour= proc_comunication_priority_data.at(pr.at(j).get_Id()).at(level);
+            for(int i=0; i <id_neighbour.size(); i++)
+            {
+                index=get_position_in_proc_vector(id_neighbour.at(i),pr);
+                if(pr.at(index).get_flag_utilised())
+                    proc.push_back(pr.at(index));
+            }
+            one_used=true;
+        }
+    }
+    if(one_used)
+    return proc;
+    else
+    return pr;
 
+
+
+}
 bool CheckFeasibility::check_feasibility_greedy( vector<Processor> *pro,int max_split)
 {
     ofstream u_file;
     u_file.open("Ufile.txt");
     vector <Processor > proc;
     vector <Procs_Allocation> one_feas_all_final;
-    //proc=create_procs_copy(*pro);
     for(int i=0; i<task_sets.size(); i++)
     {
-
         check_one_pipe(i,max_split,pro,&one_feas_all_final,u_file);
     }
     Feasible_Allcoation *pipes_allocated= new Feasible_Allcoation(one_feas_all_final);
@@ -687,6 +673,130 @@ bool CheckFeasibility::check_feasibility_greedy( vector<Processor> *pro,int max_
 }
 
 
+bool CheckFeasibility::check_one_pipe(int i,int max_split, vector<Processor>*proc,vector <Procs_Allocation>* one_feas_all_final ,ofstream &u_file)
+{
+    double tot_u=0;
+    int stage_number= task_sets.at(i).size();
+    int j=0;
+    vector <int> combination=get_combination(stage_number, j);
+    double deadline=period_deadline.at(i).second;
+    vector<Stage_Set>sets_of_tasks= give_task_order(get_Stage_Set(combination,i));
+    bool first=true;
+    bool found=false;
+    bool is_last=false;
+    bool feasible=true;
+    int id_proc=-1;
+    int level=0;
+    while(is_last!=true&& found!=true)
+    {
+        is_last=is_last_combination(j,stage_number,max_split);
+        vector<Processor>temp=create_procs_copy(*proc);
+        printProcessor(temp);
+        double tot_u_sum=0;
+        sets_of_tasks= give_task_order(get_Stage_Set(combination,i));
+        vector <Procs_Allocation> one_feas_all;
+        for(int p=0; p <one_feas_all_final->size(); p++)
+        {
+            one_feas_all.push_back(one_feas_all_final->at(p));
+        }
+
+        feasible=true;
+        int size=sets_of_tasks.size();
+        for(int k=0; k<size && feasible; k++)
+        {
+
+            feasible=find_processor_using_priority(level,deadline, k,sets_of_tasks,first,&temp,&one_feas_all,i);
+            printProcessor(temp);
+            if(!feasible)
+             {
+                j++;
+                if(j<positions_combinations.size())
+                    combination=get_combination(stage_number, j);
+                else
+                    is_last=true;
+            }
+        }
+        if(feasible)
+        {
+           /* u_file<<tot_u;
+            u_file<<";";
+            u_file<<tot_u_sum;
+            u_file<<endl;*/
+            one_feas_all_final->clear();
+            for(int q=0; q <one_feas_all.size(); q++)
+            {
+                one_feas_all_final->push_back(one_feas_all.at(q));
+            }
+            found=true;
+            *proc=create_procs_copy(temp);
+            index_allocated_pipe.push_back(i);
+        }
+        else if(is_last)
+            index_not_allocated_pipe.push_back(i);
+    }
+
+    return feasible;
+
+}
+bool CheckFeasibility::find_processor_using_priority(int level,double deadline,int k,vector<Stage_Set>sets_of_tasks,double first, vector<Processor> *temp, vector <Procs_Allocation> *one_feas_all ,int index_pipe)
+{
+    if(level>=proc_comunication_priority_data.at(0).size())
+    return false;
+    double sigma= compute_partialBW(sets_of_tasks)/(deadline- 0.5*level);
+    int index_proc=-1;
+    double bw;
+    int id_proc;
+    vector<Processor>neighbour;
+    if(first==true)
+    {
+        bw=sets_of_tasks.at(0).get_util();
+        k=0;
+        first=false;
+//        tot_u=bw;
+    }
+    else
+    {
+        bw=sets_of_tasks.at(k).get_util()*sigma;
+        //tot_u_sum=tot_u_sum+bw;
+    }
+    neighbour=give_neighbour_processors(*temp,level);
+
+    id_proc=-1;
+    if(neighbour.size()!=0)
+    {
+        id_proc=select_Processor(&neighbour,bw);
+        if(id_proc!=-1)
+        {
+             int i_update=get_position_in_proc_vector(id_proc,*temp);
+            int j_from_update=get_position_in_proc_vector(id_proc,neighbour);
+            (*temp)[i_update]=neighbour[j_from_update];
+
+                int index=get_index_of_proc(*one_feas_all,temp->at(i_update));
+                if(index!=-1)
+                {
+                    one_feas_all->at(index).update_task_allocated(temp->at(i_update),index_pipe, sets_of_tasks.at(k),bw);
+                }
+                else
+                {
+                    Procs_Allocation *one_feas= new Procs_Allocation(temp->at(i_update),index_pipe, sets_of_tasks.at(k),bw);
+
+                    one_feas_all->push_back(*one_feas);
+                }
+                stampa_vettore(*one_feas_all);
+
+            return true;
+        }
+        else
+            return find_processor_using_priority(level+1, deadline, k,sets_of_tasks, first, temp,one_feas_all,index_pipe);
+
+
+   }
+    else
+    return find_processor_using_priority(level+1, deadline,k, sets_of_tasks, first, temp,one_feas_all, index_pipe);
+
+
+}
+
 void CheckFeasibility::recombine_allocation(int max_split, vector<Processor>*proc,ofstream &u_file)
 {
     u_file<<"-----";
@@ -694,10 +804,10 @@ void CheckFeasibility::recombine_allocation(int max_split, vector<Processor>*pro
     vector<int> index_selectable_pipe;
     vector<int>::iterator it;
     int i=0;
-     ofstream re_file;
+    ofstream re_file;
     re_file.open("reall.txt");
     if(index_allocated_pipe.size()==0 ||index_not_allocated_pipe.size()==0)
-    return;
+        return;
     while( i < how_dealloc)
     {
         int size=index_allocated_pipe.size()-1;
@@ -705,11 +815,11 @@ void CheckFeasibility::recombine_allocation(int max_split, vector<Processor>*pro
         int element= index_allocated_pipe.at(ind);
         it= find(index_selectable_pipe.begin(), index_selectable_pipe.end(), element);
 
-       if(it==index_selectable_pipe.end())
-       {
+        if(it==index_selectable_pipe.end())
+        {
             index_selectable_pipe.push_back(element);
             i++;
-       }
+        }
     }
 
     cout <<"Vettore delle pipe da deallocare"<<endl;
@@ -717,7 +827,7 @@ void CheckFeasibility::recombine_allocation(int max_split, vector<Processor>*pro
     stampa_vettore(index_selectable_pipe);
     re_file<<"Pipe rimosse: ";
     re_file<<endl;
-    for(int j=0; j<index_selectable_pipe.size();j++)
+    for(int j=0; j<index_selectable_pipe.size(); j++)
     {
         re_file<<index_selectable_pipe.at(j);
         re_file<<";";
@@ -725,10 +835,10 @@ void CheckFeasibility::recombine_allocation(int max_split, vector<Processor>*pro
     }
     re_file<<endl;
     vector <Procs_Allocation> one_feas_all_final;
-     vector <Procs_Allocation> temp=all_feasible_combinations.at(0).get_vector_allocation();
+    vector <Procs_Allocation> temp=all_feasible_combinations.at(0).get_vector_allocation();
 
-    for(int h=0; h< temp.size();h++)
-    one_feas_all_final.push_back(temp.at(h));
+    for(int h=0; h< temp.size(); h++)
+        one_feas_all_final.push_back(temp.at(h));
 
     cout<<"Stampa delle combinazioni fattibili dopo la rimozione"<<endl;
     cout<<endl;
@@ -737,14 +847,14 @@ void CheckFeasibility::recombine_allocation(int max_split, vector<Processor>*pro
     int s=index_not_allocated_pipe.size();
     re_file<<"Pipe inserite: ";
     re_file<<endl;
-    for(int k=0; k<s;k++)
+    for(int k=0; k<s; k++)
     {
         int r=index_not_allocated_pipe.at(k);
-       if(check_one_pipe(r,max_split,&processors,&one_feas_all_final,u_file))
-       {
-           re_file<<r;
-           re_file<<";";
-       }
+        if(check_one_pipe(r,max_split,&processors,&one_feas_all_final,u_file))
+        {
+            re_file<<r;
+            re_file<<";";
+        }
 
     }
     Feasible_Allcoation *pipes_allocated= new Feasible_Allcoation(one_feas_all_final);
@@ -758,7 +868,7 @@ void CheckFeasibility::remove_pipe(int index)
     int id;
     int index_processor;
     double bw;
-    for(int i=0; i <all_feasible_combinations.at(0).size();i++)
+    for(int i=0; i <all_feasible_combinations.at(0).size(); i++)
     {
         Procs_Allocation temp= all_feasible_combinations.at(0).get_at(i);
         bw= temp.get_bw_per_pipe(index);
@@ -778,6 +888,10 @@ void CheckFeasibility::remove_pipe(int index)
 
     }
 }
+/*
+
+---------------------seconda modifica ---------------
+
 bool CheckFeasibility::check_one_pipe(int i,int max_split, vector<Processor>*proc,vector <Procs_Allocation>* one_feas_all_final ,ofstream &u_file)
 {
         double tot_u=0;
@@ -886,8 +1000,7 @@ bool CheckFeasibility::check_one_pipe(int i,int max_split, vector<Processor>*pro
         return feasible;
 
 }
-
-/*
+------------------------prima modifica -------------
 bool CheckFeasibility::check_feasibility_greedy( vector<Processor> *pro,int max_split)
 {
     ofstream u_file;
@@ -1039,5 +1152,7 @@ u_file.close();
 
 */
 }
+
+
 
 
