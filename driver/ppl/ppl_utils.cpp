@@ -211,7 +211,7 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(vector<FPTas
             cout << "... completed!" << endl;
 
             cout << "Partial pointset: " << final_ps << endl;
-            cout << "Number of sets:" << final_ps.
+
         }
     }
     return final_ps;
