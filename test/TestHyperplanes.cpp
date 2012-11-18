@@ -10,7 +10,7 @@ TEST(TestHET, Points1)
 {
     vector<FPTask> tset = { {2, 5, 10}, {3, 12, 15} };
 
-    vector<double> p = compute_points(tset.begin(), tset.end(), 12);
+    vector<int> p = compute_points(tset.begin(), tset.end(), 12);
 
     EXPECT_EQ(2, p.size());
     EXPECT_EQ(p[0], 10);
@@ -108,7 +108,6 @@ TEST(TestHET, Disjunctive)
     EXPECT_TRUE(s.is_in({.25,.25}));
 }
 
-
 TEST(TestHET, HyperplanePaper_Example1)
 {
     Plane p1({1, 0, 0}, Plane::lte, 3);
@@ -147,7 +146,6 @@ TEST(TestHET, HyperplanePaper_Example1)
 
     EXPECT_TRUE(space.is_in({10,10,10}));
 }
-
 
 TEST(TestHET, GeneratePointsExample1)
 {
@@ -202,7 +200,6 @@ TEST(TestHET, GeneratePointsExample2)
     EXPECT_TRUE(space.is_in({2,1,3}));
     EXPECT_FALSE(space.is_in({2.1,1,3}));
 }
-
 
 TEST(TestHET, FMEtest1)
 {
