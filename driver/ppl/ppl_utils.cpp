@@ -1,29 +1,10 @@
-#include <boost/math/common_factor.hpp>
-
 #include "ppl_utils.hpp"
 
-
 #include <analysis/hyperplane.hpp>
+#include <analysis/task_utility.hpp>
 
 using namespace Scan;
 using namespace std;
-
-// bool check_point_contains(const PPL::Pointset_Powerset<PPL::C_Polyhedron> &ps, 
-//                           int xn, int xd, int yn, int yd)
-// {
-//     PPL::Variable x(0);
-//     PPL::Variable y(1);
-//     PPL::Constraint c1 = (xd*x == xn);
-//     PPL::Constraint c2 = (yd*y == yn);
-    
-//     PPL::Pointset_Powerset<PPL::C_Polyhedron> ps_point(2, EMPTY);
-//     PPL::C_Polyhedron in1(2);
-//     in1.add_constraint(c1);
-//     in1.add_constraint(c2); 
-//     ps_point.add_disjunct(in1);
-
-//     return ps.contains(ps_point);
-// }
 
 template<class IterInt, class IterTask>
 vector< vector<int> > number_of_instances(IterInt pb, IterInt pe, IterTask tb, IterTask te) 
@@ -81,17 +62,6 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_hyperplanes_powerset(vector<FPTa
         final_ps.intersection_assign(ps);
     }
     return final_ps;
-}
-
-template<class Iter>
-int compute_hyperperiod(Iter b, Iter e, int n)
-{
-    int l = 1;
-    int k=0;
-    for (Iter i = b; i!=e && k<n; ++i, ++k) {
-        l =  boost::math::lcm<int>(l, i->get_period());
-    }
-    return l;
 }
 
 template<class Iter>
@@ -218,3 +188,38 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(vector<FPTas
 
 }
 
+
+void build_edf_base(const vector<FPTask> &v, PPL::C_Polyhedron &poly, vector<string> &vars)
+{
+    for (int i=0;i<v.size();i++) {
+        PPL::Variable xx(i);
+        PPL::Constraint cs_min = (xx >= 0);
+        poly.add_constraint(cs_min);
+        PPL::Constraint cs_max = (xx <= (int)v[i].get_dline());
+        poly.add_constraint(cs_max);
+        vars.push_back(v[i].get_name() + ".wcet");
+    }
+}
+
+
+void build_edf_constraints(const vector<FPTask> &v, PPL::C_Polyhedron &poly)
+{
+    vector<int> dlines = compute_all_deadlines(v.begin(), v.end());
+    for (int i=0; i<dlines.size(); ++i) {
+        PPL::Linear_Expression le;
+        for (int j=0; j<v.size(); ++j) {
+            PPL::Variable xx(j);
+            le += xx * get_num_contained_instances(v[j], 0, dlines[i]);
+        }
+        PPL::Constraint cs = (le <= dlines[i]);
+        poly.add_constraint(cs);
+    }
+}
+
+int how_many_constraints(const PPL::Constraint_System &cs)
+{
+    int s1 = 0;
+    for (PPL::Constraint_System::const_iterator k = cs.begin();
+         k != cs.end(); ++k) s1++;
+    return s1;
+}

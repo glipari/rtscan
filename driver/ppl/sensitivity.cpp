@@ -11,6 +11,7 @@ namespace PPL = Parma_Polyhedra_Library;
 using namespace std;
 using namespace Scan;
 
+/** removes spaces from the beginning and from the end of the string */
 std::string remove_spaces(const std::string &tk)
 {
     std::string temp = tk;
@@ -24,6 +25,7 @@ std::string remove_spaces(const std::string &tk)
     return temp;
 }
 
+/** split the string into a vector of words, using sep as separator */
 std::vector<string> split(const std::string &code, const std::string &sep)
 {
     std::vector<std::string> temp;
@@ -47,6 +49,8 @@ std::vector<string> split(const std::string &code, const std::string &sep)
     return temp;
 }
 
+/** returns the index corresponding to the position in the vector where vname is found, or -1 if 
+    vname is not found */
 int get_index(const std::vector<string> &var_names, const std::string &vname)
 {
     for (unsigned i=0; i<var_names.size(); ++i) 
@@ -54,6 +58,7 @@ int get_index(const std::vector<string> &var_names, const std::string &vname)
     return -1;
 }
 
+/** find the task with a certain name */
 int find_task(const std::vector<Scan::FPTask> &tset, const std::string &name)
 {
     for (unsigned i=0; i<tset.size(); i++) 
@@ -61,6 +66,11 @@ int find_task(const std::vector<Scan::FPTask> &tset, const std::string &name)
     return -1;
 }
 
+/** 
+    Given a task, returns the property with name in var.
+
+    TODO: generalize this function!
+ */
 double get_value_from_task(const FPTask &task, const std::string &var)
 {
     if (var == "wcet") return task.get_wcet();
@@ -72,6 +82,15 @@ double get_value_from_task(const FPTask &task, const std::string &var)
 }
 
 
+/**
+   given the constraints in ps;
+   and given the names of the variables in var_names (in the form "taskname.propname");
+   
+   1) sets all variables to their values, except for variable var, 
+   thus obtaining a constraint set in one single variable
+
+   2) computes max and minimum admissible values for that variable. 
+ */
 void do_sensitivity(PPL::Pointset_Powerset<PPL::C_Polyhedron> ps, 
                     const std::vector<string> &var_names,
                     const std::vector<Scan::FPTask> &tasks,

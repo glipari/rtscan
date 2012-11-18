@@ -34,7 +34,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = sensitivity$(EXEEXT) distributed$(EXEEXT)
+noinst_PROGRAMS = sensitivity$(EXEEXT) distributed$(EXEEXT) \
+	edf_ex$(EXEEXT) edf_sim$(EXEEXT)
 subdir = driver/ppl
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -52,6 +53,12 @@ PROGRAMS = $(noinst_PROGRAMS)
 am_distributed_OBJECTS = distributed.$(OBJEXT) ppl_utils.$(OBJEXT)
 distributed_OBJECTS = $(am_distributed_OBJECTS)
 distributed_DEPENDENCIES =
+am_edf_ex_OBJECTS = edf_ex.$(OBJEXT) ppl_utils.$(OBJEXT)
+edf_ex_OBJECTS = $(am_edf_ex_OBJECTS)
+edf_ex_DEPENDENCIES =
+am_edf_sim_OBJECTS = edf_sim.$(OBJEXT) ppl_utils.$(OBJEXT)
+edf_sim_OBJECTS = $(am_edf_sim_OBJECTS)
+edf_sim_DEPENDENCIES =
 am_sensitivity_OBJECTS = sensitivity.$(OBJEXT) ppl_utils.$(OBJEXT)
 sensitivity_OBJECTS = $(am_sensitivity_OBJECTS)
 sensitivity_DEPENDENCIES =
@@ -68,8 +75,10 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(distributed_SOURCES) $(sensitivity_SOURCES)
-DIST_SOURCES = $(distributed_SOURCES) $(sensitivity_SOURCES)
+SOURCES = $(distributed_SOURCES) $(edf_ex_SOURCES) $(edf_sim_SOURCES) \
+	$(sensitivity_SOURCES)
+DIST_SOURCES = $(distributed_SOURCES) $(edf_ex_SOURCES) \
+	$(edf_sim_SOURCES) $(sensitivity_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -199,6 +208,10 @@ sensitivity_SOURCES = sensitivity.cpp ppl_utils.cpp
 sensitivity_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem -lboost_program_options -lppl
 distributed_SOURCES = distributed.cpp ppl_utils.cpp
 distributed_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem -lboost_program_options -lppl
+edf_ex_SOURCES = edf_ex.cpp ppl_utils.cpp
+edf_ex_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem -lboost_program_options -lppl
+edf_sim_SOURCES = edf_sim.cpp ppl_utils.cpp
+edf_sim_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem -lboost_program_options -lppl
 all: all-am
 
 .SUFFIXES:
@@ -245,6 +258,12 @@ clean-noinstPROGRAMS:
 distributed$(EXEEXT): $(distributed_OBJECTS) $(distributed_DEPENDENCIES) $(EXTRA_distributed_DEPENDENCIES) 
 	@rm -f distributed$(EXEEXT)
 	$(CXXLINK) $(distributed_OBJECTS) $(distributed_LDADD) $(LIBS)
+edf_ex$(EXEEXT): $(edf_ex_OBJECTS) $(edf_ex_DEPENDENCIES) $(EXTRA_edf_ex_DEPENDENCIES) 
+	@rm -f edf_ex$(EXEEXT)
+	$(CXXLINK) $(edf_ex_OBJECTS) $(edf_ex_LDADD) $(LIBS)
+edf_sim$(EXEEXT): $(edf_sim_OBJECTS) $(edf_sim_DEPENDENCIES) $(EXTRA_edf_sim_DEPENDENCIES) 
+	@rm -f edf_sim$(EXEEXT)
+	$(CXXLINK) $(edf_sim_OBJECTS) $(edf_sim_LDADD) $(LIBS)
 sensitivity$(EXEEXT): $(sensitivity_OBJECTS) $(sensitivity_DEPENDENCIES) $(EXTRA_sensitivity_DEPENDENCIES) 
 	@rm -f sensitivity$(EXEEXT)
 	$(CXXLINK) $(sensitivity_OBJECTS) $(sensitivity_LDADD) $(LIBS)
@@ -256,6 +275,8 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/distributed.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/edf_ex.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/edf_sim.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ppl_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sensitivity.Po@am__quote@
 

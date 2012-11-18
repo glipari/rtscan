@@ -254,8 +254,7 @@ int main(int argc, char* argv[])
     pe.file = output_filename;
     pe.graphtype = "errorbars ls 1";
 
-    gp.plots.push_back(pe);
-    
+    gp.plots.push_back(pe);    
     gp.write();
 
     string cmd("gnuplot ");

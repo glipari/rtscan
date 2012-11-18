@@ -2,10 +2,24 @@
 #define __UTILITY_H__
 
 #include <cmath>
-
+#include <boost/math/common_factor.hpp>
 #include <common/exceptions.hpp>
 
 namespace Scan {
+    /**
+       Computes the hyperperiod
+     */
+    template<class Iter>
+    int compute_hyperperiod(Iter b, Iter e, int n)
+    {
+        int l = 1;
+        int k=0;
+        for (Iter i = b; i!=e && k<n; ++i, ++k) {
+            l =  boost::math::lcm<int>(l, i->get_period());
+        }
+        return l;
+    }
+
     /** 
         Returns the first arrival time after t (it always returns
         a number > t). 
@@ -62,7 +76,7 @@ namespace Scan {
     }
 
     /**
-       Returns deadline before or at t (can return a number at t)
+       Returns deadline before or at t (can return t itself)
            
        Requires functions get_period(), get_offset() and get_dline().   
     */
