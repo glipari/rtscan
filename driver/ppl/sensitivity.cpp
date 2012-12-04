@@ -67,7 +67,7 @@ void do_sensitivity(PPL::Pointset_Powerset<PPL::C_Polyhedron> ps,
         if (i == k) continue;
         vector<string> ss = split(var_names[i], ".");
         int ti = find_task(tasks, ss[0]);
-        if (ti == -1) throw "ERROR";
+        if (ti == -1) throw "Task not found!";
         double v = get_value_from_task(tasks[ti], ss[1]);
 
         Variable xx(i);
@@ -99,7 +99,12 @@ int main(int argc, char *argv[])
     string fname(argv[1]);
     ifstream input(fname.c_str());
     PropertyList sys;
-    parse_properties(input, fname, sys);
+    try {
+        parse_properties(input, fname, sys);
+    } catch (std::runtime_error &e) {
+        cout << e.what() << endl;
+        exit(-1);
+    }
 
     PrintPropertyVisitor vis;
     vis(sys);
@@ -119,11 +124,11 @@ int main(int argc, char *argv[])
 
     using namespace PPL::IO_Operators;
     cout << ps << endl;
-
+    
     for (unsigned char i=0; i<var_names.size(); i++) {
         cout << var_names[i] << endl;
     }
-
+    
     // now substitute the first n-1 computation times, do analysis on the last one
     for (unsigned i=0; i<sv.v.size() - 1; i++) {
         Variable xx(i);
@@ -131,15 +136,14 @@ int main(int argc, char *argv[])
         ps.refine_with_congruence(cg);
     }
     cout << ps << endl;
-    // find maximum on the wcet:
-    // int last = sv.v.size() - 1;
-    // Variable xx(last);
-    // Linear_Expression le;
-    // le += (xx);
-    // Coefficient mn;
-    // Coefficient md;
-    // bool is_included;
-    // ps.maximize(le, mn, md, is_included);
-    do_sensitivity(ps, var_names, sv.v, string("t3.dline"));
+
+    try {
+        do_sensitivity(ps, var_names, sv.v, string("t3.wcet"));
+    }
+    catch(char const *msg) {
+        cout << "An error occurred while doing sensitivity:" << endl;
+        cout << msg << endl;
+        exit(-1);
+    }
 }
 

@@ -8,6 +8,7 @@
 #include <models/fp_task.hpp>
 #include <models/task_parser.hpp>
 #include <analysis/task_utility.hpp>
+#include <common/exceptions.hpp>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -36,12 +37,28 @@ public:
     
 };
 
+
+class ConstraintsSystem {
+public:
+    PPL::Pointset_Powerset<PPL::C_Polyhedron> poly;
+    std::vector<std::string> vars;
+
+    ConstraintsSystem(int n);
+};
+
+ConstraintsSystem build_hyperplanes_powerset(std::vector<Scan::FPTask> &v);
+ConstraintsSystem build_general_sensitivity(std::vector<Scan::FPTask> &v);
+
 PPL::Pointset_Powerset<PPL::C_Polyhedron> build_hyperplanes_powerset(std::vector<Scan::FPTask> &v,
                                                                      std::vector<std::string> &vars);
+
 
 PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(std::vector<Scan::FPTask> &v,
                                                                      std::vector<std::string> &vars);
 
+
+
+/** this is for EDF */
 
 template<class Iter>
 std::vector<int> compute_all_deadlines(Iter a, Iter b)

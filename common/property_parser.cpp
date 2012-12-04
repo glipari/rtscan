@@ -28,15 +28,17 @@ namespace Scan {
     namespace fusion = boost::fusion;
     namespace phoenix = boost::phoenix;
 
-    template <typename Iterator>
+    template <typename Iterator, typename Skipper>
     struct property_set_grammar : qi::grammar<Iterator, PropertyList(),
-                                              ascii::space_type>
+                                              Skipper>
     {
-        qi::rule<Iterator, Property(), ascii::space_type> prop;
-        qi::rule<Iterator, std::string(), ascii::space_type> name;
-        qi::rule<Iterator, std::string(), ascii::space_type> type;
-        qi::rule<Iterator, std::string(), ascii::space_type> value;
-        qi::rule<Iterator, PropertyList(), ascii::space_type> plist;
+        qi::rule<Iterator, Property(), Skipper> prop;
+        qi::rule<Iterator, std::string(), Skipper> name;
+        qi::rule<Iterator, std::string(), Skipper> type;
+        qi::rule<Iterator, std::string(), Skipper> value;
+        qi::rule<Iterator, std::string(), Skipper> value_simple;
+        qi::rule<Iterator, std::string(), Skipper> value_quoted;
+        qi::rule<Iterator, PropertyList(), Skipper> plist;
 
         property_set_grammar() : 
             property_set_grammar::base_type(plist, "Set of Properties") {
@@ -44,13 +46,16 @@ namespace Scan {
             using qi::alpha;
             using qi::alnum;
             using qi::lexeme;
+            using qi::char_;
 
             name = lexeme[alpha >> *alnum];
             type = lexeme[alpha >> *alnum];
-            value = lexeme[*alnum];
+            value_simple = lexeme[*(alnum - lit('"'))];
+            value_quoted = lit('"') > lexeme[*(char_ - lit('"'))] > lit('"');
+            value = (value_quoted | value_simple);
 
-            prop = name >> '=' > value;
-            plist = type >> '(' > name > ')' > '{' > *(prop | plist) >> '}';
+            prop = name >> '=' > value > ';';
+            plist = type >> '(' > name > ')' > '{' > *(prop | plist) >> '}' > ';';
         }
     };   
 
@@ -151,6 +156,7 @@ namespace Scan {
                 return false;
             }
         }
+        return true;
     }
    
     void GenPropertyVisitor::add_double_parameter(const SVector &v, double x, bool mandatory) 

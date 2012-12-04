@@ -44,24 +44,24 @@ namespace Scan {
 
     using namespace Scan::Model;
     
-    template <typename Iterator>
-    struct taskres_grammar : qi::grammar<Iterator, sys_type(), ascii::space_type>
+    template <typename Iterator, typename Skipper>
+    struct taskres_grammar : qi::grammar<Iterator, sys_type(), Skipper>
     {
-        qi::rule<Iterator, cs_struct(), ascii::space_type> crit_sect;
-        qi::rule<Iterator, std::vector<cs_struct>(), ascii::space_type> cs_list;
-        qi::rule<Iterator, resource(), ascii::space_type> res;
-        qi::rule<Iterator, task_struct(), ascii::space_type> task;
-        qi::rule<Iterator, sys_elem(), ascii::space_type> elem;
-        qi::rule<Iterator, sys_type(), ascii::space_type> sys;
+        qi::rule<Iterator, cs_struct(), Skipper> crit_sect;
+        qi::rule<Iterator, std::vector<cs_struct>(), Skipper> cs_list;
+        qi::rule<Iterator, resource(), Skipper> res;
+        qi::rule<Iterator, task_struct(), Skipper> task;
+        qi::rule<Iterator, sys_elem(), Skipper> elem;
+        qi::rule<Iterator, sys_type(), Skipper> sys;
 
-        qi::rule<Iterator, double(), ascii::space_type> wcet;
-        qi::rule<Iterator, double(), ascii::space_type> dline;
-        qi::rule<Iterator, double(), ascii::space_type> dur;
-        qi::rule<Iterator, int(), ascii::space_type> id;
-        qi::rule<Iterator, int(), ascii::space_type> period;
-        qi::rule<Iterator, int(), ascii::space_type> offset;
-        qi::rule<Iterator, bool(), ascii::space_type> isshort;
-        qi::rule<Iterator, std::string(), ascii::space_type> name;
+        qi::rule<Iterator, double(), Skipper> wcet;
+        qi::rule<Iterator, double(), Skipper> dline;
+        qi::rule<Iterator, double(), Skipper> dur;
+        qi::rule<Iterator, int(), Skipper> id;
+        qi::rule<Iterator, int(), Skipper> period;
+        qi::rule<Iterator, int(), Skipper> offset;
+        qi::rule<Iterator, bool(), Skipper> isshort;
+        qi::rule<Iterator, std::string(), Skipper> name;
         
         
         taskres_grammar() : taskres_grammar::base_type(sys, "System") {
