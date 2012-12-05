@@ -7,7 +7,6 @@ sys(mysys) {
         period=3;
         dline=3;
         priority=3;
-#        longprop   =  "This is a long property";
     };
 
     task(t2) {
@@ -18,9 +17,9 @@ sys(mysys) {
     };
 
     task(t3) {
-        wcet=2;
+        wcet=7;
         period=21;
-        dline=18;
+        dline=30;
         priority=1;
     };
 };

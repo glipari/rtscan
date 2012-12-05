@@ -131,8 +131,10 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
     PPL::C_Polyhedron base(nvars);
     for (int i=0;i<ntasks;i++) {
         PPL::Variable xw(3*i);
+
         PPL::Constraint cs_min = (xw >= 0);
         base.add_constraint(cs_min);
+
         PPL::Constraint cs_max = (xw <= (int)v[i].get_period());
         base.add_constraint(cs_max);
         sys.vars[3*i] = v[i].get_name() + ".wcet";
@@ -223,16 +225,18 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
                 PPL::Constraint cs = (le <= (h-1)*v[i].get_period());
                 cp.add_constraint(cs);
 
-                cout << "Constraint set: " << cp << endl;
-                
+                //cout << "Constraint set completed: " << cp << endl;
+                cout << "Constraint set completed: " << endl;
+
                 ps.add_disjunct(cp);
+                ps.omega_reduce();
             }
             cout << "Now all constraint set have been prepared, intesecting...";
             cout.flush();
             sys.poly.intersection_assign(ps);
             cout << "... completed!" << endl;
 
-            cout << "Partial pointset: " << sys.poly << endl;
+            //cout << "Partial pointset: " << sys.poly << endl;
 
         }
     }
@@ -241,120 +245,120 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
 
 
 
-PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(vector<FPTask> &v, vector<string> &vars)
-{
-    int ntasks = v.size();
-    int nvars = ntasks * 3;
+// PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(vector<FPTask> &v, vector<string> &vars)
+// {
+//     int ntasks = v.size();
+//     int nvars = ntasks * 3;
 
-    PPL::Pointset_Powerset<PPL::C_Polyhedron> final_ps(nvars, EMPTY);
+//     PPL::Pointset_Powerset<PPL::C_Polyhedron> final_ps(nvars, EMPTY);
     
-    PPL::C_Polyhedron base(nvars);
-    for (int i=0;i<ntasks;i++) {
-        PPL::Variable xw(3*i);
-        PPL::Constraint cs_min = (xw >= 0);
-        base.add_constraint(cs_min);
-        PPL::Constraint cs_max = (xw <= (int)v[i].get_period());
-        base.add_constraint(cs_max);
-        vars.push_back(v[i].get_name() + ".wcet");
+//     PPL::C_Polyhedron base(nvars);
+//     for (int i=0;i<ntasks;i++) {
+//         PPL::Variable xw(3*i);
+//         PPL::Constraint cs_min = (xw >= 0);
+//         base.add_constraint(cs_min);
+//         PPL::Constraint cs_max = (xw <= (int)v[i].get_period());
+//         base.add_constraint(cs_max);
+//         vars.push_back(v[i].get_name() + ".wcet");
 
-        PPL::Variable xd(3*i+1);
-        PPL::Constraint dd_min = (xd >= 0);
-        base.add_constraint(dd_min);
-        PPL::Constraint dd_max = (xd <= int(v[i].get_dline()));
-        base.add_constraint(dd_max);
-        vars.push_back(v[i].get_name() + ".dline");
+//         PPL::Variable xd(3*i+1);
+//         PPL::Constraint dd_min = (xd >= 0);
+//         base.add_constraint(dd_min);
+//         PPL::Constraint dd_max = (xd <= int(v[i].get_dline()));
+//         base.add_constraint(dd_max);
+//         vars.push_back(v[i].get_name() + ".dline");
 
-        PPL::Variable xj(3*i+2);
-        PPL::Constraint j_min = (xj >= 0);
-        base.add_constraint(j_min);
-        PPL::Constraint j_max = (xj <= int(v[i].get_dline()));
-        base.add_constraint(j_max);
-        vars.push_back(v[i].get_name() + ".jitter");
-    }
-    final_ps.add_disjunct(base);
+//         PPL::Variable xj(3*i+2);
+//         PPL::Constraint j_min = (xj >= 0);
+//         base.add_constraint(j_min);
+//         PPL::Constraint j_max = (xj <= int(v[i].get_dline()));
+//         base.add_constraint(j_max);
+//         vars.push_back(v[i].get_name() + ".jitter");
+//     }
+//     final_ps.add_disjunct(base);
     
-    for (int i=1; i<ntasks; i++) {
-        // compute hyperperiod
-        int hyper = compute_hyperperiod(v.begin(), v.end(), i+1);
-        // now, for every h up to H/T_i
-        int h_max = 1;
-        if (v[i].get_dline() > v[i].get_period()) h_max = hyper / v[i].get_period();
-        for (int h = 1; h<=h_max; ++h) {
-            // now we have to compute all vectors of n
-            vector<int> pp = compute_all_points(v.begin(), v.begin()+i+1, (h-1)*v[i].get_period() + v[i].get_dline());
-            vector< vector<int> > myn = 
-                number_of_instances(pp.begin(), pp.end(), v.begin(), v.end() - (ntasks-i));
+//     for (int i=1; i<ntasks; i++) {
+//         // compute hyperperiod
+//         int hyper = compute_hyperperiod(v.begin(), v.end(), i+1);
+//         // now, for every h up to H/T_i
+//         int h_max = 1;
+//         if (v[i].get_dline() > v[i].get_period()) h_max = hyper / v[i].get_period();
+//         for (int h = 1; h<=h_max; ++h) {
+//             // now we have to compute all vectors of n
+//             vector<int> pp = compute_all_points(v.begin(), v.begin()+i+1, (h-1)*v[i].get_period() + v[i].get_dline());
+//             vector< vector<int> > myn = 
+//                 number_of_instances(pp.begin(), pp.end(), v.begin(), v.end() - (ntasks-i));
 
-            cout << "Task " << v[i].get_name() << endl;
-            cout << "Instance h = " << h << endl;
-            cout << "Points: ";
-            print_vector(pp.begin(), pp.end());
-            cout << endl;
-            cout << "Vector n: ";
-            for (unsigned p=0;p<myn.size(); p++)  {
-                print_vector(myn[p].begin(), myn[p].end());
-                cout << ";";
-            }
-            cout << endl;
+//             cout << "Task " << v[i].get_name() << endl;
+//             cout << "Instance h = " << h << endl;
+//             cout << "Points: ";
+//             print_vector(pp.begin(), pp.end());
+//             cout << endl;
+//             cout << "Vector n: ";
+//             for (unsigned p=0;p<myn.size(); p++)  {
+//                 print_vector(myn[p].begin(), myn[p].end());
+//                 cout << ";";
+//             }
+//             cout << endl;
             
-            using namespace PPL::IO_Operators;
-            cout << "Now preparing the pointset" << endl;
+//             using namespace PPL::IO_Operators;
+//             cout << "Now preparing the pointset" << endl;
 
-            PPL::Pointset_Powerset<PPL::C_Polyhedron> ps(nvars, EMPTY);
-            // now, for every n, we must write one set of equations
-            for (unsigned n=0; n<myn.size(); ++n) {
-                cout << "Point: ";
-                print_vector(myn[n].begin(), myn[n].end());
-                cout << endl;
+//             PPL::Pointset_Powerset<PPL::C_Polyhedron> ps(nvars, EMPTY);
+//             // now, for every n, we must write one set of equations
+//             for (unsigned n=0; n<myn.size(); ++n) {
+//                 cout << "Point: ";
+//                 print_vector(myn[n].begin(), myn[n].end());
+//                 cout << endl;
 
-                PPL::C_Polyhedron cp = base;
-                cout << "Copied" << "   i = " << i << endl;
-                for (unsigned k=0; k<i; ++k) {
-                    PPL::Linear_Expression le;
-                    for (int j=0; j<i; j++) {
-                        PPL::Variable xx(3*j); 
-                        le += xx * myn[n][j];
-                    }
-                    PPL::Variable xx(3*i); 
-                    PPL::Variable xj(3*k+2);
-                    le += h * xx;
-                    le += xj;
-                    PPL::Constraint cs = (le <= myn[n][k]*v[k].get_period());
-                    cp.add_constraint(cs);
-                    //cp.omega_reduce();
-                }
+//                 PPL::C_Polyhedron cp = base;
+//                 cout << "Copied" << "   i = " << i << endl;
+//                 for (unsigned k=0; k<i; ++k) {
+//                     PPL::Linear_Expression le;
+//                     for (int j=0; j<i; j++) {
+//                         PPL::Variable xx(3*j); 
+//                         le += xx * myn[n][j];
+//                     }
+//                     PPL::Variable xx(3*i); 
+//                     PPL::Variable xj(3*k+2);
+//                     le += h * xx;
+//                     le += xj;
+//                     PPL::Constraint cs = (le <= myn[n][k]*v[k].get_period());
+//                     cp.add_constraint(cs);
+//                     //cp.omega_reduce();
+//                 }
                 
-                PPL::Linear_Expression le;
-                for (unsigned j=0; j<i; j++) {
-                    PPL::Variable xx(3*j); 
-                    le += xx * myn[n][j];
-                }
+//                 PPL::Linear_Expression le;
+//                 for (unsigned j=0; j<i; j++) {
+//                     PPL::Variable xx(3*j); 
+//                     le += xx * myn[n][j];
+//                 }
 
-                PPL::Variable xx(3*i);
-                PPL::Variable xd(3*i+1);
-                PPL::Variable xj(3*i+2);
-                le += h * xx;
-                le += -xd+xj;
-                PPL::Constraint cs = (le <= (h-1)*v[i].get_period());
-                cp.add_constraint(cs);
-                //                cp.omega_reduce();
+//                 PPL::Variable xx(3*i);
+//                 PPL::Variable xd(3*i+1);
+//                 PPL::Variable xj(3*i+2);
+//                 le += h * xx;
+//                 le += -xd+xj;
+//                 PPL::Constraint cs = (le <= (h-1)*v[i].get_period());
+//                 cp.add_constraint(cs);
+//                 //                cp.omega_reduce();
 
-                cout << "Constraint set: " << cp << endl;
+//                 cout << "Constraint set: " << cp << endl;
                 
-                ps.add_disjunct(cp);
-                //ps.omega_reduce();
-            }
-            cout << "Now all constraint set have been prepared, intesecting...";
-            cout.flush();
-            final_ps.intersection_assign(ps);
-            final_ps.omega_reduce();
-            cout << "... completed!" << endl;
+//                 ps.add_disjunct(cp);
+//                 //ps.omega_reduce();
+//             }
+//             cout << "Now all constraint set have been prepared, intesecting...";
+//             cout.flush();
+//             final_ps.intersection_assign(ps);
+//             final_ps.omega_reduce();
+//             cout << "... completed!" << endl;
 
-            cout << "Partial pointset: " << final_ps << endl;
-        }
-    }
-    return final_ps;
-}
+//             cout << "Partial pointset: " << final_ps << endl;
+//         }
+//     }
+//     return final_ps;
+// }
 
 
 void build_edf_base(const vector<FPTask> &v, PPL::C_Polyhedron &poly, vector<string> &vars)

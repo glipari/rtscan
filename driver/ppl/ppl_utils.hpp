@@ -53,8 +53,8 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_hyperplanes_powerset(std::vector
                                                                      std::vector<std::string> &vars);
 
 
-PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(std::vector<Scan::FPTask> &v,
-                                                                     std::vector<std::string> &vars);
+// PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(std::vector<Scan::FPTask> &v,
+//                                                                      std::vector<std::string> &vars);
 
 void do_sensitivity(PPL::Pointset_Powerset<PPL::C_Polyhedron> ps, 
                     const std::vector<std::string> &var_names,
