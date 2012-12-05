@@ -56,6 +56,10 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_hyperplanes_powerset(std::vector
 PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(std::vector<Scan::FPTask> &v,
                                                                      std::vector<std::string> &vars);
 
+void do_sensitivity(PPL::Pointset_Powerset<PPL::C_Polyhedron> ps, 
+                    const std::vector<std::string> &var_names,
+                    const std::vector<Scan::FPTask> &tasks,
+                    const std::string &var);
 
 
 /** this is for EDF */
@@ -80,5 +84,7 @@ std::vector<int> compute_all_deadlines(Iter a, Iter b)
 void build_edf_base(const std::vector<Scan::FPTask> &v, PPL::C_Polyhedron &poly, std::vector<std::string> &vars);
 void build_edf_constraints(const std::vector<Scan::FPTask> &v, PPL::C_Polyhedron &poly);
 int how_many_constraints(const PPL::Constraint_System &cs);
+
+
 
 #endif

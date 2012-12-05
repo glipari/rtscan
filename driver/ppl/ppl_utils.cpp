@@ -3,6 +3,8 @@
 #include <analysis/hyperplane.hpp>
 #include <analysis/task_utility.hpp>
 
+#include <common/string_utils.hpp>
+
 using namespace Scan;
 using namespace std;
 
@@ -160,10 +162,12 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
             h_max = hyper / v[i].get_period();
         for (int h = 1; h<=h_max; ++h) {
             // now we have to compute all vectors of n
-            vector<int> pp = compute_points(v.begin(), 
-                                            v.end() - (ntasks-i), 
-                                            (h-1)*v[i].get_period() + v[i].get_dline());
-            sort(pp.begin(), pp.end());
+            vector<int> pp = compute_all_points(v.begin(), 
+                                                v.end() - (ntasks-i), 
+                                                (h-1)*v[i].get_period() + v[i].get_dline());
+            
+            //vector<int> pp = compute_points(v.rbegin()-ntasks+i+1, v.rend(), (h-1)*v[i].get_period() + v[i].get_dline());
+            //sort(pp.begin(), pp.end());
             vector< vector<int> > myn = 
                 number_of_instances(pp.begin(), pp.end(), 
                                     v.begin(), v.end() - (ntasks-i));
@@ -277,8 +281,7 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(vector<FPTas
         if (v[i].get_dline() > v[i].get_period()) h_max = hyper / v[i].get_period();
         for (int h = 1; h<=h_max; ++h) {
             // now we have to compute all vectors of n
-            vector<int> pp = compute_points(v.begin(), v.end() - (ntasks-i), (h-1)*v[i].get_period() + v[i].get_dline());
-            sort(pp.begin(), pp.end());
+            vector<int> pp = compute_all_points(v.begin(), v.begin()+i+1, (h-1)*v[i].get_period() + v[i].get_dline());
             vector< vector<int> > myn = 
                 number_of_instances(pp.begin(), pp.end(), v.begin(), v.end() - (ntasks-i));
 
@@ -318,6 +321,7 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(vector<FPTas
                     le += xj;
                     PPL::Constraint cs = (le <= myn[n][k]*v[k].get_period());
                     cp.add_constraint(cs);
+                    //cp.omega_reduce();
                 }
                 
                 PPL::Linear_Expression le;
@@ -325,6 +329,7 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(vector<FPTas
                     PPL::Variable xx(3*j); 
                     le += xx * myn[n][j];
                 }
+
                 PPL::Variable xx(3*i);
                 PPL::Variable xd(3*i+1);
                 PPL::Variable xj(3*i+2);
@@ -332,22 +337,23 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(vector<FPTas
                 le += -xd+xj;
                 PPL::Constraint cs = (le <= (h-1)*v[i].get_period());
                 cp.add_constraint(cs);
+                //                cp.omega_reduce();
 
                 cout << "Constraint set: " << cp << endl;
                 
                 ps.add_disjunct(cp);
+                //ps.omega_reduce();
             }
             cout << "Now all constraint set have been prepared, intesecting...";
             cout.flush();
             final_ps.intersection_assign(ps);
+            final_ps.omega_reduce();
             cout << "... completed!" << endl;
 
             cout << "Partial pointset: " << final_ps << endl;
-
         }
     }
     return final_ps;
-
 }
 
 
@@ -384,4 +390,84 @@ int how_many_constraints(const PPL::Constraint_System &cs)
     for (PPL::Constraint_System::const_iterator k = cs.begin();
          k != cs.end(); ++k) s1++;
     return s1;
+}
+
+
+
+using namespace StrUtils;
+
+
+/** returns the index corresponding to the position in the vector where vname is found, or -1 if 
+    vname is not found */
+int get_index(const std::vector<string> &var_names, const std::string &vname)
+{
+    for (unsigned i=0; i<var_names.size(); ++i) 
+        if (var_names[i] == vname) return i;
+    return -1;
+}
+
+/** find the task with a certain name */
+int find_task(const std::vector<Scan::FPTask> &tset, const std::string &name)
+{
+    for (unsigned i=0; i<tset.size(); i++) 
+        if (tset[i].get_name() == name) return i;
+    return -1;
+}
+
+/** 
+    Given a task, returns the property with name in var.
+
+    TODO: generalize this function!
+ */
+double get_value_from_task(const FPTask &task, const std::string &var)
+{
+    if (var == "wcet") return task.get_wcet();
+    else if (var == "period") return task.get_period();
+    else if (var == "dline") return task.get_dline();
+    else if (var == "jitter") return task.get_jitter();
+    else if (var == "offset") return task.get_offset();
+    return -1;
+}
+
+
+/**
+   given the constraints in ps;
+   and given the names of the variables in var_names (in the form "taskname.propname");
+   
+   1) sets all variables to their values, except for variable var, 
+   thus obtaining a constraint set in one single variable
+
+   2) computes max and minimum admissible values for that variable. 
+ */
+void do_sensitivity(PPL::Pointset_Powerset<PPL::C_Polyhedron> ps, 
+                    const std::vector<string> &var_names,
+                    const std::vector<Scan::FPTask> &tasks,
+                    const std::string &var) 
+{
+    int k = get_index(var_names, var);   // we do sensitivity on the k variable
+    if (k == -1) throw("Variable not found");
+    for (int i=0; i<var_names.size(); i++)  {
+        if (i == k) continue;
+        vector<string> ss = split(var_names[i], ".");
+        int ti = find_task(tasks, ss[0]);
+        if (ti == -1) throw "Task not found!";
+        double v = get_value_from_task(tasks[ti], ss[1]);
+
+        Variable xx(i);
+        Congruence cg = ((xx %= int(v)) / 0); 
+        ps.refine_with_congruence(cg);
+    }
+    Variable xx(k);
+    Linear_Expression le;
+    le += (xx);
+    Coefficient mn;
+    Coefficient md;
+    bool is_included;
+    ps.maximize(le, mn, md, is_included);
+    // I should convert mn and md into a single double
+    cout << "Maximum value for " << var << ": " << mn << "/" <<  md << endl;
+
+    ps.minimize(le, mn, md, is_included);
+    // I should convert mn and md into a single double
+    cout << "Minimum value for " << var << ": " << mn << "/" <<  md << endl;
 }
