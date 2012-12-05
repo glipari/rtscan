@@ -1,0 +1,26 @@
+# Example taken for the paper 
+# by Buttazzo and Bini
+
+sys(mysys) {
+    task(t1) {
+        wcet=1;
+        period=3;
+        dline=3;
+        priority=3;
+#        longprop   =  "This is a long property";
+    };
+
+    task(t2) {
+        wcet=3;
+        period=9;
+        dline=7;
+        priority=2;
+    };
+
+    task(t3) {
+        wcet=2;
+        period=21;
+        dline=18;
+        priority=1;
+    };
+};
