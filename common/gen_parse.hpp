@@ -39,7 +39,8 @@ bool myparse(std::istream& input, const std::string filename, DataType &result)
         r = phrase_parse(position_begin, 
                          position_end, 
                          g,
-                         ascii::space, //ascii::space | '#' >> *(ascii::char_ - qi::eol) >> qi::eol, // comment skipper, 
+                         ascii::space, 
+                         //ascii::space | ('#' >> *(ascii::char_ - qi::eol) >> qi::eol), // comment skipper
                          result);
     }
     catch(const qi::expectation_failure<pos_iterator_type>& e)

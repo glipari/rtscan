@@ -2,6 +2,7 @@
 #define __MEDF_RTA_HPP__
 
 #include <vector>
+#include <algorithm>
 #include <models/task.hpp>
 #include <models/has_slack.hpp>
 #include <analysis/fp_response_time.hpp>
@@ -20,8 +21,8 @@ namespace Scan {
     double gedf_interf_i_k(const TaskType &tk, const TaskType &ti, int n_proc)
     {
         int n = int( floor( double(tk.get_dline()) / double(ti.get_period()) ) );
-        double x =  max(0.0, (tk.get_dline() - ti.get_slack() - n * ti.get_period() ) );
-        return n * ti.get_wcet() +  min(ti.get_wcet(), x); 
+        double x =  std::max(0.0, (tk.get_dline() - ti.get_slack() - n * ti.get_period() ) );
+        return n * ti.get_wcet() +  std::min(ti.get_wcet(), x); 
     }
 
     /**
@@ -35,9 +36,9 @@ namespace Scan {
         double sum = 0.0;
         for (auto ti = tset_begin; ti != tset_end; ++ ti) 
             if (ti->get_id() != tk.get_id()) 
-                sum += min(gedf_interf_i_k(tk, *ti, n_proc), tk.get_dline() - tk.get_wcet() + 1);
+                sum += std::min(gedf_interf_i_k(tk, *ti, n_proc), tk.get_dline() - tk.get_wcet() + 1);
         
-        return tk.get_dline() - tk.get_wcet() - floor( sum / double(n_proc) );   
+        return tk.get_dline() - tk.get_wcet() - std::floor( sum / double(n_proc) );   
     }
 
     /** 

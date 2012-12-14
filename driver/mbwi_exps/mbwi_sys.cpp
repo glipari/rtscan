@@ -3,6 +3,9 @@
 #include <cstring>
 #include <random>
 #include <algorithm>
+#include <ctype.h>
+#include <cstdio>
+#include <unistd.h>
 
 #include "mbwi_sys.hpp"
 

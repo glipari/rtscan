@@ -7,7 +7,8 @@
 
 #include <models/taskres.hpp>
 
-struct sys_params {
+class sys_params {
+public:
     std::string input_filename; // = "tset.txt";
     std::string output_filename;// = "tres.txt";
 
@@ -53,7 +54,8 @@ struct sys_params {
                    min_tasks_per_group(2),
                    omlptest(false),
                    tset(),
-                   rgroups()
+                   rgroups(),
+                   all_res()
         {}
 
     void print_help();

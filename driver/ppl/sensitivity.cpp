@@ -99,7 +99,11 @@ int main(int argc, char *argv[])
     string fname(argv[1]);
     ifstream input(fname.c_str());
     PropertyList sys;
-    parse_properties(input, fname, sys);
+    bool ok = parse_properties(input, fname, sys);
+    if (!ok) {
+        cout << "Error parsing the file" << endl;
+        exit(-1);
+   }
 
     PrintPropertyVisitor vis;
     vis(sys);

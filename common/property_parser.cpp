@@ -29,8 +29,8 @@ namespace Scan {
     namespace phoenix = boost::phoenix;
 
     template <typename Iterator>
-    struct property_set_grammar : qi::grammar<Iterator, PropertyList(),
-                                              ascii::space_type>
+    struct property_set_grammar : qi::grammar<Iterator, PropertyList()>// ,
+                                              // ascii::space_type>
     {
         qi::rule<Iterator, Property(), ascii::space_type> prop;
         qi::rule<Iterator, std::string(), ascii::space_type> name;
