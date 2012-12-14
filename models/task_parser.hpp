@@ -18,11 +18,7 @@ namespace Scan {
         FPTaskVisitor();
         FPTask create_task();
     };
-
     FPTask create_fp_task(const PropertyList &p);
-    
-
-
 }
 
 #endif

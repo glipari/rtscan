@@ -23,27 +23,28 @@ namespace Scan {
     protected:
         std::map<std::string, double> d_values;
         std::map<std::string, int> i_values;
+        std::map<std::string, std::string> s_values;
 
         typedef std::vector< std::string > SVector;
         typedef std::pair< SVector, double > SVDouble; 
         typedef std::pair< SVector, int > SVInt; 
+        typedef std::pair< SVector, std::string > SVString; 
         
         std::vector< std::string > mandatory_keys;
         std::vector< std::pair< SVector, double> > keywords_double;
         std::vector< std::pair< SVector, int> > keywords_int;
+        std::vector< std::pair< SVector, std::string> > keywords_string;
 
         std::string name;
         std::string type;
         
-        /** search an array of SVectors, to see if a certain keyword exists */
-        std::string check_keyword(const std::vector<SVDouble> &s, const std::string &name) const;
-        /** search an array of SVectors, to see if a certain keyword exists */
-        std::string check_keyword(const std::vector<SVInt> &s, const std::string &name) const;
     public:
         GenPropertyVisitor();
 
         void add_double_parameter(const SVector &v, double x, bool mandatory = false);
         void add_int_parameter(const SVector &v, int x, bool mandatory = false);
+
+        void add_string_parameter(const SVector &v, std::string x, bool mandatory = false);
 
         // parses a property
         void operator()(const Property &p);
@@ -54,7 +55,7 @@ namespace Scan {
     };
 
     bool parse_properties(std::istream &is, const std::string &filename,
-        PropertyList &pset);
+                          PropertyList &pset);
 }
 
 #endif

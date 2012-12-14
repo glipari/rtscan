@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
             using namespace PPL::IO_Operators;
             cout << poly << endl;
             
-            allcount(double(s2-ntasks)/double(s1-ntasks));
+            allcount(double(s2-ntasks)/double(ntasks)); ///double(s1-ntasks));
             
         }
         // output statistics on terminal
@@ -193,12 +193,12 @@ int main(int argc, char* argv[])
 
     GnuPlotGraph gp;
     gp.outfile = output_filename + ".eps";
-    gp.xaxis = "Deadline Ratio";
-    gp.yaxis = "Size ratio";
+    gp.xaxis = "Deadline / Period ratio";
+    gp.yaxis = "Ratio ndlines/ntasks";
     gp.key_pos = "bottom left";
     gp.scriptfile = output_filename + ".gpl";
-    gp.yrange = "[0:1]";
-    gp.xrange = "[0.3:1]";
+    gp.yrange = "[0:10]";
+    gp.xrange = "[0:1]";
     gp.title = plot_title;
     PlotElem pe;
     pe.file = output_filename;
