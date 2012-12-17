@@ -10,7 +10,7 @@
 #include <boost/spirit/include/support_multi_pass.hpp>
 #include <boost/spirit/include/classic_position_iterator.hpp>
 
-template<template <class> class Grammar, class DataType> 
+template<template <class, class> class Grammar, class DataType> 
 bool myparse(std::istream& input, const std::string filename, DataType &result)
 {
     namespace qi = boost::spirit::qi;
@@ -30,8 +30,10 @@ bool myparse(std::istream& input, const std::string filename, DataType &result)
     typedef classic::position_iterator2<forward_iterator_type> pos_iterator_type;
     pos_iterator_type position_begin(fwd_begin, fwd_end, filename);
     pos_iterator_type position_end;
-    
-    Grammar<pos_iterator_type> g;
+
+    qi::rule<pos_iterator_type> skipper = ascii::space | '#' >> *(ascii::char_ - qi::eol) >> qi::eol; // comment skipper, 
+
+    Grammar<pos_iterator_type, qi::rule<pos_iterator_type> > g;
     bool r;
   
     try
@@ -39,8 +41,7 @@ bool myparse(std::istream& input, const std::string filename, DataType &result)
         r = phrase_parse(position_begin, 
                          position_end, 
                          g,
-                         ascii::space, 
-                         //ascii::space | ('#' >> *(ascii::char_ - qi::eol) >> qi::eol), // comment skipper
+                         skipper, 
                          result);
     }
     catch(const qi::expectation_failure<pos_iterator_type>& e)

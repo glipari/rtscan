@@ -28,15 +28,17 @@ namespace Scan {
     namespace fusion = boost::fusion;
     namespace phoenix = boost::phoenix;
 
-    template <typename Iterator>
-    struct property_set_grammar : qi::grammar<Iterator, PropertyList()>// ,
-                                              // ascii::space_type>
+    template <typename Iterator, typename Skipper>
+    struct property_set_grammar : qi::grammar<Iterator, PropertyList(),
+                                              Skipper>
     {
-        qi::rule<Iterator, Property(), ascii::space_type> prop;
-        qi::rule<Iterator, std::string(), ascii::space_type> name;
-        qi::rule<Iterator, std::string(), ascii::space_type> type;
-        qi::rule<Iterator, std::string(), ascii::space_type> value;
-        qi::rule<Iterator, PropertyList(), ascii::space_type> plist;
+        qi::rule<Iterator, Property(), Skipper> prop;
+        qi::rule<Iterator, std::string(), Skipper> name;
+        qi::rule<Iterator, std::string(), Skipper> type;
+        qi::rule<Iterator, std::string(), Skipper> value;
+        qi::rule<Iterator, std::string(), Skipper> value_simple;
+        qi::rule<Iterator, std::string(), Skipper> value_quoted;
+        qi::rule<Iterator, PropertyList(), Skipper> plist;
 
         property_set_grammar() : 
             property_set_grammar::base_type(plist, "Set of Properties") {
@@ -44,13 +46,16 @@ namespace Scan {
             using qi::alpha;
             using qi::alnum;
             using qi::lexeme;
+            using qi::char_;
 
             name = lexeme[alpha >> *alnum];
             type = lexeme[alpha >> *alnum];
-            value = lexeme[*alnum];
+            value_simple = lexeme[*(alnum - lit('"'))];
+            value_quoted = lit('"') > lexeme[*(char_ - lit('"'))] > lit('"');
+            value = (value_quoted | value_simple);
 
-            prop = name >> '=' > value;
-            plist = type >> '(' > name > ')' > '{' > *(prop | plist) >> '}';
+            prop = name >> '=' > value > ';';
+            plist = type >> '(' > name > ')' > '{' > *(prop | plist) >> '}' > ';';
         }
     };   
 
@@ -84,39 +89,33 @@ namespace Scan {
     GenPropertyVisitor::GenPropertyVisitor() : name(""), type("") 
     {
     }
-
-    std::string GenPropertyVisitor::check_keyword(const std::vector<SVDouble> &v, const std::string &name) const
-    {
-        for (auto const &x : v) {
-            std::string k = x.first[0];
-            for (auto const &y : x.first)
-                if (name ==  y) return k;
-        } 
-        return "";
-    }
         
-    std::string GenPropertyVisitor::check_keyword(const std::vector<SVInt> &v, const std::string &name) const
-    {
-        for (auto const &x : v) {
-            std::string k = x.first[0];
-            for (auto const &y : x.first)
-                if (name ==  y) return k;
-        } 
-        return "";
-    }
-
 
     template <class T>
     void check_and_store_values(std::map<std::string, T> &m, const std::string &n, T v)
     {
-        if (m.find(n) != m.end()) THROW_EXC(ValueAlreadySet, "value already set");
+        if (m.find(n) != m.end()) 
+            THROW_EXC(ValueAlreadySet, "value already set");
         else m[n] = v;
+    }
+
+    /** search an array of SVectors, to see if a certain keyword exists */
+    template<class SV>
+    std::string check_keyword(const std::vector<SV> &v, const std::string &name)
+    {
+        for (auto const &x : v) {
+            std::string k = x.first[0];
+            for (auto const &y : x.first)
+                if (name ==  y) return k;
+        } 
+        return "";
     }
 
     void GenPropertyVisitor::operator()(const Property &p) 
     {
         std::string kd = check_keyword(keywords_double, p.name);
         std::string ki = check_keyword(keywords_int, p.name);
+        std::string ks = check_keyword(keywords_string, p.name);
         if (kd != "") {
             if (d_values.find(kd) != d_values.end()) THROW_EXC(ValueAlreadySet, "value already set");
             else d_values[kd] = p.get_double();
@@ -124,6 +123,10 @@ namespace Scan {
         if (ki != "") {
             if (i_values.find(ki) != i_values.end()) THROW_EXC(ValueAlreadySet, "value already set");
             else i_values[ki] = p.get_int();
+        }
+        if (ks != "") {
+            if (s_values.find(ks) != s_values.end()) THROW_EXC(ValueAlreadySet, "value already set");
+            else s_values[ks] = p.get_value();
         }
     }
 
@@ -145,12 +148,15 @@ namespace Scan {
                 if (x == y.first) f = true;
             for (auto &y : i_values) 
                 if (x == y.first) f = true;
+            for (auto &y : s_values) 
+                if (x == y.first) f = true;
             if (!f) {
                 std::cerr << "Mandatory property " << x << " not set in " 
                           << type << "(" << name << ")" << std::endl;
                 return false;
             }
         }
+        return true;
     }
    
     void GenPropertyVisitor::add_double_parameter(const SVector &v, double x, bool mandatory) 
@@ -162,6 +168,12 @@ namespace Scan {
     void GenPropertyVisitor::add_int_parameter(const SVector &v, int x, bool mandatory) 
     {
         keywords_int.push_back(make_pair(v, x));
+        if (mandatory) mandatory_keys.push_back(v[0]);
+    }
+
+    void GenPropertyVisitor::add_string_parameter(const SVector &v, std::string x, bool mandatory) 
+    {
+        keywords_string.push_back(make_pair(v, x));
         if (mandatory) mandatory_keys.push_back(v[0]);
     }
 }

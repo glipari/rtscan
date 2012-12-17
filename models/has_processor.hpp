@@ -9,7 +9,8 @@ namespace Scan {
        which the task is allocated; If -1, the task has not been
        allocated yet. If >=0, it represents a real processor.
 
-       It is useful for partitioning algorithms.
+       It is useful for partitioning algorithms and on distributed
+       systems.
      */
     class HasProcessor {
         int processor;

@@ -10,7 +10,7 @@ TEST(TestHET, Points1)
 {
     vector<FPTask> tset = { {2, 5, 10}, {3, 12, 15} };
 
-    vector<int> p = compute_points(tset.begin(), tset.end(), 12);
+    vector<int> p = compute_points(tset.rbegin(), tset.rend(), 12);
 
     EXPECT_EQ(2, p.size());
     EXPECT_EQ(p[0], 10);

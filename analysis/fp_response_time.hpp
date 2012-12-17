@@ -98,10 +98,14 @@ namespace Scan {
     {
         typedef typename std::iterator_traits<Iter>::value_type Type;
         double r = 0;
-        for_each(first, end, [&r, t1, t2](Type i) {
-                r += get_num_arrived_instances(i, t1, t2) *
-                    i.get_wcet();
-            });
+
+        for (Iter x = first; x!=end; ++x) 
+            r += get_num_arrived_instances(*x, t1, t2) * x->get_wcet();  
+        
+        // for_each(first, end, [&r, t1, t2](Type i) {
+        //         r += get_num_arrived_instances(i, t1, t2) *
+        //             i.get_wcet();
+        //     });
         return r;
     }
     
@@ -122,9 +126,11 @@ namespace Scan {
         Iter task = end-1;       // task under analysis
                                  
         // starting point: r^0
-        for_each(highest, end, [&r](Type a) {
-                r += a.get_wcet();
-            });
+        for (Iter x = highest; x!=end; ++x) r += x->get_wcet();
+
+        // for_each(highest, end, [&r](Type a) {
+        //         r += a.get_wcet();
+        //     });
                         
         do {
             k++;   
@@ -142,10 +148,11 @@ namespace Scan {
     template<class Iter>
     void align_critical_instant(Iter b, Iter e)
     {
-        typedef typename std::iterator_traits<Iter>::reference Ref;
-        for_each(b, e, [](Ref x) {
-                x.set_offset(0);
-            });
+        for (Iter x=b; x!=e; ++x) x->set_offset(0);
+        // typedef typename std::iterator_traits<Iter>::reference Ref;
+        // for_each(b, e, [](Ref x) {
+        //         x.set_offset(0);
+        //     });
     }
 }
 #endif

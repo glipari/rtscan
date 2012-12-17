@@ -121,7 +121,7 @@ TEST_F(TaskTestFix, TaskName)
 
 TEST(TaskTestNoFix, TaskFromProperties)
 {
-    string spec = "task(mytask){ c=1 T=10 dline=8 }";
+    string spec = "task(mytask){ c=1; T=10; dline=8; };";
     stringstream ss(spec);
     PropertyList pset;
     parse_properties(ss, "string", pset);
