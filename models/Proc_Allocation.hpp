@@ -3,7 +3,6 @@
 
 #include <models/Stage_Set.hpp>
 #include <models/Processor.hpp>
-
 namespace Scan {
 class Procs_Allocation
 {
@@ -77,5 +76,4 @@ std::ostream &operator<<(ostream &s, Procs_Allocation &p);
 std::ostream &operator<<(ostream &s, Feasible_Allcoation &fa);
 
 }
-
 #endif // PROC_ALLOCATION_INCLUDED

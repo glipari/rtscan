@@ -7,6 +7,15 @@ using std::endl;
 using std::ofstream;
 
 namespace Scan{
+  inline bool isEmpty_Struct(const string &str)
+{
+    string endpos = "---";
+    if ((str[0]==endpos[0]) && (str[1]==endpos[1]) && (str[2]==endpos[2]))
+    {
+        return true;
+    }
+    return false;
+}
  inline double rand_double_lim_sup(double limit)
 {
     double divisor = RAND_MAX/(limit+1);
@@ -32,7 +41,6 @@ inline double rand_double_lim(double lower, double upper)
 
 inline int rand_lim_sup(int limit)
 {
-
     int divisor = RAND_MAX/(limit+1);
     int retval;
 
@@ -64,6 +72,7 @@ inline void stampa_vettore(std::vector<t>v)
     cout<<endl;
 }
 
+/* Return a copy of processors vector passing as parameter */
 inline std::vector <Processor> create_procs_copy(std::vector<Processor> ps)
 {
     std::vector<Processor>proc;
@@ -74,7 +83,11 @@ inline std::vector <Processor> create_procs_copy(std::vector<Processor> ps)
     }
     return proc;
 }
-inline std::vector <Processor> create_procs_copy_greedy(std::vector<Processor> ps)
+
+/* Return a copy of processors vector passing as parameter without
+   inizialization to processors utilization flag to false
+    */
+inline std::vector <Processor> create_procs_copy_without_util_flag_init(std::vector<Processor> ps)
 {
     std::vector<Processor>proc;
     for(int h=0; h<ps.size(); h++)
@@ -95,6 +108,7 @@ inline std::vector <Processor> create_procs_copy(std::vector<Processor> ps, std:
     return proc;
 }
 
+/* return position of processor in vector p having identification id */
 inline int get_position_in_proc_vector(int id,std::vector<Processor>p )
 {
     for(int i=0; i<p.size(); i++)

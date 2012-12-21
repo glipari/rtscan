@@ -1,62 +1,46 @@
 #include <models/window.hpp>
+#include <models/Proc_Priority_Comunication.hpp>
 
 using namespace std;
 using namespace Scan;
 
-
-
-bool isEmpty_Task(const string &str)
+/** Read processors priority in the file 'file' **/
+vector<Proc_Priority_Comunication> read_neighbors(ifstream &file, Sym_Params &sys)
 {
-    string endpos = ";";
-    if (endpos[0] == str[0])
-    {
-        return true;
-    }
-    return false;
-}
-
-bool isEmpty_Pipe(const string &str)
-{
-    string endpos = "---";
-    if ((str[0]==endpos[0]) && (str[1]==endpos[1]) && (str[2]==endpos[2]))
-    {
-        return true;
-    }
-    return false;
-}
-
-void read_neighbors(ifstream &file, Sym_Params &sys)
-{
-    string line;
+  string line;
+    string line_inner;
+    vector<Proc_Priority_Comunication> pro_coms;
     getline(file, line);
     while(!line.empty())
     {
-        vector<int> n;
-        vector <string>toks;
-        string_split(line, ";", back_inserter(toks));
 
-        for(int j=0; j<toks.size(); j++)
+        vector<int> id_x_level;
+        Proc_Priority_Comunication p;
+        while(!isEmpty_Struct(line))
         {
-            n.push_back(atoi(toks.at(j).c_str()));
+            vector<string> toks_inner;
+            string_split(line, ";", back_inserter(toks_inner));
+            int size= toks_inner.size();
+            for(int j=0; j<size; j++)
+            id_x_level.push_back(atoi(toks_inner.at(j).c_str()));
+            p.push_back(id_x_level);
+            id_x_level.clear();
+            line.clear();
+            getline(file, line);
         }
-        stampa_vettore(toks);
-
-        sys.push_back_neighbors(n);
-
+        pro_coms.push_back(p);
         line.clear();
         getline(file, line);
     }
+    stampa_vettore(pro_coms);
+    sys.pro_neig.insert(sys.pro_neig.begin(), pro_coms.begin(), pro_coms.end());
+    return pro_coms;
+
 }
 
+/** Read starting utilizazion of processors containing in the file 'file'**/
 void read_proc_file(ifstream &file, Sym_Params &sys)
 {
-    ifstream ispn;
-    ispn.open(sys.input_file_neighbors.c_str(),ios_base::in);
-    if(ispn.is_open())
-        cout <<"Processors file is open"<<endl;
-    else
-        cout<<"Processors file is close"<<endl;
-    read_neighbors(ispn,sys);
     string line;
     getline(file, line);
     /** if file is empty, we create two processors **/
@@ -77,10 +61,7 @@ void read_proc_file(ifstream &file, Sym_Params &sys)
         {
             double d=atof(toks.at(0).c_str());
             Processor * p;
-            if(sys.neighbors.size()>0)
-                p= new Processor(atof(toks.at(0).c_str()),sys.neighbors.at(i));
-            else
-                p= new Processor(atof(toks.at(0).c_str()));
+            p= new Processor(atof(toks.at(0).c_str()));
             sys.processors.push_back(*p);
         }
         line.clear();
@@ -89,6 +70,7 @@ void read_proc_file(ifstream &file, Sym_Params &sys)
     }
 }
 
+/**Read parameters of applications task containing in file "file"**/
 void read_task_input_file(ifstream &file, Sym_Params &sys)
 {
     string line;
@@ -100,7 +82,7 @@ void read_task_input_file(ifstream &file, Sym_Params &sys)
     {
         TaskSet *t= new TaskSet();
         bool firstIter=true;
-        while(!isEmpty_Pipe(line))
+        while(!isEmpty_Struct(line))
         {
             vector<string> toks_inner;
             string_split(line, ",", back_inserter(toks_inner));
@@ -138,13 +120,14 @@ ExampleWindow::ExampleWindow()
     seed(555),
     num_task(6),
     x(0.6),
+    reallocation_flag(false),
     m_button_submit("Submit Data"),
     m_CheckButton_Verbose("Verbose"),
     m_CheckButton_reallocataion("Reallocation flag"),
     m_VBox(Gtk::ORIENTATION_VERTICAL),
     m_SBox(Gtk::ORIENTATION_VERTICAL),
     m_Label_fileI("Input File :", true),
-    m_Label_fileO("Output File :",true),
+    m_Label_fileComProc("Comunication Priority of Processors File :",true),
     m_Label_fileP("Processor File :", true),
     m_Label_algP("Algorithm of processor selection :",true),
     m_Label_algT("Algorithm of task selection :", true),
@@ -170,12 +153,11 @@ ExampleWindow::ExampleWindow()
     m_VBox.add(m_SBox);
     m_1Box.pack_start(m_Label_fileI);
     m_1Box.pack_start(m_Entry_fileI);
-    m_2Box.pack_start(m_Label_fileO);
-    m_2Box.pack_start(m_Entry_fileO);
+    m_2Box.pack_start(m_Label_fileComProc);
+    m_2Box.pack_start(m_Entry_fileComProc);
     m_3Box.pack_start(m_Label_fileP);
     m_3Box.pack_start(m_Entry_proc);
     m_H1Box.pack_start( m_Label_algT);
-    m_H1Box.pack_start( m_Combo_Task);
     m_H2Box.pack_start( m_Label_algP);
     m_seed_Box.pack_start(m_Label_seed);
     m_seed_Box.pack_start(m_Entry_seed);
@@ -185,44 +167,52 @@ ExampleWindow::ExampleWindow()
     m_XBox.pack_start(m_Entry_x);
     m_XBox.pack_start(m_CheckButton_reallocataion);
     m_H2Box.pack_start( m_Combo_Alg);
+    m_H1Box.pack_start( m_Combo_Task);
+
     m_VBox.pack_start(m_button_submit);
     m_VBox.pack_start(m_button_check);
     m_VBox.pack_start(m_CheckButton_Verbose);
 
     show_all_children();
-
-    m_button_check.signal_clicked().connect(sigc::mem_fun(*this,
-                                            &ExampleWindow::on_button_check_clicked) );
-    m_button_submit.signal_clicked().connect(sigc::mem_fun(*this,
-            &ExampleWindow::on_button_submit_clicked) );
-    m_CheckButton_Verbose.signal_toggled().connect( sigc::mem_fun(*this,
-            &ExampleWindow::on_checkbox_verbose) );
     m_CheckButton_Verbose.set_active(true);
     m_Combo_Alg.append("Worst Fit");
     m_Combo_Alg.append("Best Fit");
     m_Combo_Alg.append("First Fit");
-    m_Combo_Alg.signal_changed().connect(sigc::mem_fun(*this,
-                                         &ExampleWindow::on_combo_Alg_changed) );
-    m_Combo_Task.append("Precedence Order");
+     m_Combo_Task.append("Precedence Order");
     m_Combo_Task.append("Decrease Computation Time Order");
     m_Combo_Task.append("Increase Computation Time Order");
+
+
+m_Combo_Alg.signal_changed().connect(sigc::mem_fun(*this,
+                                         &ExampleWindow::on_combo_Alg_changed) );
+
     m_Combo_Task.signal_changed().connect(sigc::mem_fun(*this,
                                           &ExampleWindow::on_combo_Task_changed) );
+      m_button_submit.signal_clicked().connect(sigc::mem_fun(*this,
+            &ExampleWindow::on_button_submit_clicked) );
+    m_CheckButton_Verbose.signal_toggled().connect( sigc::mem_fun(*this,
+            &ExampleWindow::on_checkbox_verbose) );
+            m_CheckButton_reallocataion.signal_toggled().connect( sigc::mem_fun(*this,
+            &ExampleWindow::on_checkbox_reall) );
+             m_button_check.signal_clicked().connect(sigc::mem_fun(*this,
+                                            &ExampleWindow::on_button_check_clicked) );
+
+
     m_Entry_proc.set_max_length(70);
     m_Entry_fileI.set_max_length(70);
-    m_Entry_fileO.set_max_length(70);
+    m_Entry_fileComProc.set_max_length(70);
     m_Entry_proc.set_text("");
     m_Entry_fileI.set_text("");
-    m_Entry_fileO.set_text("");
+    m_Entry_fileComProc.set_text("");
     m_Entry_proc.select_region(0, m_Entry_proc.get_text_length());
     m_Entry_fileI.select_region(0, m_Entry_fileI.get_text_length());
-    m_Entry_fileO.select_region(0, m_Entry_fileO.get_text_length());
+    m_Entry_fileComProc.select_region(0, m_Entry_fileComProc.get_text_length());
 }
 
 ExampleWindow::~ExampleWindow()
 {
     m_Entry_fileI.~Entry();
-    m_Entry_fileO.~Entry();
+    m_Entry_fileComProc.~Entry();
     m_Entry_num_task.~Entry();
     m_Entry_proc.~Entry();
     m_Entry_seed.~Entry();
@@ -234,7 +224,7 @@ ExampleWindow::~ExampleWindow()
     m_Label_algP.~Label();
     m_Label_algT.~Label();
     m_Label_fileI.~Label();
-    m_Label_fileO.~Label();
+    m_Label_fileComProc.~Label();
     m_Label_fileP.~Label();
     m_Label_num_task.~Label();
     m_Label_seed.~Label();
@@ -251,7 +241,7 @@ ExampleWindow::~ExampleWindow()
 
 void ExampleWindow::on_button_check_clicked()
 {
-    CheckFeasibility* mainClass = new CheckFeasibility( taskOrderSelection , types_Alg, sys.pipes_data,sys.period_deadline, sys.processors,sys.neighbors,verbose);
+    CheckFeasibility* mainClass = new CheckFeasibility(taskOrdersSelection  , types_Alg, sys.pipes_data,sys.period_deadline, sys.processors,verbose,sys.pro_neig);
     mainClass->set_realloc_flag(reallocation_flag);
     mainClass->check();
 }
@@ -263,14 +253,28 @@ void ExampleWindow::on_button_submit_clicked()
     x= atof(m_Entry_x.get_text().c_str());
     input_filename=m_Entry_fileI.get_text();
     input_processor_filename=m_Entry_proc.get_text();
-    Pipe_Generator* gen= new Pipe_Generator(input_filename,30,  seed, x, num_task);
-    gen->generator();
+    input_com_proc_filename=m_Entry_fileComProc.get_text();
+
+    /** if you don't want generate a new set of applications for
+    next genaration, you comment follows two line **/
+   Pipe_Generator* gen= new Pipe_Generator(input_filename,30,  seed, x, num_task);
+   gen->generator();
+
+
     ifstream is;
     is.open(input_filename.c_str(),ios_base::in);
     if(is.is_open())
         cout <<"Tasks file is open"<<endl;
     else
         cout<<"Tasks file is close"<<endl;
+    ifstream iscnp;
+    iscnp.open(input_com_proc_filename.c_str(),ios_base::in);
+    if(iscnp.is_open())
+        {cout<<"Processors comunications priority data file is open"<<endl;
+            read_neighbors(iscnp,sys);
+        }
+    else
+        cout<<"Processors comunications priority data file is close"<<endl;
     ifstream isp;
     isp.open(input_processor_filename.c_str(),ios_base::in);
     read_task_input_file(is, sys);
@@ -321,8 +325,8 @@ void ExampleWindow::on_checkbox_verbose()
 void ExampleWindow::on_checkbox_reall()
 {
     reallocation_flag=m_CheckButton_reallocataion.get_active();
-
 }
+
 
 
 

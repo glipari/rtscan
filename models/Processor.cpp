@@ -2,13 +2,13 @@
 
 namespace Scan{
 
-Processor::Processor():utilised_Bw(0),free(1),id(increment),used_flag(false)
+Processor::Processor():starting_bw(0),utilised_Bw(0),free(1),id(increment),used_flag(false),first_task_used(false)
 {
     increment++;
 }
 
 
-Processor::Processor(double u): utilised_Bw(u),free(1-u),id(increment),used_flag(false)/**,init_free(1-u)**/
+Processor::Processor(double u): starting_bw(u),utilised_Bw(u),free(1-u),id(increment),used_flag(false),first_task_used(false)/**,init_free(1-u)**/
 {
     increment++;
 }
@@ -17,9 +17,11 @@ Processor::Processor(double u): utilised_Bw(u),free(1-u),id(increment),used_flag
 Processor::Processor(const Processor &p)
 {
     utilised_Bw=p.utilised_Bw;
+    starting_bw=p.starting_bw;
     free= p.free;
     id= p.id;
     used_flag=p.used_flag;
+    first_task_used=p.first_task_used;
 }
 
 double Processor::get_free()const
@@ -27,6 +29,11 @@ double Processor::get_free()const
     return free;
 }
 
+double Processor::get_starting_Bw()
+{
+    return starting_bw;
+
+}
 void Processor::subtraction_bw(double bw)
 {
     utilised_Bw= utilised_Bw-bw;
@@ -43,9 +50,17 @@ bool Processor::get_flag_utilised() const
 {
     return used_flag;
 }
+bool Processor::get_first_flag() const
+{
+    return first_task_used;
+}
 void Processor::set_flag_utilised(bool f)
 {
      used_flag= f;
+}
+bool Processor::set_first_flag(bool f)
+{
+    first_task_used=f;
 }
 int Processor::get_Id() const
 {
@@ -57,14 +72,18 @@ bool Processor::update(double bw)
     utilised_Bw=utilised_Bw+bw;
     free= free-bw;
     used_flag=true;
+
 }
+
 
  Processor& Processor::operator=(const Processor &p)
     {
+        starting_bw=p.starting_bw;
       utilised_Bw=p.utilised_Bw;
     free= p.free;
     id= p.id;
     used_flag=p.used_flag;
+    first_task_used=p.first_task_used;
 
         return *this;
     }

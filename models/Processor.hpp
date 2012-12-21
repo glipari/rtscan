@@ -14,10 +14,12 @@ static int increment=0;
 class Processor
 {
 private:
-    double utilised_Bw;
+    double utilised_Bw;/** bw utilized **/
+    double starting_bw; /** bw utilized befere allocation **/
     double free; /** free bandwidth **/
     int id; /** processor id **/
     bool used_flag; /** true if processor is used **/
+    bool first_task_used;
 
 
 
@@ -42,6 +44,7 @@ public:
 
     /// return utilised_Bw
     double get_utilised_Bw()const;
+    double get_starting_Bw();
     /// return id processor
     int get_Id() const;
     /// return free
@@ -52,6 +55,8 @@ public:
     bool get_flag_utilised() const;
      Processor& operator=(const Processor &p);
      void subtraction_bw(double bw);
+     bool get_first_flag() const;
+     bool set_first_flag(bool f);
 
 };
 /**
@@ -90,4 +95,5 @@ public:
 };
 
 }
+
 #endif // PROCESSOR_HPP_INCLUDED

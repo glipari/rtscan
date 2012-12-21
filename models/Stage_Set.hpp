@@ -22,9 +22,9 @@ namespace Scan {
         Stage_Set(const Stage_Set &ts);
         /** return size of task set */
         int size() const { return s.size(); }
-
+        /** return task at position i in vector RLIST**/
         const Stage& at(unsigned int i) const throw(IndexOutOfBound);
-
+        /** return sum of wcet of all tasks of set **/
         double get_tot_wcets()const;
         Stage& operator[](unsigned int i) throw (IndexOutOfBound);
 
@@ -33,20 +33,21 @@ namespace Scan {
         Stage_Set& operator+=(const Stage &t);
         Stage_Set& operator+=(const Stage_Set &t);
         double get_bw_param();
-
+        /** return all periods of tasks in the set **/
         std::vector<int> get_periods() const;
+        /** return all deadline of tasks in the set **/
         std::vector<double> get_dlines() const;
         std::vector<double> get_wcets() const;
-
+        /** return sum on all tasks of (wcet_i/period_i)**/
         double get_util() const;
 
         void clear();
     };
 
 template<class Cmp>
-void sort_Stage_Sets(std::vector<Stage_Set> rs)
+void sort_Stage_Sets(std::vector<Stage_Set> *rs)
 {
-    std::sort(rs.begin(),rs.end(), Cmp());
+    std::sort(rs->begin(),rs->end(), Cmp());
 }
 
 class CmpWcetIncr : public std::less<Stage_Set>
@@ -54,23 +55,17 @@ class CmpWcetIncr : public std::less<Stage_Set>
 public:
     bool operator()( const Stage_Set &a,const Stage_Set &b)
     {
-       if(a.get_tot_wcets() <= b.get_tot_wcets())
-        return true;
-        else
-        return false;
+       return a.get_tot_wcets() < b.get_tot_wcets();
+
     }
 };
-
 
 class  CmpWcetDecr : public std::less<Stage_Set>
 {
 public:
     bool operator()( const Stage_Set &a, const   Stage_Set &b)
     {
-        if(a.get_tot_wcets() >= b.get_tot_wcets())
-        return true;
-        else return false;
-
+        return a.get_tot_wcets() > b.get_tot_wcets();
     }
 };
 

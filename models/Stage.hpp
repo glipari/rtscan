@@ -59,6 +59,13 @@ public:
 */
 std::ostream &operator<<(std::ostream &s, Stage &r);
 
+class WcetIncr : public std::less<double>
+{
+public:
+    bool operator()(const double &a,  const  double &b)
+    {
+        return a <= b;
+    }
+};
 }
-
 #endif // RECORD_HPP_INCLUDED

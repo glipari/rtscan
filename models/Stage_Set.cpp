@@ -26,6 +26,7 @@ Stage_Set::Stage_Set(const Stage_Set &ts)
 
 Stage_Set& Stage_Set::operator=(const Stage_Set &ts)
 {
+    s.clear();
     for(int i=0; i<ts.size(); i++)
     {
         s.push_back(ts.s.at(i));
@@ -141,12 +142,12 @@ double Stage_Set::get_bw_param()
 
             }
         }
-
-
         wcets_less_consecutive.push_back(wcet);
         wcet=0;
 
     }
+    sort((&wcets_less_consecutive)->begin(),(&wcets_less_consecutive)->end(), WcetIncr());
+
     for(int i=0; i<wcets_less_consecutive.size(); i++)
     {
         double temp= tot_wcet+ wcets_less_consecutive.at(i);
@@ -166,6 +167,5 @@ void Stage_Set::clear()
     s.clear();
 }
 
-
-
 }
+

@@ -71,12 +71,13 @@ namespace Scan
 
     std::ostream &operator<<(ostream &s, Stage &r)
 {
-	    s<<"Index  pipe: "<<r.get_Index_Pipe()<<endl;
-        s<<"Index in pipe: "<<r.get_Index_In_Pipe()<<endl;
-        s<<"wcet task in Stage: "<<r.get_Task().get_wcet()<<endl;
-		s << "-------------------" << endl;
+	    s<<"Pipe"<<r.get_Index_Pipe()<<endl;
+        s<<"Index of task: "<<r.get_Index_In_Pipe()<<endl;
+        s<<"wcet: "<<r.get_Task().get_wcet()<<endl;
+		s << endl;
 		return s;
 }
 
 
 }
+

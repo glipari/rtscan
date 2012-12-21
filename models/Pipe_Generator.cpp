@@ -53,8 +53,9 @@ vector<double> Pipe_Generator::compute_wcet(int num_stage,int period)
     std::uniform_real_distribution<double> dist(0,1);
     std::vector<double> v;
     double w=0;
-    double inf=0.6*x;
-    double sup=1.5*x;
+    double inf=0.8*x;
+    double sup=1.2*x;
+
     double sum = rand_double_lim(inf,sup);
     outf<<sum;
     outf<<endl;
@@ -63,7 +64,8 @@ vector<double> Pipe_Generator::compute_wcet(int num_stage,int period)
         rndgen_t *rng = new rndgen_t(seed);
         double next = sum * pow(dist(*rng), 1.0/double(num_stage));
         w=(sum - next)*period;
-        v.push_back(w);
+        int n= w;
+        v.push_back(n);
         sum = next;
     }
 
@@ -76,19 +78,23 @@ void Pipe_Generator::generator()
 {
     stringstream ss;
     int number_of_stage=0;
-    double period=0;
+    int period=0;
+    double pe=0;
+    double de=0;
     string s;
     string p;
     string d;
-    double e_t_e_deadline=0;
+    int e_t_e_deadline=0;
     for(int i=0; i <number_of_pipe; i++)
     {
-        period=compute_period();
+        pe= compute_period();
+        period=pe;
         number_of_stage=give_num_stage();
         ss<<period;
         p=ss.str();
         ss.str("");
-        e_t_e_deadline=compute_deadline(period);
+        de=compute_deadline(period);
+        e_t_e_deadline=de;
         ss<<e_t_e_deadline;
         d=ss.str();
         ss.str("");
@@ -96,7 +102,7 @@ void Pipe_Generator::generator()
        write_on_file(s);
         s.clear();
         vector<double> wcets=compute_wcet(number_of_stage,period);
-        double wcet=0;
+        int wcet=0;
         for(int j=0; j<number_of_stage; j++)
         {
             wcet= wcets.at(j);

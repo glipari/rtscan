@@ -6,8 +6,8 @@
 #include <gtkmm/window.h>
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/checkbutton.h>
-#include <Sym_Param.hpp>
-#include <CheckFeasibility.hpp>
+#include <models/Sym_Param.hpp>
+#include <models/CheckFeasibility.hpp>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -15,10 +15,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <vector>
-#include <sequence.hpp>
-#include <generators.hpp>
-#include <Pipe_Generator.hpp>
-#include <UsefulF.hpp>
+#include <common/sequence.hpp>
+#include <models/Pipe_Generator.hpp>
+#include <common/UsefulF.hpp>
+#include <models/Proc_Priority_Comunication.hpp>
 using namespace std;
 using namespace Scan;
 
@@ -30,21 +30,37 @@ public:
     virtual ~ExampleWindow();
 protected:
 
+    /* seed used to randomly generate applications */
     int seed;
+    /* number of tasks per applicatins */
     int num_task;
+    /* variable influence utilization of applications
+    * during genartions of them */
     double x;
+    /* support class containing some system parameter */
     Sym_Params sys;
-    int taskOrderSelection;
+    /* type of selection processors policies choisen by the
+    user */
     int types_Alg;
+    /* type of selection tasks policies choisen by the
+    user */
     int taskOrdersSelection;
+    /* class supporting options of priority between processors */
+    vector<Proc_Priority_Comunication> proc_comunications_prioority_data;
     std::string input_filename;
     bool verbose;
+    /* flag indicating if user want option of
+    deallocation-reallocation during simulation */
     bool reallocation_flag;
     std::string input_processor_filename;
-    //Signal handlers:
+    std::string input_com_proc_filename;
+    /* Signal handlers: start simulation using button check */
     void on_button_check_clicked();
+    /* Signal handlers: submit data */
     void on_button_submit_clicked();
+    /* Signal handlers: combo box for selection of processors policies */
     void on_combo_Alg_changed();
+    /* Signal handlers: combo box for selection of tasks policies */
     void on_combo_Task_changed();
     void on_checkbox_verbose();
     void on_checkbox_reall();
@@ -54,7 +70,7 @@ protected:
     Gtk::ComboBoxText m_Combo_Alg;
     Gtk::ComboBoxText m_Combo_Task;
     Gtk::Entry m_Entry_fileI;
-    Gtk::Entry m_Entry_fileO;
+    Gtk::Entry m_Entry_fileComProc;
     Gtk::Entry m_Entry_proc;
     Gtk::Entry m_Entry_x;
     Gtk::Entry m_Entry_seed;
@@ -65,7 +81,7 @@ protected:
     Gtk::Label m_Label_algP;
     Gtk::Label m_Label_fileI;
     Gtk::Label m_Label_x;
-    Gtk::Label m_Label_fileO;
+    Gtk::Label m_Label_fileComProc;
     Gtk::Label m_Label_fileP;
     Gtk::Label m_Label_seed;
     Gtk::Label m_Label_num_task;

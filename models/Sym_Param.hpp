@@ -7,17 +7,15 @@
 #include <map>
 #include <models/transaction.hpp>
 #include <models/Processor.hpp>
+#include <models/Proc_Priority_Comunication.hpp>
 
 struct Sym_Params
 {
     string input_filename; // = "tset.txt";
     string output_filename;// = "tres.txt";
+    string input_file_neighbors;
     string input_processor_filename;
-
     int nproc; // = 2;                 // number of processors
-
-
-
     /**
        Computation time is assumed to be in milliseconds
        Therefore, the following are also in milliseconds
@@ -29,14 +27,12 @@ struct Sym_Params
     vector< pair<double,double> >period_deadline;
     vector<Processor> processors;
 
-
-
     vector<Scan::TaskSet> pipes_data;
-
-
-    Sym_Params() : input_filename("tset.txt"),
+    vector<Proc_Priority_Comunication> pro_neig;
+    Sym_Params() : input_filename("Task.txt"),
         output_filename("tres.txt"),
-        input_processor_filename("proc.txt"),
+        input_processor_filename("Proc.txt"),
+        input_file_neighbors("Neig.txt"),
         nproc(2),
 
         min_dur(.005),
@@ -45,18 +41,12 @@ struct Sym_Params
 
         pipes_data(),
         period_deadline(),
-        processors()
-
-    {
-    }
-
+        processors(){}
     void print_help();
     void print_params();
+    void push_back_neighbors(vector<int>v);
     void parse_args(int argc, char *argv[]);
 
 };
-
-
-
 
 #endif // SYM_PARAM_HPP_INCLUDED

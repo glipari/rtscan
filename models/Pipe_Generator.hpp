@@ -11,12 +11,6 @@
 #include <random>
 #include <common/UsefulF.hpp>
 
-
-//using std::endl;
-
-
-
-//using std::ofstream;
 namespace Scan
 {
 
@@ -37,7 +31,6 @@ class Pipe_Generator
     void write_on_file( std::string line);
     double compute_deadline(double period);
     std::vector<double> compute_wcet(int num_stag,int period);
-
     public:
     Pipe_Generator();
     Pipe_Generator(int seed);

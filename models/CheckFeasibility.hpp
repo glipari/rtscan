@@ -15,9 +15,6 @@
 #include <fstream>
 
 
-
-
-
 namespace Scan
 {
 
@@ -41,8 +38,20 @@ class CheckFeasibility
         founded from greedy algorithm
     **/
     vector <Feasible_Allcoation> all_feasible_combinations;
+    /** vector contains priority between processors;
+        at position i it's contained priority assigned to all
+        processors by processor having id i
+    **/
     vector<Proc_Priority_Comunication> proc_comunication_priority_data;
+    /** vector contains the pipelines that are allocated succesfully;
+        pipelines positions are added during simulation to the vector;
+        this vector is used in order to performe deallocationt
+    **/
     vector<int> index_allocated_pipe;
+    /** vector contains the pipelines that din't allocated succesfully;
+        pipelines positions are added during simulation to the vector;
+        this vector is used in order to performe deallocationt
+    **/
     vector<int>index_not_allocated_pipe;
     vector< pair<double,double> >period_deadline;
     int verbose;
@@ -51,12 +60,14 @@ class CheckFeasibility
     orderTaskSelection order_task;
      /** type of algorithm used to select processor **/
     precSelectionAlg proc_algorithm;
+    /** processors of simulation system **/
     vector<Processor> processors;
     vector <TaskSet> task_sets;
     ofstream output_file;
-
     void print_feasible_combination();
+    /** select processor for the allocation using policy FF BF WF**/
     int select_Processor(vector<Processor> *proc,  double sigma);
+
     double compute_partialBW(vector<Stage_Set>sets);
     vector<Processor> give_neighbour_processors(vector<Processor> pr,int level);
     /** Given a combinations, return tasks of pipe grouping
@@ -80,18 +91,27 @@ class CheckFeasibility
          @param max number of group in which pipe tasks are splited**/
     bool is_last_combination(int index, int size, int max_split);
     void printProcessor(vector< Processor>p);
+    /** optimal allocation algorithm **/
     bool check_feasibility_combinations( vector<Processor> *pro,int index_pipe,int max_split,vector<Procs_Allocation  >one_feas_all);
     bool next(vector<int> *pisition, vector<int>*max ,int size);
+    /** create all possible partition useful **/
     void split( int max_split, int max_size_pipe);
-    int get_index_of_proc(vector <Procs_Allocation> v,Processor p);
-    vector<Stage_Set>  give_task_order(vector<Stage_Set>  sets_of_tasks);
+    /** return positions, in just_allocated vector, of item contains all
+        tasks allocated on processor p
+    **/
+    int get_index_of_proc(vector <Procs_Allocation> just_allocated,Processor p);
+    /** return same Stage_Set orderd in increasing way for wcet tasks **/
+    vector<Stage_Set>  give_task_order(vector<Stage_Set>  *sets_of_tasks);
     void create_final_file();
+    /** greedy allocation algorithm **/
     bool check_feasibility_greedy( vector<Processor> *pro,int max_split);
+    /** print result of greedy simulation on file**/
     void create_final_file_greedy(string file_name);
     bool check_one_pipe(int index_pipe,int max_split, vector<Processor>*pro,vector <Procs_Allocation>* one_feas_all_final ,ofstream &u_file);
     void remove_pipe(int index_pipe);
+
     void recombine_allocation(int max_split, vector<Processor>*proc,ofstream &u_file);
-   bool find_processor_using_priority(int level,double deadline,int index_task_set,vector<Stage_Set>sets_of_tasks,double first, vector<Processor> *temp, vector <Procs_Allocation> *one_feas_all,int index_pipe );
+   bool find_processor_using_priority(int level,double deadline,int index_task_set,vector<Stage_Set>sets_of_tasks,double first, vector<Processor> *temp, vector <Procs_Allocation> *one_feas_all,int index_pipe,vector<int>path_level );
 
 
 
@@ -109,7 +129,7 @@ public:
       @param period_deadline: used to inizialized Allocation result.
       @param ps: assigned to processors.
         */
-    CheckFeasibility( int orderTask, int Alg,  vector<  TaskSet> tss,vector< pair<double,double> >period_deadline, vector<Processor> ps,vector<vector<int>> neigh,int v, vector<Proc_Priority_Comunication>pr);
+    CheckFeasibility( int orderTask, int Alg,  vector<  TaskSet> tss,vector< pair<double,double> >period_deadline, vector<Processor> ps,int v, vector<Proc_Priority_Comunication>pr);
     void check();
     void recombine_allocation();
     inline void set_realloc_flag(bool flag){ deallocation_reallocation=flag;}
