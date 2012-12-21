@@ -168,8 +168,6 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
                                                 v.end() - (ntasks-i), 
                                                 (h-1)*v[i].get_period() + v[i].get_dline());
             
-            //vector<int> pp = compute_points(v.rbegin()-ntasks+i+1, v.rend(), (h-1)*v[i].get_period() + v[i].get_dline());
-            //sort(pp.begin(), pp.end());
             vector< vector<int> > myn = 
                 number_of_instances(pp.begin(), pp.end(), 
                                     v.begin(), v.end() - (ntasks-i));
@@ -221,7 +219,7 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
                 PPL::Variable xd(3*i+1);
                 PPL::Variable xj(3*i+2);
                 le += h * xx;
-                le += -xd+xj;
+                le += -xd+xj;  // to be tested
                 PPL::Constraint cs = (le <= (h-1)*v[i].get_period());
                 cp.add_constraint(cs);
 
@@ -229,15 +227,12 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
                 cout << "Constraint set completed: " << endl;
 
                 ps.add_disjunct(cp);
-                ps.omega_reduce();
+                //ps.omega_reduce();
             }
             cout << "Now all constraint set have been prepared, intesecting...";
             cout.flush();
             sys.poly.intersection_assign(ps);
             cout << "... completed!" << endl;
-
-            //cout << "Partial pointset: " << sys.poly << endl;
-
         }
     }
     return sys;
@@ -443,23 +438,23 @@ double get_value_from_task(const FPTask &task, const std::string &var)
 
    2) computes max and minimum admissible values for that variable. 
  */
-void do_sensitivity(PPL::Pointset_Powerset<PPL::C_Polyhedron> ps, 
-                    const std::vector<string> &var_names,
+void ConstraintsSystem::do_sensitivity(// PPL::Pointset_Powerset<PPL::C_Polyhedron> ps, 
+                    // const std::vector<string> &var_names,
                     const std::vector<Scan::FPTask> &tasks,
                     const std::string &var) 
 {
-    int k = get_index(var_names, var);   // we do sensitivity on the k variable
+    int k = get_index(vars, var);   // we do sensitivity on the k variable
     if (k == -1) throw("Variable not found");
-    for (int i=0; i<var_names.size(); i++)  {
+    for (int i=0; i<vars.size(); i++)  {
         if (i == k) continue;
-        vector<string> ss = split(var_names[i], ".");
+        vector<string> ss = split(vars[i], ".");
         int ti = find_task(tasks, ss[0]);
         if (ti == -1) throw "Task not found!";
         double v = get_value_from_task(tasks[ti], ss[1]);
 
         Variable xx(i);
         Congruence cg = ((xx %= int(v)) / 0); 
-        ps.refine_with_congruence(cg);
+        poly.refine_with_congruence(cg);
     }
     Variable xx(k);
     Linear_Expression le;
@@ -467,11 +462,11 @@ void do_sensitivity(PPL::Pointset_Powerset<PPL::C_Polyhedron> ps,
     Coefficient mn;
     Coefficient md;
     bool is_included;
-    ps.maximize(le, mn, md, is_included);
+    poly.maximize(le, mn, md, is_included);
     // I should convert mn and md into a single double
     cout << "Maximum value for " << var << ": " << mn << "/" <<  md << endl;
 
-    ps.minimize(le, mn, md, is_included);
+    poly.minimize(le, mn, md, is_included);
     // I should convert mn and md into a single double
     cout << "Minimum value for " << var << ": " << mn << "/" <<  md << endl;
 }

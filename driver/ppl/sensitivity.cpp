@@ -42,26 +42,27 @@ int main(int argc, char *argv[])
         cout << *i << endl;
 
     // tasks have been read, now create the Pointset_Powerset
-    vector<string> var_names;
-    PPL::Pointset_Powerset<PPL::C_Polyhedron> ps = build_hyperplanes_powerset(sv.v, var_names);
+    // PPL::Pointset_Powerset<PPL::C_Polyhedron> ps = build_hyperplanes_powerset(sv.v, var_names);
+
+    ConstraintsSystem cs = build_hyperplanes_powerset(sv.v);
 
     using namespace PPL::IO_Operators;
-    cout << ps << endl;
+    cout << cs.poly << endl;
     
-    for (unsigned char i=0; i<var_names.size(); i++) {
-        cout << var_names[i] << endl;
+    for (unsigned char i=0; i<cs.vars.size(); i++) {
+        cout << cs.vars[i] << endl;
     }
     
-    // now substitute the first n-1 computation times, do analysis on the last one
-    for (unsigned i=0; i<sv.v.size() - 1; i++) {
-        Variable xx(i);
-        Congruence cg = ((xx %= (int)sv.v[i].get_wcet()) / 0); 
-        ps.refine_with_congruence(cg);
-    }
-    cout << ps << endl;
+    // // now substitute the first n-1 computation times, do analysis on the last one
+    // for (unsigned i=0; i<sv.v.size() - 1; i++) {
+    //     Variable xx(i);
+    //     Congruence cg = ((xx %= (int)sv.v[i].get_wcet()) / 0); 
+    //     ps.refine_with_congruence(cg);
+    // }
+    // cout << ps << endl;
 
     try {
-        do_sensitivity(ps, var_names, sv.v, string("t3.wcet"));
+        cs.do_sensitivity(sv.v, string("t3.wcet"));
     }
     catch(char const *msg) {
         cout << "An error occurred while doing sensitivity:" << endl;
