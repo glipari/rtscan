@@ -7,6 +7,7 @@
 
 using namespace Scan;
 using namespace std;
+using namespace PPL::IO_Operators;
 
 template<class IterInt, class IterTask>
 vector< vector<int> > number_of_instances(IterInt pb, IterInt pe, IterTask tb, IterTask te) 
@@ -47,6 +48,7 @@ ConstraintsSystem build_hyperplanes_powerset(std::vector<Scan::FPTask> &v)
     }
     
     sys.poly.add_disjunct(base);
+
     for (int j=1; j<ntasks;j++) {
         PPL::Pointset_Powerset<PPL::C_Polyhedron> ps(ntasks, EMPTY);
         
@@ -70,6 +72,50 @@ ConstraintsSystem build_hyperplanes_powerset(std::vector<Scan::FPTask> &v)
     return sys;
 }
 
+/* A set of help and refined methods for np_build_hyperplanes_powerset */
+template<class Iter> static int compute_max_blocking_time(Iter b, Iter e);
+static void constraints_of_np_job_i_k(const std::vector<Scan::FPTask> &v,
+			const PPL::C_Polyhedron &base,
+			const int ntasks, const int i, const int k,
+			PPL::Pointset_Powerset<PPL::C_Polyhedron> &ps_i);
+static void constraints_of_np_task_i(const std::vector<Scan::FPTask> &v,
+				const PPL::C_Polyhedron &base,
+				const int ntasks, int i,
+				PPL::Pointset_Powerset<PPL::C_Polyhedron> &ps_i);
+
+ConstraintsSystem np_build_hyperplanes_powerset(std::vector<Scan::FPTask> &v)
+{
+	int ntasks = v.size();
+	
+	ConstraintsSystem sys(ntasks);
+
+	/**
+	 * the basic constraint on each wcet that 0 <= C_i <= min(T_{i}, D_{i})
+	 **/
+	PPL::C_Polyhedron base(ntasks);
+	for( int i = 0; i < ntasks; i++) {
+		PPL::Variable xx(i);
+		PPL::Constraint cs_min = (xx >= 0);
+		base.add_constraint(cs_min);
+		int tmp = min((int)(v[i].get_dline()), (int)(v[i].get_period()));
+		PPL::Constraint cs_max = (xx <= tmp); 
+		base.add_constraint(cs_max);
+		sys.vars[i] = (v[i].get_name() + ".wcet");
+	}
+
+	sys.poly.add_disjunct(base);
+	for( int i = 0; i < ntasks; i++) {
+		/* The final set of constraints for task i */			
+		PPL::Pointset_Powerset<PPL::C_Polyhedron> ps_i(ntasks, EMPTY);
+		ps_i.add_disjunct(base);
+		
+		constraints_of_np_task_i(v, base, ntasks, i, ps_i);
+
+		sys.poly.intersection_assign(ps_i);
+	}
+	
+	return sys;
+}
 
 PPL::Pointset_Powerset<PPL::C_Polyhedron> build_hyperplanes_powerset(vector<FPTask> &v, vector<string> &vars)
 {
@@ -470,3 +516,134 @@ void ConstraintsSystem::do_sensitivity(// PPL::Pointset_Powerset<PPL::C_Polyhedr
     // I should convert mn and md into a single double
     cout << "Minimum value for " << var << ": " << mn << "/" <<  md << endl;
 }
+
+/* A helper function for np_build_hyperplanes_powerset */
+template<class Iter>
+static int compute_max_blocking_time(Iter b, Iter e)
+{
+	int B_i = 0;
+	int tmp;
+	for (Iter i=b; i != e; i++) {
+		tmp = (int)(min(i->get_period(), (int)(i->get_dline())) -1);
+		if( B_i < tmp)
+			B_i = tmp;
+	}
+
+	return B_i;
+}
+
+static void
+constraints_of_np_job_i_k(const std::vector<Scan::FPTask> &v,
+			const PPL::C_Polyhedron &base,
+			const int ntasks, const int i, const int k,
+			PPL::Pointset_Powerset<PPL::C_Polyhedron> &ps_i)
+{
+	vector< vector<int> > points;
+	vector<int> pp = compute_all_points(v.begin(), v.end() - (ntasks - i),
+						k*v[i].get_dline());
+	points = number_of_instances(pp.begin(), pp.end(),
+					v.begin(), v.end() - (ntasks - i));
+
+	/* Constraints for job k of task i */
+	PPL::Pointset_Powerset<PPL::C_Polyhedron> ps(ntasks, EMPTY);
+	
+	for(unsigned n = 0; n < points.size(); n++) {
+		PPL::C_Polyhedron cp = base;
+
+		for( unsigned nn = 0; nn < i; nn++) {
+			PPL::Linear_Expression le;
+			
+			PPL::Variable xx(i);
+			le += xx*(k-1) + v[nn].get_jitter();
+			for( int j = 0; j < i; j++) {
+				PPL::Variable xx(j);
+				le += xx * points[n][j];
+			}
+			if( i == ntasks-1) {
+				PPL::Constraint cs = ( le <= 
+					points[n][nn]*v[nn].get_period()-1);
+
+				cp.add_constraint(cs);
+			}
+			for (unsigned m = i + 1; m < ntasks; m++) {
+				PPL::Linear_Expression le1 = le;
+				PPL::Variable xx(m);
+				le1 += xx - 1;
+				PPL::Constraint cs = ( le1 <= 
+					points[n][nn]*v[nn].get_period()-1);
+				cp.add_constraint(cs);
+			}
+		}
+
+		PPL::Variable xx(i);
+		PPL::Linear_Expression le_i;
+		le_i += k*xx + v[i].get_jitter();
+		for (int j = 0; j < i; j++) {
+			PPL::Variable xx(j);
+			le_i += xx * points[n][j];
+		}
+		if( i == ntasks-1) {
+			PPL::Constraint cs = (
+				le_i <= k*v[i].get_dline());
+			cp.add_constraint(cs);
+		}
+		for (unsigned m = i + 1; m < ntasks; m++) {
+			PPL::Linear_Expression le_i1 = le_i;
+			PPL::Variable xx(m);
+			le_i1 += xx - 1;
+			PPL::Constraint cs = (
+				le_i1 <= k*v[i].get_dline());
+			cp.add_constraint(cs);
+		}
+		
+		ps.add_disjunct(cp);
+	}
+
+	ps_i.intersection_assign(ps);
+}
+
+static void
+constraints_of_np_task_i(const std::vector<Scan::FPTask> &v,
+				const PPL::C_Polyhedron &base,
+				const int ntasks, int i,
+				PPL::Pointset_Powerset<PPL::C_Polyhedron> &ps_i)
+{
+
+	if( i == 0) {
+		PPL::Pointset_Powerset<PPL::C_Polyhedron> 
+						ps(ntasks, EMPTY);
+		PPL::C_Polyhedron cp = base;
+		PPL::Variable xx(i);
+		PPL::Linear_Expression le_i;
+		le_i += v[i].get_jitter() + xx;
+		for (int j = i+1; j < ntasks; j++) {
+			PPL::Linear_Expression le_ij= le_i;
+			PPL::Variable xx(j);
+			le_ij += xx -1;
+			PPL::Constraint cs_i = (
+				le_ij <= v[i].get_dline());
+			cp.add_constraint(cs_i);
+		}
+		ps.add_disjunct(cp);
+		ps_i.intersection_assign(ps);
+		
+		return;
+	}
+
+	/* The upper bound of the i_th task's blocking time.*/
+	int B_i = compute_max_blocking_time(v.begin() + i + 1, v.end());
+	
+	/* The upper bound of length of the level-i active period. */
+	int H_i = 1;
+	for ( int j = 0; j <= i; j++)
+		H_i =  boost::math::lcm(H_i, (int)(v[j].get_period()));
+	H_i += B_i;
+
+	/* The number of jobs to be considered. */
+	int K_i = H_i/v[i].get_period();
+	if( H_i%v[i].get_period())
+		K_i ++;
+
+	for( int k = 1; k <= K_i; k++)
+		constraints_of_np_job_i_k(v, base, ntasks, i, k, ps_i);
+};

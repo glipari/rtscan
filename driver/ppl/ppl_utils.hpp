@@ -9,6 +9,8 @@
 #include <models/task_parser.hpp>
 #include <analysis/task_utility.hpp>
 #include <common/exceptions.hpp>
+#include <boost/math/common_factor.hpp>
+#include <cmath>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -71,6 +73,13 @@ public:
 
  */
 ConstraintsSystem build_hyperplanes_powerset(std::vector<Scan::FPTask> &v);
+
+/**
+ * This method builds the same powerset as the above function 
+ * for ''non-preemptive scheduling''. For details, please refer 
+ * to	http://retis.sssup.it/~youcheng/logs/log0x01.html
+**/
+ConstraintsSystem np_build_hyperplanes_powerset(std::vector<Scan::FPTask> &v);
 
 /**
    This function builds a pointset powerset starting from a set of FP
