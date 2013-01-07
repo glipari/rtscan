@@ -1,0 +1,20 @@
+sys(mysys) {
+    task(t1) {
+        wcet=1;
+        period=5;
+        dline=3;
+        priority=3;
+    };
+    task(t2) {
+        wcet=1;
+        period=16;
+        dline=14;
+        priority=2;
+    };
+    task(t2) {
+        wcet=1;
+        period=50;
+        dline=45;
+        priority=2;
+    };
+};
