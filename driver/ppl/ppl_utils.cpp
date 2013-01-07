@@ -489,6 +489,8 @@ void ConstraintsSystem::do_sensitivity(// PPL::Pointset_Powerset<PPL::C_Polyhedr
                     const std::vector<Scan::FPTask> &tasks,
                     const std::string &var) 
 {
+    PPL::Pointset_Powerset<PPL::C_Polyhedron> copied(poly);
+
     int k = get_index(vars, var);   // we do sensitivity on the k variable
     if (k == -1) throw("Variable not found");
     for (int i=0; i<vars.size(); i++)  {
@@ -500,7 +502,7 @@ void ConstraintsSystem::do_sensitivity(// PPL::Pointset_Powerset<PPL::C_Polyhedr
 
         Variable xx(i);
         Congruence cg = ((xx %= int(v)) / 0); 
-        poly.refine_with_congruence(cg);
+        copied.refine_with_congruence(cg);
     }
     Variable xx(k);
     Linear_Expression le;
@@ -508,11 +510,11 @@ void ConstraintsSystem::do_sensitivity(// PPL::Pointset_Powerset<PPL::C_Polyhedr
     Coefficient mn;
     Coefficient md;
     bool is_included;
-    poly.maximize(le, mn, md, is_included);
+    copied.maximize(le, mn, md, is_included);
     // I should convert mn and md into a single double
     cout << "Maximum value for " << var << ": " << mn << "/" <<  md << endl;
 
-    poly.minimize(le, mn, md, is_included);
+    copied.minimize(le, mn, md, is_included);
     // I should convert mn and md into a single double
     cout << "Minimum value for " << var << ": " << mn << "/" <<  md << endl;
 }
