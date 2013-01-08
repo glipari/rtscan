@@ -4,12 +4,26 @@
 #include <boost/ref.hpp>
 #include <analysis/task_utility.hpp>
 #include <models/task_parser.hpp>
+#include <common/interval.hpp>
 #include "ppl_utils.hpp"
 
 namespace PPL = Parma_Polyhedra_Library;
 using namespace std;
 using namespace Scan;
 
+vector< IntervalType<int> > compute_idle_intervals(const Task &t, int h)
+{
+    int x = 0;
+    int d = 0;
+    vector< IntervalType<int> > intervals; 
+    while (x < h) {
+        d = get_next_deadline(t, x);
+        x = get_next_arrival(t, x);
+        IntervalType<int> l(d,x);
+        if (!l.is_empty()) intervals.push_back(l);
+    }
+    return intervals;
+}
 
 int main(int argc, char *argv[])
 {
@@ -57,4 +71,22 @@ int main(int argc, char *argv[])
 
     using namespace PPL::IO_Operators;
     cout << poly << endl;
+
+    cout << "Computing idle intervals" << endl;
+
+    vector< IntervalType<int> > intervals = compute_idle_intervals(sv.v[0], h);
+    for (int i=1; i<sv.v.size(); i++) {
+        vector< IntervalType<int> > newIntervals;
+        vector< IntervalType<int> > inter2 = compute_idle_intervals(sv.v[i], h);
+        for (int k=0; k<inter2.size(); k++) 
+            interval_intersect_all(intervals.begin(), 
+                                   intervals.end(), inter2[k], 
+                                   back_inserter(newIntervals));
+        
+        intervals = newIntervals;
+    }
+
+    print_sequence(intervals.begin(), intervals.end(), cout);
+    cout << endl;
 }
+

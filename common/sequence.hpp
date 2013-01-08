@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <functional>
 #include <string>
+#include <ostream>
 
 namespace Scan {
     /**
@@ -107,7 +108,6 @@ namespace Scan {
         
         return out;
     }
-
 }
 
 #endif
