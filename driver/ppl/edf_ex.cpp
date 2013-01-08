@@ -53,6 +53,8 @@ int main(int argc, char *argv[])
     cout << "Number of constraints (redu): " << s2 << endl;
     cout << "Memory (redu): " << redu_cons_sys.total_memory_in_bytes() << endl;
     
+    
+
     using namespace PPL::IO_Operators;
     cout << poly << endl;
 }
