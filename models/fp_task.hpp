@@ -7,6 +7,8 @@
 
 namespace Scan {
     typedef TaskEx<HasPriority> FPTask;    
+
+//    std::ostream & operator<<(std::ostream &o, FPTask &t); 
 }
 
 #endif

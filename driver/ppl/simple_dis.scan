@@ -1,0 +1,77 @@
+sys(mysys) {
+	task(t1) {
+		wcet=1;
+		period=20;
+		dline=20;
+		priority=3;
+		sched="fpfp";
+		node=0;
+	};
+	task(t3) {
+		wcet=1;
+		period=30;
+		dline=30;	
+		priority=3;
+		sched="fpfp";
+		node=2;
+	};
+	task(t5) {
+		wcet=1;
+		period=200;
+		dline=200;
+		priority=1;
+		sched="fpfp";
+		node=2;
+	};
+	pipeline(p1) {
+		pipelineprop(p1) {
+			period=150; #the period of the pipeline event
+			e2edline=150; #the end-to-end deadline of the pipeline
+		};
+		task(t21){
+			wcet=1;
+			period=150;
+			dline=150;
+			priority=2;
+			sched="fpfp";
+			node=0;
+			pipelinepos=1; #this means that the task is the first task in the pipeline
+		};
+		task(t22){
+			wcet=1;
+			period=150;
+			dline=150;
+			priority=2;
+			sched="fpnp";
+			node=1;
+			pipelinepos=2; #this means that the task is one intermediate task in the pipeline
+		};
+		task(t23){
+			wcet=1;
+			period=150;
+			dline=150;
+			priority=2;
+			sched="fpfp";
+			node=2;
+			pipelinepos=2;
+		};
+		task(t24){
+			wcet=1;
+			period=150;
+			dline=150;
+			priority=1;
+			sched="fpnp";
+			node=1;
+			pipelinepos=2;
+		};
+		task(t25){
+			wcet=1;
+			period=150;
+			dline=150;
+			priority=1;
+			sched="fpfp";
+			node=0;
+			pipelinepos=3; #this task is the last task in a pipeline
+		};
+	};
+};

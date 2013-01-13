@@ -8,6 +8,9 @@ namespace Scan {
         add_double_parameter({"dline", "d", "D", "deadline"}, -1);
         add_int_parameter({"period", "T", "p"}, 0, true);
         add_int_parameter({"offset", "o", "off"}, 0);
+	add_string_parameter({"sched", "s", "sch"}, "fpfp", true);
+	add_int_parameter({"node", "n", "node"}, 0);
+	add_int_parameter({"pipelinepos", "p", "pos"}, 0);
     }
 
     Task TaskVisitor::create_task() {
@@ -20,6 +23,9 @@ namespace Scan {
                i_values["period"], 
                d_values["jitter"], 
                d_values["offset"]);
+        t.set_sched(s_values["sched"]);
+        t.set_node(i_values["node"]);
+        t.set_pipeline_pos(i_values["pipelinepos"]);
         t.set_name(name);
         return t;
     }
@@ -48,9 +54,13 @@ namespace Scan {
         FPTask t(d_values["wcet"], 
                  d_values["dline"],
                  i_values["period"], 
-                 d_values["jitter"], 
-                 d_values["offset"]);
+                 d_values["offset"],
+                 d_values["jitter"]);
+	//	 i_values["pipelinepos"]);
         t.set_priority(i_values["priority"]);
+        t.set_sched(s_values["sched"]);
+        t.set_node(i_values["node"]);
+        t.set_pipeline_pos(i_values["pipelinepos"]);
         t.set_name(name);
         return t;
     }

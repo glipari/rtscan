@@ -81,12 +81,42 @@ namespace  Scan {
         /// sets the offset
         void set_jitter(int j) { jitter = j; }     
             
+        /// sets the sched policy 
+        void set_sched(std::string _sched) { sched = _sched; }     
+
+        /// gets the sched policy
+        std::string get_sched() const { return sched; }     
+            
+        /// sets the node index 
+        void set_node(int _node) { node = _node; }     
+
+        /// gets the node index
+        int get_node() const { return node; }     
+            
+        /// sets the pipeline position 
+        void set_pipeline_pos(int pos) { pipeline_pos = pos; }     
+
+        /// gets the pipeline position
+        int get_pipeline_pos() const { return pipeline_pos; }     
+            
+	/// by calling this constructor, our cumstomized way to assign unique task id will be called
+        Task(double wcet, double dline, int period, int offset, double jitter, int ppos) throw(IllegalValue);
     private:
         int period;
         double wcet;
         double dline;
         int offset;
         double jitter;
+	std::string sched;
+	int node;
+	/**
+	 * the position in a pipeline :
+	 *	1 : in the beginning of a pipeline
+	 *	2 : in the middle of a pipeline
+	 * 	3 : in the end of a pipeline
+	 *	0 : not in a pipeline
+	 **/
+	int pipeline_pos;  
     };
 
     /** 
