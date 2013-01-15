@@ -43,12 +43,37 @@ int main(int argc, char *argv[])
     cout<<endl;	
 
     using namespace PPL::IO_Operators;
-    cout << cs.poly << endl;
+//    cout << cs.poly << endl;
     
     for (unsigned char i=0; i<cs.vars.size(); i++) {
 		char c = 'A' + i;
         	cout << c << ": " << cs.vars[i] << endl;
     }
-
+    
+    cout<<"\nStarting the sensitivity analysis ...\n";
+    try {
+    cout<<endl;
+    cs.do_sensitivity2(sv.v, string("t1.wcet"));
+    cs.do_sensitivity2(sv.v, string("t1.dline"));
+    cout<<endl;
+    //cs.do_sensitivity2(sv.v, string("t2.wcet"));
+    //cs.do_sensitivity2(sv.v, string("t2.dline"));
+    //cout<<endl;
+    //cs.do_sensitivity2(sv.v, string("t3.wcet"));
+    //cs.do_sensitivity2(sv.v, string("t3.dline"));
+    cs.do_sensitivity2(sv.v, string("t3.wcet"));
+    cs.do_sensitivity2(sv.v, string("t3.dline"));
+    cout<<endl;
+    cs.do_sensitivity2(sv.v, string("t21.wcet"));
+    cout<<endl;
+    cs.do_sensitivity2(sv.v, string("t22.wcet"));
+    cout<<endl;
+    cs.do_sensitivity2(sv.v, string("t23.wcet"));
+    cout<<endl;
+    cs.do_sensitivity2(sv.v, string("t24.wcet"));
+    cout<<endl;
+    cs.do_sensitivity2(sv.v, string("t25.wcet"));
+    cout<<endl;
+    } catch (char const *msg) {cout<<msg<<endl;}
 }
 
