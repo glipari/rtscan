@@ -11,9 +11,68 @@
 #include <common/exceptions.hpp>
 #include <boost/math/common_factor.hpp>
 #include <cmath>
+#include <models/computational_resource.hpp>
+#include <models/pipeline.hpp>
+#include <models/pipeline_property_parser.hpp>
+#include <map>
+#include <utility>
+using namespace std;
 
 namespace PPL = Parma_Polyhedra_Library;
+using namespace std;
 
+/** 
+    This class is used to read a .scan file and convert it into a set
+    of tasks. It applies the "visitor" pattern.
+    It can also read a .scan file that describes a distributed system
+    with computational resource nodes and pipelines.
+*/
+class DisSysVisitor : public boost::static_visitor<> {
+public:
+    /* A copy of all tasks in the system. */
+    std::vector<Scan::FPTask> v;
+    /*  A set of computational resource nodes in the system. */
+    Scan::ComputationalResource *node;
+    /*  The number of computational resource nodes in the system. */
+    int MAX_;
+    /* The pipelines in the system. */
+    vector<Scan::Pipeline> pipelines;
+
+    DisSysVisitor(int N):MAX_(N) 
+    {
+	node = new Scan::ComputationalResource[N];
+    }
+
+    void operator()(const Scan::Property &p) {
+        std::cerr << "ERROR: parsing a property at the sys level" << std::endl;
+    }
+
+    void operator()(const Scan::PropertyList &pl) {
+        if (pl.type == "sys") 
+            for (std::vector< Scan::PropertyList::Element >::const_iterator i = pl.children.begin();
+                 i != pl.children.end(); i++) 
+                boost::apply_visitor(*this, *i);
+	else if (pl.type == "pipeline") {
+            for (std::vector< Scan::PropertyList::Element >::const_iterator i = pl.children.begin();
+                 i != pl.children.end(); i++) 
+                boost::apply_visitor(*this, *i);
+	}
+	else if (pl.type == "pipelineprop") {
+		pipelines.push_back(Scan::create_pipeline(pl));
+	}
+        else if (pl.type == "task") { 
+		Scan::FPTask task = Scan::create_fp_task(pl);
+		if( task.get_pipeline_pos() > 0) {
+			pipelines.back().set_pipeline_param(task);
+			pipelines.back().register_a_fp_task(task);
+		}
+		node[task.get_node()].register_a_fp_task(task);
+		v.push_back(task);
+	}
+        else 
+            throw std::runtime_error("Found a property list which is not a task!");
+    }
+};
 
 /** 
     This class is used to read a .scan file and convert it into a set
@@ -49,8 +108,10 @@ class ConstraintsSystem {
 public:
     PPL::Pointset_Powerset<PPL::C_Polyhedron> poly;
     std::vector<std::string> vars;
+	map<double, string> ppl_vars;
     
     ConstraintsSystem(int n);
+    ConstraintsSystem(int n, bool universe);
 
     /**
        This function performs sensitivity analysis over a pointset
@@ -59,7 +120,6 @@ public:
     */
     void do_sensitivity(const std::vector<Scan::FPTask> &tasks,
                         const std::string &var);
-
 };
 
 /**
@@ -73,6 +133,13 @@ public:
 
  */
 ConstraintsSystem build_hyperplanes_powerset(std::vector<Scan::FPTask> &v);
+ConstraintsSystem build_hyperplanes_powerset2(std::vector<Scan::FPTask> &v);
+///void build_hyperplanes_powerset2(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
+ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis);
+void build_general_sensitivity2(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
+void np_build_general_sensitivity2(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
+void constraints_of_a_pipepline(Scan::Pipeline &pline,
+                        DisSysVisitor &vis, ConstraintsSystem &dis);
 
 /**
  * This method builds the same powerset as the above function 

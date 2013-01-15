@@ -24,6 +24,7 @@ namespace Scan {
     template <class X> 
     class HasUniqueId { 
         int id; 
+        //static int counter; 
         static int counter; 
     protected: 
         void set_id(int i) { 
@@ -31,8 +32,16 @@ namespace Scan {
             counter = (counter > i) ?  counter : (i+1); 
         } 
     public: 
-        HasUniqueId() : id(++counter) {} 
-        HasUniqueId(int i) { set_id(i); }
+        //HasUniqueId() : id(++counter) {} 
+        HasUniqueId() : id(counter) {counter += 3;} 
+        //HasUniqueId(int i) { set_id(i); }
+	HasUniqueId(int i) : id(counter) {
+		if( i > 1 )
+			counter += 3;
+		else if ( i == 1) counter += 2;
+		else counter += 1;
+	}
+			
         HasUniqueId(const HasUniqueId& other) : id(other.id) {}
         
         HasUniqueId& operator=(const HasUniqueId& other) {

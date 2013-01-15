@@ -31,6 +31,52 @@ ConstraintsSystem::ConstraintsSystem(int n) :
 {
 }
 
+ConstraintsSystem::ConstraintsSystem(int n, bool universe) :
+	poly(n), vars(n)
+{
+}
+
+ConstraintsSystem build_hyperplanes_powerset2(std::vector<Scan::FPTask> &v)
+{
+    int ntasks = v.size();
+
+    ConstraintsSystem sys(ntasks);
+
+    PPL::C_Polyhedron base(ntasks);
+    for (int i=0;i<ntasks;i++) {
+        PPL::Variable xx(v[i].get_id());
+        PPL::Constraint cs_min = (xx >= 0);
+        base.add_constraint(cs_min);
+        PPL::Constraint cs_max = (xx <= (int)v[i].get_dline());
+        base.add_constraint(cs_max);
+        sys.vars[i] = (v[i].get_name() + ".wcet");
+    }
+    
+    sys.poly.add_disjunct(base);
+
+    for (int j=1; j<ntasks;j++) {
+        PPL::Pointset_Powerset<PPL::C_Polyhedron> ps(ntasks, EMPTY);
+        
+        double dline = v[j].get_dline();
+        vector<int> points = compute_points(v.begin(), v.end()-(ntasks-j), dline);
+        for (int k=0; k<points.size(); k++) {
+            PPL::C_Polyhedron cp = base; 
+            PPL::Linear_Expression le;
+            for (int i=0; i<=j; i++) {
+                PPL::Variable xx(v[i].get_id()); 
+                le += xx * ((int)compute_coeff(points[k], v[i].get_period()));
+            }
+            
+            PPL::Constraint cs = (le <= (int)points[k]);
+            cp.add_constraint(cs);
+            ps.add_disjunct(cp);
+        }
+        // at this point, I have a ps. I have to intersect with the previous one
+        sys.poly.intersection_assign(ps);
+    }
+    return sys;
+}
+
 ConstraintsSystem build_hyperplanes_powerset(std::vector<Scan::FPTask> &v)
 {
     int ntasks = v.size();
@@ -88,6 +134,8 @@ ConstraintsSystem np_build_hyperplanes_powerset(std::vector<Scan::FPTask> &v)
 	int ntasks = v.size();
 	
 	ConstraintsSystem sys(ntasks);
+		PPL::Variable yy(1.5);
+		PPL::Variable xx(3.6);
 
 	/**
 	 * the basic constraint on each wcet that 0 <= C_i <= min(T_{i}, D_{i})
@@ -649,3 +697,484 @@ constraints_of_np_task_i(const std::vector<Scan::FPTask> &v,
 	for( int k = 1; k <= K_i; k++)
 		constraints_of_np_job_i_k(v, base, ntasks, i, k, ps_i);
 };
+
+static void
+constraints_of_np_job_i_k2(const std::vector<Scan::FPTask> &v,
+			const PPL::C_Polyhedron &base,
+			const int ntasks, const int i, const int k,
+			PPL::Pointset_Powerset<PPL::C_Polyhedron> &ps_i,
+			const int nvars,
+			PPL::Pointset_Powerset<PPL::C_Polyhedron> &sys)
+{
+	vector< vector<int> > points;
+	vector<int> pp = compute_all_points(v.begin(), v.end() - (ntasks - i),
+						k*v[i].get_dline());
+	points = number_of_instances(pp.begin(), pp.end(),
+					v.begin(), v.end() - (ntasks - i));
+
+	/* Constraints for job k of task i */
+	PPL::Pointset_Powerset<PPL::C_Polyhedron> ps(nvars, EMPTY);
+	
+	for(unsigned n = 0; n < points.size(); n++) {
+		PPL::C_Polyhedron cp(nvars);// = base;
+
+		for( unsigned nn = 0; nn < i; nn++) {
+			PPL::Linear_Expression le;
+			
+			PPL::Variable xx(v[i].get_id());
+			PPL::Variable xj(v[nn].get_id()+2);
+			le += xx*(k-1) + xj;//v[nn].get_jitter();
+			for( int j = 0; j < i; j++) {
+				PPL::Variable xx(v[j].get_id());
+				le += xx * points[n][j];
+			}
+			if( i == ntasks-1) {
+				PPL::Constraint cs = ( le <= 
+					points[n][nn]*v[nn].get_period()-1);
+
+				cp.add_constraint(cs);
+			}
+			for (unsigned m = i + 1; m < ntasks; m++) {
+				PPL::Linear_Expression le1 = le;
+				PPL::Variable xx(v[m].get_id());
+				le1 += xx - 1;
+				PPL::Constraint cs = ( le1 <= 
+					points[n][nn]*v[nn].get_period()-1);
+				cp.add_constraint(cs);
+			}
+		}
+
+		PPL::Variable xx(v[i].get_id());
+		PPL::Variable xj(v[i].get_id()+2);
+		PPL::Linear_Expression le_i;
+		le_i += k*xx + xj;//v[i].get_jitter();
+		for (int j = 0; j < i; j++) {
+			PPL::Variable xx(v[j].get_id());
+			le_i += xx * points[n][j];
+		}
+		if( i == ntasks-1) {
+			PPL::Variable xd(v[i].get_id()+1);
+			PPL::Constraint cs = (
+				le_i <= k*xd);//v[i].get_dline());
+			cp.add_constraint(cs);
+		}
+		for (unsigned m = i + 1; m < ntasks; m++) {
+			PPL::Linear_Expression le_i1 = le_i;
+			PPL::Variable xx(v[m].get_id());
+			le_i1 += xx - 1;
+			PPL::Variable xd(v[i].get_id()+1);
+			PPL::Constraint cs = (
+				le_i1 <= k*xd);//v[i].get_dline());
+			cp.add_constraint(cs);
+		}
+		
+		ps.add_disjunct(cp);
+	}
+
+	///ps_i.intersection_assign(ps);
+	sys.intersection_assign(ps);
+}
+
+static void
+constraints_of_np_task_i2(const std::vector<Scan::FPTask> &v,
+				const PPL::C_Polyhedron &base,
+				const int ntasks, int i,
+				PPL::Pointset_Powerset<PPL::C_Polyhedron> &ps_i,
+				const int nvars,
+				PPL::Pointset_Powerset<PPL::C_Polyhedron> &sys)
+{
+
+	if( i == 0) {
+		PPL::Pointset_Powerset<PPL::C_Polyhedron> 
+						ps(nvars, EMPTY);
+		PPL::C_Polyhedron cp(nvars);// = base;
+		PPL::Variable xx(v[i].get_id());
+		PPL::Linear_Expression le_i;
+		PPL::Variable xj(v[i].get_id()+2);
+		le_i += xj + xx; //v[i].get_jitter() + xx;
+		for (int j = i+1; j < ntasks; j++) {
+			PPL::Linear_Expression le_ij= le_i;
+			PPL::Variable xx(v[j].get_id());
+			le_ij += xx -1;
+			PPL::Constraint cs_i;
+			PPL::Variable xd(v[i].get_id()+1);
+			cs_i = (
+				le_ij - xd <= 0);//v[i].get_dline());
+
+			sys.add_constraint(cs_i);
+		}
+		return;
+	}
+
+	/* The upper bound of the i_th task's blocking time.*/
+	int B_i = compute_max_blocking_time(v.begin() + i + 1, v.end());
+	
+	/* The upper bound of length of the level-i active period. */
+	int H_i = 1;
+	for ( int j = 0; j <= i; j++)
+		H_i =  boost::math::lcm(H_i, (int)(v[j].get_period()));
+	H_i += B_i;
+
+	/* The number of jobs to be considered. */
+	int K_i = H_i/v[i].get_period();
+	if( H_i%v[i].get_period())
+		K_i ++;
+	for( int k = 1; k <= K_i; k++) {
+
+	/**
+	   each loop corresponds tp a cll of the cuntion
+		constraints_of_np_job_i_k2
+	*/
+	vector< vector<int> > points;
+	vector<int> pp = compute_all_points(v.begin(), v.end() - (ntasks - i),
+				(k-1)*v[i].get_period() + v[i].get_dline());
+	points = number_of_instances(pp.begin(), pp.end(),
+					v.begin(), v.end() - (ntasks - i));
+
+	cout<<"Task "<<v[i].get_name()<<endl;
+	cout<<"Instance k = "<<k<<endl;
+	cout<<"Points: ";
+	print_vector(pp.begin(), pp.end());
+	cout<<endl;
+	cout<<"Vector n: ";
+	for(unsigned po=0; po<points.size(); po++) {
+		print_vector(points[po].begin(), points[po].end());
+		cout<<";";
+	}
+	cout<<endl;
+
+	cout<<"Now preparing the pointset"<<endl;
+	/* Constraints for job k of task i */
+	PPL::Pointset_Powerset<PPL::C_Polyhedron> ps(nvars, EMPTY);
+	
+	for(unsigned n = 0; n < points.size(); n++) {
+		cout << "Point: ";
+		print_vector(points[n].begin(), points[n].end());
+		cout<<endl;
+
+		PPL::C_Polyhedron cp = base;
+
+		for( unsigned nn = 0; nn < i; nn++) {
+			PPL::Linear_Expression le;
+			
+			PPL::Variable xx(v[i].get_id());
+			PPL::Variable xj(v[nn].get_id()+2);
+			le += xx*(k-1) + xj;//v[nn].get_jitter();
+
+			for( int j = 0; j < i; j++) {
+				PPL::Variable xx(v[j].get_id());
+				le += xx * points[n][j];
+			}
+			if( i == ntasks-1) {
+				PPL::Constraint cs = ( le <= 
+					points[n][nn]*v[nn].get_period()-1);
+
+				cp.add_constraint(cs);
+			}
+			for (unsigned m = i + 1; m < ntasks; m++) {
+				PPL::Linear_Expression le1 = le;
+				PPL::Variable xx(v[m].get_id());
+				le1 += xx - 1;
+				PPL::Constraint cs = ( le1 <= 
+					points[n][nn]*v[nn].get_period()-1);
+				cp.add_constraint(cs);
+			}
+		}
+
+		PPL::Variable xx(v[i].get_id());
+		PPL::Variable xj(v[i].get_id()+2);
+		PPL::Linear_Expression le_i;
+		le_i += k*xx + xj;//v[i].get_jitter();
+		for (int j = 0; j < i; j++) {
+			PPL::Variable xx(v[j].get_id());
+			le_i += xx * points[n][j];
+		}
+		if( i == ntasks-1) {
+			PPL::Variable xd(v[i].get_id()+1);
+			PPL::Constraint cs;
+			cs = (le_i - xd <= (k-1)*v[i].get_period());//v[i].get_dline());
+			cp.add_constraint(cs);
+		}
+		for (unsigned m = i + 1; m < ntasks; m++) {
+			PPL::Linear_Expression le_i1 = le_i;
+			PPL::Variable xx(v[m].get_id());
+			le_i1 += xx - 1;
+			PPL::Variable xd(v[i].get_id()+1);
+			PPL::Constraint cs;
+			cs = ( le_i1 - xd <= (k-1)*v[i].get_period());//v[i].get_dline());
+			cp.add_constraint(cs);
+		}
+		ps.add_disjunct(cp);
+	} // the closed parenthesis of loop ''for(unsigned n = 0; n < points.size(); n++)''
+
+	sys.intersection_assign(ps);
+	} // the closed parenthesis of loop ''for( int k = 1; k <= K_i; k++) ''
+};
+
+void np_build_general_sensitivity2(std::vector<Scan::FPTask> &v, ConstraintsSystem &dis)
+{
+	int ntasks = v.size();
+	int nvars = dis.vars.size(); 	
+
+	/**
+	 * the basic constraint on each wcet that 0 <= C_i <= min(T_{i}, D_{i})
+	 **/
+	PPL::C_Polyhedron base(nvars);
+    	for (int i=0;i<ntasks;i++) {
+        	PPL::Variable xw(v[i].get_id());
+
+        	PPL::Constraint cs_min = (xw >= 0);
+        	base.add_constraint(cs_min);
+        	dis.poly.add_constraint(cs_min);
+
+        	PPL::Constraint cs_max = (xw <= (int)v[i].get_period());
+        	base.add_constraint(cs_max);
+        	dis.poly.add_constraint(cs_max);
+        	PPL::Variable xd(v[i].get_id()+1);
+        	PPL::Constraint dd_min = (xd >= 0);
+        	base.add_constraint(dd_min);
+        	dis.poly.add_constraint(dd_min);
+        	PPL::Constraint dd_max = (xd <= int(v[i].get_dline()));
+        	base.add_constraint(dd_max);
+        	dis.poly.add_constraint(dd_max);
+        	PPL::Variable xj(v[i].get_id()+2);
+        	PPL::Constraint j_min = (xj >= 0);
+        	base.add_constraint(j_min);
+        	dis.poly.add_constraint(j_min);
+        	PPL::Constraint j_max = (xj + xw <= int(v[i].get_dline()));
+        	base.add_constraint(j_max);
+        	dis.poly.add_constraint(j_max);
+        }
+
+        for( int i = 0; i < ntasks; i++) {
+		/** 
+		   ps_i has been deprecated, now its redundent...  
+		 */			
+		PPL::Pointset_Powerset<PPL::C_Polyhedron> ps_i(nvars, EMPTY);
+		constraints_of_np_task_i2(v, base, ntasks, i, ps_i, nvars, dis.poly);
+
+	}
+}
+
+void build_general_sensitivity2(vector<FPTask> &v, ConstraintsSystem &node_cs)
+{
+    int ntasks = v.size();
+    int nvars = node_cs.vars.size();
+    ConstraintsSystem sys(nvars);
+
+    PPL::C_Polyhedron base(nvars);
+    for (int i=0;i<ntasks;i++) {
+        PPL::Variable xw(v[i].get_id());
+
+        PPL::Constraint cs_min = (xw >= 0);
+        base.add_constraint(cs_min);
+	node_cs.poly.add_constraint(cs_min);
+
+        PPL::Constraint cs_max = (xw <= (int)v[i].get_period());
+        base.add_constraint(cs_max);
+	node_cs.poly.add_constraint(cs_max);
+
+        PPL::Variable xd(v[i].get_id()+1);
+        PPL::Constraint dd_min = (xd >= 0);
+        base.add_constraint(dd_min);
+	node_cs.poly.add_constraint(dd_min);
+        PPL::Constraint dd_max = (xd <= int(v[i].get_dline()));
+        base.add_constraint(dd_max);
+	node_cs.poly.add_constraint(dd_max);
+
+        PPL::Variable xj(v[i].get_id()+2);
+        PPL::Constraint j_min = (xj >= 0);
+        base.add_constraint(j_min);
+	node_cs.poly.add_constraint(j_min);
+        //PPL::Constraint j_max = (xj + xw <= int(v[i].get_dline()));
+        PPL::Constraint j_max = (xj <= int(v[i].get_dline()));
+        base.add_constraint(j_max);
+	node_cs.poly.add_constraint(j_max);
+
+    }
+
+    for (int i=0; i<ntasks; i++) {
+        // compute hyperperiod
+        int hyper = compute_hyperperiod(v.begin(), v.end(), i+1);
+        // now, for every h up to H/T_i
+        int h_max = 1;
+        if (v[i].get_dline() > v[i].get_period()) 
+            h_max = hyper / v[i].get_period();
+        for (int h = 1; h<=h_max; ++h) {
+            // now we have to compute all vectors of n
+            vector<int> pp = compute_all_points(v.begin(), 
+                                                v.end() - (ntasks-i), 
+                                                (h-1)*v[i].get_period() + v[i].get_dline());
+            
+            vector< vector<int> > myn = 
+                number_of_instances(pp.begin(), pp.end(), 
+                                    v.begin(), v.end() - (ntasks-i));
+
+            cout << "Task " << v[i].get_name() << endl;
+            cout << "Instance h = " << h << endl;
+            cout << "Points: ";
+            print_vector(pp.begin(), pp.end());
+            cout << endl;
+            cout << "Vector n: ";
+            for (unsigned p=0;p<myn.size(); p++)  {
+                print_vector(myn[p].begin(), myn[p].end());
+                cout << ";";
+            }
+            cout << endl;
+            
+            using namespace PPL::IO_Operators;
+            cout << "Now preparing the pointset" << endl;
+
+            PPL::Pointset_Powerset<PPL::C_Polyhedron> ps(nvars, EMPTY);
+            // now, for every n, we must write one set of equations
+            for (unsigned n=0; n<myn.size(); ++n) {
+                cout << "Point: ";
+                print_vector(myn[n].begin(), myn[n].end());
+                cout << endl;
+
+                PPL::C_Polyhedron cp = base;
+                cout << "Copied" << "   i = " << i << endl;
+                for (unsigned k=0; k<i; ++k) {
+                    PPL::Linear_Expression le;
+                    for (int j=0; j<i; j++) {
+                        PPL::Variable xx(v[j].get_id()); 
+                        le += xx * myn[n][j];
+                    }
+                    PPL::Variable xx(v[i].get_id()); 
+                    PPL::Variable xj(v[k].get_id()+2);
+                    le += h * xx;
+                    le += xj;
+                    PPL::Constraint cs = (le <= myn[n][k]*v[k].get_period());
+                    cp.add_constraint(cs);
+                }
+                
+                PPL::Linear_Expression le;
+                for (unsigned j=0; j<i; j++) {
+                    PPL::Variable xx(v[j].get_id()); 
+                    le += xx * myn[n][j];
+                }
+                PPL::Variable xx(v[i].get_id());
+                PPL::Variable xd(v[i].get_id()+1);
+                PPL::Variable xj(v[i].get_id()+2);//3*i+2);
+                le += h * xx;
+                //le += -xd+xj;  // to be tested
+		le += -xd+xj;
+                PPL::Constraint cs = (le <= (h-1)*v[i].get_period());
+                cp.add_constraint(cs);
+
+                //cout << "Constraint set completed: " << cp << endl;
+                cout << "Constraint set completed: " << endl;
+
+                ps.add_disjunct(cp);
+                ps.omega_reduce();
+            }
+            cout << "Now all constraint set have been prepared, intesecting...";
+            cout.flush();
+            //sys.poly.intersection_assign(ps);
+            node_cs.poly.intersection_assign(ps);
+            cout << "... completed!" << endl;
+        }
+    }
+}
+
+void constraints_of_a_pipepline(Scan::Pipeline &pline, 
+			DisSysVisitor &vis, ConstraintsSystem &dis)
+{
+	int ntasks = pline.tasks.size();
+	int nvars = dis.vars.size();
+	ConstraintsSystem sys(nvars);
+	vector<Scan::FPTask> &v = pline.tasks;
+
+	for( int i = 0; i < ntasks; i++) {
+		PPL::Variable xj(v[i].get_id() + 2);
+		if( i == 0) {
+			PPL::Constraint cs_jitter = (xj==0);
+			dis.poly.add_constraint(cs_jitter);
+		}
+		else {
+			PPL::Variable xd(v[i-1].get_id() + 1);
+			PPL::Constraint cs_jitter = (xd-xj<=0);//(xd <= xj);
+			dis.poly.add_constraint(cs_jitter);
+		}
+	}
+}	
+
+ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis)
+{
+	/**
+	 * The number of varibles : each task has
+	 * 3 variables (jitter, dline, wcet).
+	 */
+	int nvars = 0;
+	for(int i = 0; i < vis.MAX_; i++)
+		nvars += vis.node[i].get_nvars();
+	/** 
+	 * The dis contains all information in the analyzed 
+	 * distributed system : tasks in each computational
+	 * resource node and constraints for their variables, .etc.
+	 * Initially, the pointset powerset for system constraints is false.
+	 **/
+	ConstraintsSystem dis(nvars);
+
+	/* To give a meaningful name to variables in the system. */
+	for( int i = 0; i < vis.v.size(); i++) {
+
+		dis.vars[vis.v[i].get_id()] = vis.v[i].get_name() + ".wcet";
+		dis.vars[vis.v[i].get_id()+1] = vis.v[i].get_name() + ".dline";
+		dis.vars[vis.v[i].get_id()+2] = vis.v[i].get_name() + ".jitter";
+	}
+    	
+	/**
+	 *  For each computational resource node in the distributed system,
+	 * we will first compute its local constraints.
+	 **/
+	vector<ConstraintsSystem*> nodes;
+	for( int i = 0; i < vis.MAX_; i++) {
+		ConstraintsSystem *p_cs = new ConstraintsSystem(nvars);
+		PPL::C_Polyhedron true_(nvars);
+		/* nodes[i] contains local constraints for the i-th node. */
+		nodes.push_back(p_cs);
+		/* Each local constraints are initialized to be true. */
+		nodes[i]->poly.add_disjunct(true_);
+	}
+		
+	/* Here constraints on each node are built. */
+	for (int i = 0; i < vis.MAX_; i++) {
+		if( vis.node[i].get_nvars())
+			cout<<endl<<endl<<"Building constrains on Node "
+								<<i<<endl<<endl;
+
+		if( vis.node[i].v_fpfp.size())
+			build_general_sensitivity2(vis.node[i].v_fpfp, 
+								*nodes[i]);
+		else if(vis.node[i].v_fpnp.size())
+			np_build_general_sensitivity2(vis.node[i].v_fpnp, 
+								*nodes[i]);
+	}
+
+	/** 
+	 * To intersect constraints of each node.	
+	 * This operation is most time consuming...
+	 **/
+	int flag = 0;
+	for( int i = 0; i < vis.MAX_; i++) {
+		cout<<"node "<<i<<endl;
+		if(vis.node[i].v_tasks.size())
+			if( flag == 0) {	
+				dis.poly = nodes[i]->poly;
+				flag = 1;
+			}
+			else dis.poly.intersection_assign(nodes[i]->poly);
+		cout<<"Constraints on node "<<i<<" have been merged\n";
+	}
+	cout<<endl;
+	cout<<"Now, to refine system constraints using pipeline properties ...";
+	cout<<endl;
+	/* To add constraints of each pipeline to system constraints. */
+	for(vector<Scan::Pipeline>::iterator it=vis.pipelines.begin();
+				it != vis.pipelines.end(); ++it) 
+		constraints_of_a_pipepline(*it, vis, dis);
+
+	return dis;
+}
+
