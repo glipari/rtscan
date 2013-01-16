@@ -52,7 +52,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 noinst_PROGRAMS = sensitivity$(EXEEXT) distributed$(EXEEXT) \
-	edf_ex$(EXEEXT) edf_sim$(EXEEXT) np_sensitivity$(EXEECT)
+	edf_ex$(EXEEXT) edf_sim$(EXEEXT) np_sensitivity$(EXEEXT) \
+	syc_sensitivity$(EXEEXT)
 subdir = driver/ppl
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -76,12 +77,17 @@ edf_ex_DEPENDENCIES =
 am_edf_sim_OBJECTS = edf_sim.$(OBJEXT) ppl_utils.$(OBJEXT)
 edf_sim_OBJECTS = $(am_edf_sim_OBJECTS)
 edf_sim_DEPENDENCIES =
+am_np_sensitivity_OBJECTS = np_sensitivity.$(OBJEXT) \
+	ppl_utils.$(OBJEXT)
+np_sensitivity_OBJECTS = $(am_np_sensitivity_OBJECTS)
+np_sensitivity_DEPENDENCIES =
 am_sensitivity_OBJECTS = sensitivity.$(OBJEXT) ppl_utils.$(OBJEXT)
 sensitivity_OBJECTS = $(am_sensitivity_OBJECTS)
 sensitivity_DEPENDENCIES =
-am_np_sensitivity_OBJECTS = np_sensitivity.$(OBJEXT) ppl_utils.$(OBJEXT)
-np_sensitivity_OBJECTS = $(am_np_sensitivity_OBJECTS)
-np_sensitivity_DEPENDENCIES =
+am_syc_sensitivity_OBJECTS = syc_sensitivity.$(OBJEXT) \
+	ppl_utils.$(OBJEXT)
+syc_sensitivity_OBJECTS = $(am_syc_sensitivity_OBJECTS)
+syc_sensitivity_DEPENDENCIES =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -96,9 +102,11 @@ CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(distributed_SOURCES) $(edf_ex_SOURCES) $(edf_sim_SOURCES) \
-	$(sensitivity_SOURCES) $(np_sensitivity_SOURCES)
+	$(np_sensitivity_SOURCES) $(sensitivity_SOURCES) \
+	$(syc_sensitivity_SOURCES)
 DIST_SOURCES = $(distributed_SOURCES) $(edf_ex_SOURCES) \
-	$(edf_sim_SOURCES) $(sensitivity_SOURCES) $(np_sensitivity_SOURCES)
+	$(edf_sim_SOURCES) $(np_sensitivity_SOURCES) \
+	$(sensitivity_SOURCES) $(syc_sensitivity_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -231,6 +239,8 @@ AM_CXXFLAGS = -Wall
 AM_LDFLAGS = -L${top}common -L${top}models -L${top}analysis -L/usr/local/lib/
 sensitivity_SOURCES = sensitivity.cpp ppl_utils.cpp
 sensitivity_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem -lboost_program_options -lppl
+syc_sensitivity_SOURCES = syc_sensitivity.cpp ppl_utils.cpp
+syc_sensitivity_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem -lboost_program_options -lppl
 np_sensitivity_SOURCES = np_sensitivity.cpp ppl_utils.cpp
 np_sensitivity_LDADD = -lscan_analysis -lscan_models -lscan_common -lboost_filesystem -lboost_program_options -lppl
 distributed_SOURCES = distributed.cpp ppl_utils.cpp
@@ -291,13 +301,15 @@ edf_ex$(EXEEXT): $(edf_ex_OBJECTS) $(edf_ex_DEPENDENCIES) $(EXTRA_edf_ex_DEPENDE
 edf_sim$(EXEEXT): $(edf_sim_OBJECTS) $(edf_sim_DEPENDENCIES) $(EXTRA_edf_sim_DEPENDENCIES) 
 	@rm -f edf_sim$(EXEEXT)
 	$(CXXLINK) $(edf_sim_OBJECTS) $(edf_sim_LDADD) $(LIBS)
-sensitivity$(EXEEXT): $(sensitivity_OBJECTS) $(sensitivity_DEPENDENCIES) $(EXTRA_sensitivity_DEPENDENCIES) 
-	@rm -f sensitivity$(EXEEXT)
-	$(CXXLINK) $(sensitivity_OBJECTS) $(sensitivity_LDADD) $(LIBS)
 np_sensitivity$(EXEEXT): $(np_sensitivity_OBJECTS) $(np_sensitivity_DEPENDENCIES) $(EXTRA_np_sensitivity_DEPENDENCIES) 
 	@rm -f np_sensitivity$(EXEEXT)
 	$(CXXLINK) $(np_sensitivity_OBJECTS) $(np_sensitivity_LDADD) $(LIBS)
-
+sensitivity$(EXEEXT): $(sensitivity_OBJECTS) $(sensitivity_DEPENDENCIES) $(EXTRA_sensitivity_DEPENDENCIES) 
+	@rm -f sensitivity$(EXEEXT)
+	$(CXXLINK) $(sensitivity_OBJECTS) $(sensitivity_LDADD) $(LIBS)
+syc_sensitivity$(EXEEXT): $(syc_sensitivity_OBJECTS) $(syc_sensitivity_DEPENDENCIES) $(EXTRA_syc_sensitivity_DEPENDENCIES) 
+	@rm -f syc_sensitivity$(EXEEXT)
+	$(CXXLINK) $(syc_sensitivity_OBJECTS) $(syc_sensitivity_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -308,9 +320,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/distributed.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/edf_ex.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/edf_sim.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/np_sensitivity.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ppl_utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sensitivity.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/np_sensitivity.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/syc_sensitivity.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
