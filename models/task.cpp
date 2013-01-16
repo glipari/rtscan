@@ -32,7 +32,11 @@ namespace Scan {
     Task::Task(double w, double d, int p, int off, double jit) 
         throw(IllegalValue) : period(p), wcet(w), dline(d), offset(off), jitter(jit), pipeline_pos(0)
     {
+/**
+	Yes, this is dangerous ...
         if (w > p || w < 0 || p < 0 || d < 0) {
+ */
+        if (w < 0 || p < 0 || d < 0) {
             stringstream err;
             err << "cannot create task with parameters w: " 
                 << w << " p : " << p << " d : " << d;

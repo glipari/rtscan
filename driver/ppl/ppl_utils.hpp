@@ -44,7 +44,9 @@ public:
     }
 
     void operator()(const Scan::Property &p) {
-        std::cerr << "ERROR: parsing a property at the sys level" << std::endl;
+	if( p.name.compare("Period") != 0 && p.name.compare("E2Edline") != 0)
+        	std::cerr << "ERROR: parsing a property at the sys level" 
+								<< std::endl;
     }
 
     void operator()(const Scan::PropertyList &pl) {
@@ -53,12 +55,10 @@ public:
                  i != pl.children.end(); i++) 
                 boost::apply_visitor(*this, *i);
 	else if (pl.type == "pipeline") {
+	    pipelines.push_back(Scan::create_pipeline(pl));
             for (std::vector< Scan::PropertyList::Element >::const_iterator i = pl.children.begin();
                  i != pl.children.end(); i++) 
                 boost::apply_visitor(*this, *i);
-	}
-	else if (pl.type == "pipelineprop") {
-		pipelines.push_back(Scan::create_pipeline(pl));
 	}
         else if (pl.type == "task") { 
 		Scan::FPTask task = Scan::create_fp_task(pl);

@@ -1,4 +1,5 @@
 #include <models/task_parser.hpp>
+#include <climits>
 
 namespace Scan {
     TaskVisitor::TaskVisitor() 
@@ -6,7 +7,8 @@ namespace Scan {
         add_double_parameter({"wcet", "c", "C"}, 0, true);
         add_double_parameter({"jitter", "j", "J"}, 0);
         add_double_parameter({"dline", "d", "D", "deadline"}, -1);
-        add_int_parameter({"period", "T", "p"}, 0, true);
+	//here period T is set as an optional field
+        add_int_parameter({"period", "T", "p"}, 0); 
         add_int_parameter({"offset", "o", "off"}, 0);
 	add_string_parameter({"sched", "s", "sch"}, "fpfp", true);
 	add_int_parameter({"node", "n", "node"}, 0);
@@ -50,7 +52,6 @@ namespace Scan {
             THROW_EXC(IllegalValue, "Mandatory parameter is missing");
         if (d_values["dline"] < 0.0) 
             d_values["dline"] = i_values["period"];
-        
         FPTask t(d_values["wcet"], 
                  d_values["dline"],
                  i_values["period"], 

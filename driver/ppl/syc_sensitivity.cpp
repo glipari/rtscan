@@ -53,27 +53,35 @@ int main(int argc, char *argv[])
     cout<<"\nStarting the sensitivity analysis ...\n";
     try {
     cout<<endl;
-    cs.do_sensitivity2(sv.v, string("t1.wcet"));
+//    cs.do_sensitivity2(sv.v, string("t1.wcet"));
     cs.do_sensitivity2(sv.v, string("t1.dline"));
     cout<<endl;
-    //cs.do_sensitivity2(sv.v, string("t2.wcet"));
+//    cs.do_sensitivity2(sv.v, string("t2.wcet"));
     //cs.do_sensitivity2(sv.v, string("t2.dline"));
     //cout<<endl;
-    //cs.do_sensitivity2(sv.v, string("t3.wcet"));
-    //cs.do_sensitivity2(sv.v, string("t3.dline"));
-    cs.do_sensitivity2(sv.v, string("t3.wcet"));
+//    cs.do_sensitivity2(sv.v, string("t3.wcet"));
     cs.do_sensitivity2(sv.v, string("t3.dline"));
+//    cs.do_sensitivity2(sv.v, string("t3.wcet"));
+//    cs.do_sensitivity2(sv.v, string("t3.dline"));
     cout<<endl;
-    cs.do_sensitivity2(sv.v, string("t21.wcet"));
+    cs.do_sensitivity2(sv.v, string("t5.dline"));
     cout<<endl;
-    cs.do_sensitivity2(sv.v, string("t22.wcet"));
+//    cs.do_sensitivity2(sv.v, string("t5.wcet"));
+    cs.do_sensitivity2(sv.v, string("t25.dline"));
     cout<<endl;
-    cs.do_sensitivity2(sv.v, string("t23.wcet"));
+//    cs.do_sensitivity2(sv.v, string("t21.wcet"));
     cout<<endl;
-    cs.do_sensitivity2(sv.v, string("t24.wcet"));
+//    cs.do_sensitivity2(sv.v, string("t22.wcet"));
     cout<<endl;
-    cs.do_sensitivity2(sv.v, string("t25.wcet"));
+//    cs.do_sensitivity2(sv.v, string("t23.wcet"));
     cout<<endl;
+//    cs.do_sensitivity2(sv.v, string("t24.wcet"));
+    cout<<endl;
+//    cs.do_sensitivity2(sv.v, string("t25.wcet"));
+    cout<<endl;
+    cout<<"(If you see that the lower bound of a deadline is 0, \n";
+    cout<<"it means that the system constraints are not met by current \n";
+    cout<<"configuration values; i.e., the system is not schedulable...)\n\n\n";
     } catch (char const *msg) {cout<<msg<<endl;}
 }
 

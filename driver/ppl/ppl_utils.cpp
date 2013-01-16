@@ -574,7 +574,7 @@ void ConstraintsSystem::do_sensitivity2(// PPL::Pointset_Powerset<PPL::C_Polyhed
                     const std::string &var) 
 {
     PPL::Pointset_Powerset<PPL::C_Polyhedron> copied(poly);
-
+	
     int k = get_index(vars, var);   // we do sensitivity on the k variable
     if (k == -1) throw("Variable not found");
     for (int i=0; i<vars.size(); i++)  {
@@ -608,17 +608,19 @@ void ConstraintsSystem::do_sensitivity2(// PPL::Pointset_Powerset<PPL::C_Polyhed
 	}
 
     }
+	
     Variable xx(k);
     Linear_Expression le;
     le += (xx);
     Coefficient mn;
     Coefficient md;
     bool is_included;
-    copied.maximize(le, mn, md, is_included);
+    bool res;
+    res=copied.maximize(le, mn, md, is_included);
     // I should convert mn and md into a single double
     cout << "Upper bound value for " << var << ": " << mn << "/" <<  md << endl;
 
-    copied.minimize(le, mn, md, is_included);
+    res=copied.minimize(le, mn, md, is_included);
     // I should convert mn and md into a single double
     cout << "Lower bound value for " << var << ": " << mn << "/" <<  md << endl;
 }
