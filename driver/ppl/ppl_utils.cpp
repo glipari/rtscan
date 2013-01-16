@@ -249,7 +249,8 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
     }
     sys.poly.add_disjunct(base);
     
-    for (int i=1; i<ntasks; i++) {
+    /// why from i = 1? for (int i=1; i<ntasks; i++) {
+    for (int i=0; i<ntasks; i++) {
         // compute hyperperiod
         int hyper = compute_hyperperiod(v.begin(), v.end(), i+1);
         // now, for every h up to H/T_i
@@ -567,6 +568,61 @@ void ConstraintsSystem::do_sensitivity(// PPL::Pointset_Powerset<PPL::C_Polyhedr
     cout << "Minimum value for " << var << ": " << mn << "/" <<  md << endl;
 }
 
+void ConstraintsSystem::do_sensitivity2(// PPL::Pointset_Powerset<PPL::C_Polyhedron> ps, 
+                    // const std::vector<string> &var_names,
+                    const std::vector<Scan::FPTask> &tasks,
+                    const std::string &var) 
+{
+    PPL::Pointset_Powerset<PPL::C_Polyhedron> copied(poly);
+
+    int k = get_index(vars, var);   // we do sensitivity on the k variable
+    if (k == -1) throw("Variable not found");
+    for (int i=0; i<vars.size(); i++)  {
+        if (i == k) continue;
+        vector<string> ss = split(vars[i], ".");
+        int ti = find_task(tasks, ss[0]);
+        if (ti == -1) throw "Task not found!";
+	/**
+	    If tasks[ti] is not in a pipeline, we treat it the same
+	    as in ''do_sensitivity''; that is, repling jitter and wcet
+	    with their minimum values and dline with its maximum value.
+	 */
+	if( tasks[ti].get_pipeline_pos() == 0) {
+		double v = get_value_from_task(tasks[ti], ss[1]);
+
+		Variable xx(i);
+		Congruence cg = ((xx %= int(v)) / 0); 
+		copied.refine_with_congruence(cg);
+	}
+	/**
+	    If it is a pipeline task, we can only insantiate its wcet
+	    as 1 (the minimum value) since dline and jitter for a 
+	    pipeline task are considered as internal varibles.
+	 */ 
+	else if( ss[1].compare("wcet") == 0) {
+		double v = get_value_from_task(tasks[ti], ss[1]);
+
+		Variable xx(i);
+		Congruence cg = ((xx %= int(v)) / 0); 
+		copied.refine_with_congruence(cg);
+	}
+
+    }
+    Variable xx(k);
+    Linear_Expression le;
+    le += (xx);
+    Coefficient mn;
+    Coefficient md;
+    bool is_included;
+    copied.maximize(le, mn, md, is_included);
+    // I should convert mn and md into a single double
+    cout << "Upper bound value for " << var << ": " << mn << "/" <<  md << endl;
+
+    copied.minimize(le, mn, md, is_included);
+    // I should convert mn and md into a single double
+    cout << "Lower bound value for " << var << ": " << mn << "/" <<  md << endl;
+}
+
 /* A helper function for np_build_hyperplanes_powerset */
 template<class Iter>
 static int compute_max_blocking_time(Iter b, Iter e)
@@ -788,16 +844,16 @@ constraints_of_np_task_i2(const std::vector<Scan::FPTask> &v,
 		PPL::Pointset_Powerset<PPL::C_Polyhedron> 
 						ps(nvars, EMPTY);
 		PPL::C_Polyhedron cp(nvars);// = base;
-		PPL::Variable xx(v[i].get_id());
+		PPL::Variable xx(3*i);//v[i].get_id());
 		PPL::Linear_Expression le_i;
-		PPL::Variable xj(v[i].get_id()+2);
+		PPL::Variable xj(3*i+2);//v[i].get_id()+2);
 		le_i += xj + xx; //v[i].get_jitter() + xx;
 		for (int j = i+1; j < ntasks; j++) {
 			PPL::Linear_Expression le_ij= le_i;
-			PPL::Variable xx(v[j].get_id());
+			PPL::Variable xx(3*j);//v[j].get_id());
 			le_ij += xx -1;
 			PPL::Constraint cs_i;
-			PPL::Variable xd(v[i].get_id()+1);
+			PPL::Variable xd(3*i+1);//v[i].get_id()+1);
 			cs_i = (
 				le_ij - xd <= 0);//v[i].get_dline());
 
@@ -857,12 +913,12 @@ constraints_of_np_task_i2(const std::vector<Scan::FPTask> &v,
 		for( unsigned nn = 0; nn < i; nn++) {
 			PPL::Linear_Expression le;
 			
-			PPL::Variable xx(v[i].get_id());
-			PPL::Variable xj(v[nn].get_id()+2);
+			PPL::Variable xx(3*i);//v[i].get_id());
+			PPL::Variable xj(3*nn+2);//v[nn].get_id()+2);
 			le += xx*(k-1) + xj;//v[nn].get_jitter();
 
 			for( int j = 0; j < i; j++) {
-				PPL::Variable xx(v[j].get_id());
+				PPL::Variable xx(3*j);//v[j].get_id());
 				le += xx * points[n][j];
 			}
 			if( i == ntasks-1) {
@@ -873,7 +929,7 @@ constraints_of_np_task_i2(const std::vector<Scan::FPTask> &v,
 			}
 			for (unsigned m = i + 1; m < ntasks; m++) {
 				PPL::Linear_Expression le1 = le;
-				PPL::Variable xx(v[m].get_id());
+				PPL::Variable xx(3*m);//v[m].get_id());
 				le1 += xx - 1;
 				PPL::Constraint cs = ( le1 <= 
 					points[n][nn]*v[nn].get_period()-1);
@@ -881,25 +937,25 @@ constraints_of_np_task_i2(const std::vector<Scan::FPTask> &v,
 			}
 		}
 
-		PPL::Variable xx(v[i].get_id());
-		PPL::Variable xj(v[i].get_id()+2);
+		PPL::Variable xx(3*i);//v[i].get_id());
+		PPL::Variable xj(3*i+2);//v[i].get_id()+2);
 		PPL::Linear_Expression le_i;
 		le_i += k*xx + xj;//v[i].get_jitter();
 		for (int j = 0; j < i; j++) {
-			PPL::Variable xx(v[j].get_id());
+			PPL::Variable xx(3*j);//v[j].get_id());
 			le_i += xx * points[n][j];
 		}
 		if( i == ntasks-1) {
-			PPL::Variable xd(v[i].get_id()+1);
+			PPL::Variable xd(3*i+1);//v[i].get_id()+1);
 			PPL::Constraint cs;
 			cs = (le_i - xd <= (k-1)*v[i].get_period());//v[i].get_dline());
 			cp.add_constraint(cs);
 		}
 		for (unsigned m = i + 1; m < ntasks; m++) {
 			PPL::Linear_Expression le_i1 = le_i;
-			PPL::Variable xx(v[m].get_id());
+			PPL::Variable xx(3*m);//v[m].get_id());
 			le_i1 += xx - 1;
-			PPL::Variable xd(v[i].get_id()+1);
+			PPL::Variable xd(3*i+1);//v[i].get_id()+1);
 			PPL::Constraint cs;
 			cs = ( le_i1 - xd <= (k-1)*v[i].get_period());//v[i].get_dline());
 			cp.add_constraint(cs);
@@ -911,7 +967,7 @@ constraints_of_np_task_i2(const std::vector<Scan::FPTask> &v,
 	} // the closed parenthesis of loop ''for( int k = 1; k <= K_i; k++) ''
 };
 
-void np_build_general_sensitivity2(std::vector<Scan::FPTask> &v, ConstraintsSystem &dis)
+void np_build_general_sensitivity(std::vector<Scan::FPTask> &v, ConstraintsSystem &dis)
 {
 	int ntasks = v.size();
 	int nvars = dis.vars.size(); 	
@@ -921,7 +977,7 @@ void np_build_general_sensitivity2(std::vector<Scan::FPTask> &v, ConstraintsSyst
 	 **/
 	PPL::C_Polyhedron base(nvars);
     	for (int i=0;i<ntasks;i++) {
-        	PPL::Variable xw(v[i].get_id());
+        	PPL::Variable xw(3*i);//v[i].get_id());
 
         	PPL::Constraint cs_min = (xw >= 0);
         	base.add_constraint(cs_min);
@@ -930,18 +986,24 @@ void np_build_general_sensitivity2(std::vector<Scan::FPTask> &v, ConstraintsSyst
         	PPL::Constraint cs_max = (xw <= (int)v[i].get_period());
         	base.add_constraint(cs_max);
         	dis.poly.add_constraint(cs_max);
-        	PPL::Variable xd(v[i].get_id()+1);
+		dis.vars[3*i] = v[i].get_name() + ".wcet";
+
+        	PPL::Variable xd(3*i+1);//v[i].get_id()+1);
         	PPL::Constraint dd_min = (xd >= 0);
         	base.add_constraint(dd_min);
         	dis.poly.add_constraint(dd_min);
         	PPL::Constraint dd_max = (xd <= int(v[i].get_dline()));
         	base.add_constraint(dd_max);
         	dis.poly.add_constraint(dd_max);
-        	PPL::Variable xj(v[i].get_id()+2);
+		dis.vars[3*i+1] = v[i].get_name() + ".dline";
+
+        	PPL::Variable xj(3*i+2);//v[i].get_id()+2);
         	PPL::Constraint j_min = (xj >= 0);
         	base.add_constraint(j_min);
         	dis.poly.add_constraint(j_min);
         	PPL::Constraint j_max = (xj + xw <= int(v[i].get_dline()));
+		dis.vars[3*i+2] = v[i].get_name() + ".jitter";
+
         	base.add_constraint(j_max);
         	dis.poly.add_constraint(j_max);
         }
@@ -1086,13 +1148,15 @@ void constraints_of_a_pipepline(Scan::Pipeline &pline,
 	vector<Scan::FPTask> &v = pline.tasks;
 
 	for( int i = 0; i < ntasks; i++) {
-		PPL::Variable xj(v[i].get_id() + 2);
+		int index = find_task(vis.v, v[i].get_name());
+		PPL::Variable xj(3*index + 2);
 		if( i == 0) {
 			PPL::Constraint cs_jitter = (xj==0);
 			dis.poly.add_constraint(cs_jitter);
 		}
 		else {
-			PPL::Variable xd(v[i-1].get_id() + 1);
+			int pre_index = find_task(vis.v, v[i-1].get_name());
+			PPL::Variable xd(3*pre_index + 1);
 			PPL::Constraint cs_jitter = (xd-xj<=0);//(xd <= xj);
 			dis.poly.add_constraint(cs_jitter);
 		}
@@ -1101,37 +1165,16 @@ void constraints_of_a_pipepline(Scan::Pipeline &pline,
 
 ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis)
 {
-	/**
-	 * The number of varibles : each task has
-	 * 3 variables (jitter, dline, wcet).
-	 */
-	int nvars = 0;
-	for(int i = 0; i < vis.MAX_; i++)
-		nvars += vis.node[i].get_nvars();
-	/** 
-	 * The dis contains all information in the analyzed 
-	 * distributed system : tasks in each computational
-	 * resource node and constraints for their variables, .etc.
-	 * Initially, the pointset powerset for system constraints is false.
-	 **/
-	ConstraintsSystem dis(nvars);
 
-	/* To give a meaningful name to variables in the system. */
-	for( int i = 0; i < vis.v.size(); i++) {
-
-		dis.vars[vis.v[i].get_id()] = vis.v[i].get_name() + ".wcet";
-		dis.vars[vis.v[i].get_id()+1] = vis.v[i].get_name() + ".dline";
-		dis.vars[vis.v[i].get_id()+2] = vis.v[i].get_name() + ".jitter";
-	}
-    	
 	/**
 	 *  For each computational resource node in the distributed system,
-	 * we will first compute its local constraints.
+	 *  we will first compute its local constraints.
 	 **/
 	vector<ConstraintsSystem*> nodes;
 	for( int i = 0; i < vis.MAX_; i++) {
-		ConstraintsSystem *p_cs = new ConstraintsSystem(nvars);
-		PPL::C_Polyhedron true_(nvars);
+		int nvars_ = vis.node[i].get_nvars();
+		ConstraintsSystem *p_cs = new ConstraintsSystem(nvars_);
+		PPL::C_Polyhedron true_(nvars_);
 		/* nodes[i] contains local constraints for the i-th node. */
 		nodes.push_back(p_cs);
 		/* Each local constraints are initialized to be true. */
@@ -1145,36 +1188,42 @@ ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis)
 								<<i<<endl<<endl;
 
 		if( vis.node[i].v_fpfp.size())
-			build_general_sensitivity2(vis.node[i].v_fpfp, 
-								*nodes[i]);
+			*nodes[i] = build_general_sensitivity(vis.node[i].v_fpfp);
 		else if(vis.node[i].v_fpnp.size())
-			np_build_general_sensitivity2(vis.node[i].v_fpnp, 
-								*nodes[i]);
+			np_build_general_sensitivity(vis.node[i].v_fpnp, *nodes[i]);
 	}
 
-	/** 
-	 * To intersect constraints of each node.	
-	 * This operation is most time consuming...
-	 **/
-	int flag = 0;
-	for( int i = 0; i < vis.MAX_; i++) {
-		cout<<"node "<<i<<endl;
-		if(vis.node[i].v_tasks.size())
-			if( flag == 0) {	
-				dis.poly = nodes[i]->poly;
-				flag = 1;
-			}
-			else dis.poly.intersection_assign(nodes[i]->poly);
-		cout<<"Constraints on node "<<i<<" have been merged\n";
+	cout<<"Now, to merge constraints on different nodes :\n";
+	for( int i = 1; i < vis.MAX_; i++) {
+		if( vis.node[i].v_tasks.size() == 0 ) continue;
+		//to merge constraints on i-th node
+		nodes[0]->poly.concatenate_assign(nodes[i]->poly);
+		//to update the variable names (for people to see)
+		for( int j = 0; j < nodes[i]->vars.size(); j++) 
+			nodes[0]->vars.push_back(nodes[i]->vars[j]);
+
+		cout<<"Constraints on node "<<i<<" has been merged"<<endl;
 	}
+	/**
+	   The tasks order in this vector may not correspond to the 
+	   variable name at the same position in vector nodes[0]->vars. 
+           So we re-order its tasks here.
+	 */	
+	vis.v.clear();
+	for( int i = 0; i < vis.MAX_; i++) {
+		if( vis.node[i].v_tasks.size() == 0 ) continue;
+		for( int j = 0; j < vis.node[i].v_tasks.size(); j++)
+			vis.v.push_back(vis.node[i].v_tasks[j]);
+	}
+		
 	cout<<endl;
 	cout<<"Now, to refine system constraints using pipeline properties ...";
 	cout<<endl;
 	/* To add constraints of each pipeline to system constraints. */
 	for(vector<Scan::Pipeline>::iterator it=vis.pipelines.begin();
 				it != vis.pipelines.end(); ++it) 
-		constraints_of_a_pipepline(*it, vis, dis);
+		constraints_of_a_pipepline(*it, vis, *nodes[0]);
 
-	return dis;
+	return *nodes[0];
 }
 

@@ -120,6 +120,8 @@ public:
     */
     void do_sensitivity(const std::vector<Scan::FPTask> &tasks,
                         const std::string &var);
+    void do_sensitivity2(const std::vector<Scan::FPTask> &tasks,
+                        const std::string &var);
 };
 
 /**
@@ -137,7 +139,7 @@ ConstraintsSystem build_hyperplanes_powerset2(std::vector<Scan::FPTask> &v);
 ///void build_hyperplanes_powerset2(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
 ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis);
 void build_general_sensitivity2(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
-void np_build_general_sensitivity2(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
+void np_build_general_sensitivity(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
 void constraints_of_a_pipepline(Scan::Pipeline &pline,
                         DisSysVisitor &vis, ConstraintsSystem &dis);
 
