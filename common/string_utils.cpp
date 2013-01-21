@@ -11,8 +11,8 @@ std::string remove_spaces(const std::string &tk)
 
     if (tk == "") return temp;
     // remove spaces at the beginning...
-    temp.erase(0, temp.find_first_not_of(' '));
-    pos = temp.find_last_not_of(' ');
+    temp.erase(0, temp.find_first_not_of(" \n\t"));
+    pos = temp.find_last_not_of(" \n\t");
     temp.erase(pos+1, temp.size() - pos - 1);
     return temp;
 }

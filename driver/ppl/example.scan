@@ -1,14 +1,82 @@
 sys(mysys) {
-    task(t1) {
-        wcet=2
-        period=7
-        dline=7
-        priority=2
-    }
-    task(t2) {
-        wcet=3
-        period=10
-        dline=10
-        priority=1
-    }
-}
+    pipeline(p1) {
+        Period = 10000;
+        E2Edline = 10000;
+        task(t11) {
+            wcet=250;
+            period=10000;
+            dline=10000;
+            priority=5;
+            sched=fp;
+            node=1;
+            pipelinepos=0;
+        };
+        task(t12) {
+            wcet=700;
+            period=10000;
+            dline=10000;
+            priority=5;
+            sched=npfp;
+            node=2;
+            pipelinepos=1;
+        };
+        task(t13) {
+            wcet=500;
+            period=10000;
+            dline=10000;
+            priority=4;
+            sched=fp;
+            node=3;
+            pipelinepos=2;
+        };
+    };
+    pipeline(p2) {
+        Period = 5000;
+        E2Edline = 4000;
+        task(t21) {
+            wcet=250;
+            period=5000;
+            dline=4000;
+            priority=6;
+            sched=fp;
+            node=1;
+            pipelinepos=0;
+        };
+        task(t22) {
+            wcet=750;
+            period=5000;
+            dline=4000;
+            priority=5;
+            sched=npfp;
+            node=2;
+            pipelinepos=1;
+        };
+        task(t23) {
+            wcet=500;
+            period=5000;
+            dline=4000;
+            priority=7;
+            sched=fp;
+            node=3;
+            pipelinepos=2;
+        };
+        task(t24) {
+            wcet=250;
+            period=5000;
+            dline=4000;
+            priority=5;
+            sched=npfp;
+            node=2;
+            pipelinepos=3;
+        };
+        task(t25) {
+            wcet=50;
+            period=5000;
+            dline=4000;
+            priority=2;
+            sched=fp;
+            node=1;
+            pipelinepos=4;
+        };
+    };
+};
