@@ -99,6 +99,12 @@ namespace  Scan {
         /// gets the pipeline position
         int get_pipeline_pos() const { return pipeline_pos; }     
             
+        /// sets the pipeline tag 
+        void set_pipeline_tag(int tag) { pipeline_tag = tag; }     
+
+        /// gets the pipeline tag
+        int get_pipeline_tag() const { return pipeline_tag; }     
+            
 	/// by calling this constructor, our cumstomized way to assign unique task id will be called
         Task(double wcet, double dline, int period, int offset, double jitter, int ppos) throw(IllegalValue);
     private:
@@ -116,7 +122,9 @@ namespace  Scan {
 	 * 	3 : in the end of a pipeline
 	 *	0 : not in a pipeline
 	 **/
-	int pipeline_pos;  
+	int pipeline_pos;
+	/** To specify tasks in the same pipeline. */  
+	int pipeline_tag;
     };
 
     /** 

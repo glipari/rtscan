@@ -59,7 +59,7 @@ namespace Scan {
         init_name_();
     }
     
-    Task::Task(const Task &t) : HasUniqueId(t), name(t.name), period(t.period), wcet(t.wcet), dline(t.dline), offset(t.offset), jitter(t.jitter), sched(t.sched), node(t.node), pipeline_pos(t.pipeline_pos)
+    Task::Task(const Task &t) : HasUniqueId(t), name(t.name), period(t.period), wcet(t.wcet), dline(t.dline), offset(t.offset), jitter(t.jitter), sched(t.sched), node(t.node), pipeline_pos(t.pipeline_pos), pipeline_tag(t.pipeline_tag)
     {
     }
 
@@ -75,6 +75,7 @@ namespace Scan {
 	sched = t.sched;
 	node = t.node;
 	pipeline_pos = t.pipeline_pos;
+	pipeline_tag = t.pipeline_tag;
 
         return *this;
     }

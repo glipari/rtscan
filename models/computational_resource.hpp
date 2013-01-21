@@ -40,14 +40,14 @@ namespace Scan {
 		bool register_a_fp_task(FPTask task) {
 			const std::string policy = task.get_sched();
 			//std::cout<<"scheduling policy : "<<policy<<std::endl;
-			if( policy.compare("fpfp") == 0) {
+			if( policy.compare("fp") == 0) {
 				v_fpfp.push_back(task);	
 				sort(v_fpfp.begin(), v_fpfp.end(), comp_obj);
 				v_tasks.push_back(task);	
 				sort(v_tasks.begin(), v_tasks.end(), comp_obj);
 				return true;
 			}
-			else if( policy.compare("fpnp") == 0) {
+			else if( policy.compare("npfp") == 0) {
 				v_fpnp.push_back(task);	
 				sort(v_fpnp.begin(), v_fpnp.end(), comp_obj);
 				v_tasks.push_back(task);	

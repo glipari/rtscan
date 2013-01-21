@@ -62,15 +62,20 @@ public:
 	}
         else if (pl.type == "task") { 
 		Scan::FPTask task = Scan::create_fp_task(pl);
-		if( task.get_pipeline_pos() > 0) {
+		if( task.get_pipeline_pos() >= 0) {
+			// ...
+			task.set_pipeline_pos(task.get_pipeline_pos()+1);
+			task.set_pipeline_tag(pipelines.back().get_tag());
 			pipelines.back().set_pipeline_param(task);
 			pipelines.back().register_a_fp_task(task);
 		}
-		node[task.get_node()].register_a_fp_task(task);
+		node[task.get_node()-1].register_a_fp_task(task);
 		v.push_back(task);
+cout<<"task name : "<<task.get_name()<<", scheduling policy : "<<task.get_sched()<<endl;
 	}
         else 
             throw std::runtime_error("Found a property list which is not a task!");
+			
     }
 };
 
