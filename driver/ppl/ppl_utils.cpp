@@ -4,6 +4,8 @@
 #include <analysis/task_utility.hpp>
 
 #include <common/string_utils.hpp>
+#include <iostream>
+#include <fstream>
 
 using namespace Scan;
 using namespace std;
@@ -600,8 +602,11 @@ void ConstraintsSystem::do_sensitivity(// PPL::Pointset_Powerset<PPL::C_Polyhedr
 
 void ConstraintsSystem::do_sensitivity2(
                     const std::vector<Scan::FPTask> &tasks,
-                    const std::string &var1, const std::string &var2) 
+                    //const std::string &var1, const std::string &var2) 
+                    const std::string &var1, const std::string &var2, const std::string &fname) 
 {
+    ofstream output;
+    output.open(fname.c_str()); 
     PPL::Pointset_Powerset<PPL::C_Polyhedron> copied(poly);
     int k1 = get_index(vars, var1);   
     if (k1 == -1) throw("Variable not found");
@@ -647,13 +652,24 @@ void ConstraintsSystem::do_sensitivity2(
 	vars_.insert(xx);
    }
    copied.remove_space_dimensions(vars_);
-   cout<<copied<<endl<<endl;
+   //cout<<copied<<endl<<endl;
+for( PPL::Pointset_Powerset<PPL::C_Polyhedron>::iterator i = copied.begin(); i != copied.end(); i++) {
+                PPL::Constraint_System csi = i->pointset().constraints();
+                for(PPL::Constraint_System::const_iterator j = csi.begin(); j != csi.end(); j++)
+                        output<<*j<<endl;
+		output<<endl;
+    }
+
    if( k1 < k2) {
-	cout<<'A'<<": "<<vars[k1]<<endl;
-	cout<<'B'<<": "<<vars[k2]<<endl;
+	//cout<<'A'<<": "<<vars[k1]<<endl;
+	//cout<<'B'<<": "<<vars[k2]<<endl;
+	output<<'A'<<": "<<vars[k1]<<endl;
+	output<<'B'<<": "<<vars[k2]<<endl;
    } else {
-	cout<<'A'<<": "<<vars[k2]<<endl;
-	cout<<'B'<<": "<<vars[k1]<<endl;
+	//cout<<'A'<<": "<<vars[k2]<<endl;
+	//cout<<'B'<<": "<<vars[k1]<<endl;
+	output<<'A'<<": "<<vars[k2]<<endl;
+	output<<'B'<<": "<<vars[k1]<<endl;
    }
 }
 

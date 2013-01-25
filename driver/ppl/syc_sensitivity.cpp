@@ -47,6 +47,11 @@ int main(int argc, char *argv[])
 
     using namespace PPL::IO_Operators;
 //    cout << cs.poly << endl;
+//    for( PPL::Pointset_Powerset<PPL::C_Polyhedron>::iterator i = cs.poly.begin(); i != cs.poly.end(); i++) {
+//		PPL::Constraint_System csi = i->pointset().constraints();
+//		for(PPL::Constraint_System::const_iterator j = csi.begin(); j != csi.end(); j++)
+//			cout<<*j<<endl;
+//    }
     
     for (unsigned char i=0; i<cs.vars.size(); i++) {
 	char c = 'A' + i;
@@ -77,6 +82,8 @@ int main(int argc, char *argv[])
     if( argc != 4) return 0;
     vars.clear();
     string vfilename1(argv[3]);
+    string output(argv[3]);
+    string fname_(output.append(".out"));
     ifstream varfile1(vfilename1.c_str());
     while (!varfile1.eof()) {
 	string line;
@@ -85,7 +92,8 @@ int main(int argc, char *argv[])
 	if (line != "") vars.push_back(line);
     }
     try {
-		cs.do_sensitivity2(sv.v, vars[0], vars[1]);
+		//cs.do_sensitivity2(sv.v, vars[0], vars[1]);
+		cs.do_sensitivity2(sv.v, vars[0], vars[1], fname_);
     } catch (char const *msg) { cout<<msg<<endl; }
     
 }
