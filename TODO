@@ -1,1 +1,3 @@
 ** Add models/task_parser.hpp to repository
+** Extend the parametric schedulability analysis in order to work
+	 in situations where tasks could have equal priorities. 
