@@ -1,0 +1,59 @@
+sys(mysys) {
+    pipeline(p1) {
+        Period = 10;
+        E2Edline = 4;
+        task(t1) {
+            wcet=1;
+            period=3;
+            dline=3;
+            priority=9;
+            sched=fp;
+            node=1;
+            pipelinepos=0;
+        };
+    };
+    pipeline(p2) {
+        Period = 19;
+        E2Edline = 6;
+        task(t21) {
+            wcet=1;
+            period=6;
+            dline=6;
+            priority=1;
+            sched=fp;
+            node=1;
+            pipelinepos=0;
+        };
+        task(t22) {
+            wcet=1;
+            period=6;
+            dline=6;
+            priority=9;
+            sched=fp;
+            node=2;
+            pipelinepos=1;
+        };
+    };
+    pipeline(p3) {
+        Period = 17;
+        E2Edline = 17;
+        task(t31) {
+            wcet=1;
+            period=6;
+            dline=6;
+            priority=1;
+            sched=fp;
+            node=2;
+            pipelinepos=0;
+        };
+#        task(t32) {
+#            wcet=1;
+#            period=6;
+#            dline=6;
+#            priority=9;
+#            sched=fp;
+#            node=1;
+#            pipelinepos=1;
+#	};
+    };
+};

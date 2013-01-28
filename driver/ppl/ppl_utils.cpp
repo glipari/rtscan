@@ -6,6 +6,7 @@
 #include <common/string_utils.hpp>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 using namespace Scan;
 using namespace std;
@@ -280,6 +281,7 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
         sys.vars[3*i+2] = v[i].get_name() + ".jitter";
     }
     sys.poly.add_disjunct(base);
+//cout<<sys.poly<<endl;
     /// why from i = 1? for (int i=1; i<ntasks; i++) {
     for (int i=0; i<ntasks; i++) {
         // compute hyperperiod
@@ -312,7 +314,7 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
             
             using namespace PPL::IO_Operators;
             cout << "Now preparing the pointset" << endl;
-
+cout<<"The size of myn : "<<myn.size()<<endl;
             PPL::Pointset_Powerset<PPL::C_Polyhedron> ps(nvars, EMPTY);
             // now, for every n, we must write one set of equations
             for (unsigned n=0; n<myn.size(); ++n) {
@@ -359,8 +361,11 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
             }
             cout << "Now all constraint set have been prepared, intesecting...";
             cout.flush();
+		cout<<"before empty()"<<endl;
 	    if( !ps.empty())
+	{	cout<<"not empty"<<endl;
             sys.poly.intersection_assign(ps);
+	}
             cout << "... completed!" << endl;
         }
     }
@@ -652,24 +657,29 @@ void ConstraintsSystem::do_sensitivity2(
 	vars_.insert(xx);
    }
    copied.remove_space_dimensions(vars_);
-   //cout<<copied<<endl<<endl;
+   cout<<copied<<endl<<endl;
 for( PPL::Pointset_Powerset<PPL::C_Polyhedron>::iterator i = copied.begin(); i != copied.end(); i++) {
+		PPL::C_Polyhedron cp = i->pointset();
+		PPL::Generator_System gs = cp.generators();
+		cout<<gs<<endl;
                 PPL::Constraint_System csi = i->pointset().constraints();
-                for(PPL::Constraint_System::const_iterator j = csi.begin(); j != csi.end(); j++)
+                for(PPL::Constraint_System::const_iterator j = csi.begin(); j != csi.end(); j++) {
                         output<<*j<<endl;
+			
+		}
 		output<<endl;
     }
 
    if( k1 < k2) {
-	//cout<<'A'<<": "<<vars[k1]<<endl;
-	//cout<<'B'<<": "<<vars[k2]<<endl;
-	output<<'A'<<": "<<vars[k1]<<endl;
-	output<<'B'<<": "<<vars[k2]<<endl;
+	cout<<'A'<<": "<<vars[k1]<<endl;
+	cout<<'B'<<": "<<vars[k2]<<endl;
+	//output<<'A'<<": "<<vars[k1]<<endl;
+	//output<<'B'<<": "<<vars[k2]<<endl;
    } else {
-	//cout<<'A'<<": "<<vars[k2]<<endl;
-	//cout<<'B'<<": "<<vars[k1]<<endl;
-	output<<'A'<<": "<<vars[k2]<<endl;
-	output<<'B'<<": "<<vars[k1]<<endl;
+	cout<<'A'<<": "<<vars[k2]<<endl;
+	cout<<'B'<<": "<<vars[k1]<<endl;
+	//output<<'A'<<": "<<vars[k2]<<endl;
+	//output<<'B'<<": "<<vars[k1]<<endl;
    }
 }
 
