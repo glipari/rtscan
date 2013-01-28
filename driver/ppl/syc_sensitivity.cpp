@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
     PrintPropertyVisitor vis;
     vis(sys);
     
-    DisSysVisitor sv(6);
+    DisSysVisitor sv(11);
     sv(sys);
     
     cout << "Sys parsed!" << endl;
@@ -46,7 +46,8 @@ int main(int argc, char *argv[])
     cout<<endl;	
 
     using namespace PPL::IO_Operators;
-//    cout << cs.poly << endl;
+    cout<<"Total memory used in bytes : "<< cs.poly.total_memory_in_bytes() << endl;
+    cout << cs.poly << endl;
 //    for( PPL::Pointset_Powerset<PPL::C_Polyhedron>::iterator i = cs.poly.begin(); i != cs.poly.end(); i++) {
 //		PPL::Constraint_System csi = i->pointset().constraints();
 //		for(PPL::Constraint_System::const_iterator j = csi.begin(); j != csi.end(); j++)
@@ -94,6 +95,7 @@ int main(int argc, char *argv[])
     try {
 		//cs.do_sensitivity2(sv.v, vars[0], vars[1]);
 		cs.do_sensitivity2(sv.v, vars[0], vars[1], fname_);
+cout<<"called once here"<<endl;
     } catch (char const *msg) { cout<<msg<<endl; }
     
 }

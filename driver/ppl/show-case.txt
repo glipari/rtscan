@@ -1,0 +1,80 @@
+## This is a simpe test to show people how RTSCAN works. The feasibility region 
+## generated for this test is :
+## { 
+##   F = 0, G >= 0, -B >= -4, J >= 0, -A - D + E >= 0, D >= 0, C >= 0, 
+##   A >= 0, -A + B - C >= 0, -E + I >= 0, -G - I - J >= -19, 
+##   -G - J + K - L >= 0, -G + H - I >= 0, -H >= -6, -K >= -17, L >= 0 
+## }
+##	A: t1.wcet
+##	B: t1.dline
+##	C: t1.jitter
+##	D: t21.wcet
+##	E: t21.dline
+##	F: t21.jitter
+##	G: t22.wcet
+##	H: t22.dline
+##	I: t22.jitter
+##	J: t31.wcet
+##	K: t31.dline
+##	L: t31.jitter
+
+
+sys(mysys) {
+    pipeline(p1) {
+        Period = 10;
+        E2Edline = 4;
+        task(t1) {
+            wcet=1;
+            period=3;
+            dline=3;
+            priority=9;
+            sched=fp;
+            node=1;
+            pipelinepos=0;
+        };
+    };
+    pipeline(p2) {
+        Period = 19;
+        E2Edline = 6;
+        task(t21) {
+            wcet=1;
+            period=6;
+            dline=6;
+            priority=1;
+            sched=fp;
+            node=1;
+            pipelinepos=0;
+        };
+        task(t22) {
+            wcet=1;
+            period=6;
+            dline=6;
+            priority=9;
+            sched=fp;
+            node=2;
+            pipelinepos=1;
+        };
+    };
+    pipeline(p3) {
+        Period = 17;
+        E2Edline = 17;
+        task(t31) {
+            wcet=1;
+            period=6;
+            dline=6;
+            priority=1;
+            sched=fp;
+            node=2;
+            pipelinepos=0;
+        };
+#        task(t32) {
+#            wcet=1;
+#            period=6;
+#            dline=6;
+#            priority=9;
+#            sched=fp;
+#            node=1;
+#            pipelinepos=1;
+#	};
+    };
+};

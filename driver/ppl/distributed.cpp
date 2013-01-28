@@ -45,7 +45,6 @@ int main(int argc, char *argv[])
         cout << c << ": " << s1.vars[i] << endl;
     }
 
-
     cout << "Doing sensitivity with respect to " << vname << endl;
     try {
         s1.do_sensitivity(sv.v, vname);
@@ -55,11 +54,6 @@ int main(int argc, char *argv[])
         cout << msg << endl;
         exit(-1);
     }
-
-    // s1.do_sensitivity(sv.v, "t1.dline");  
-    // s1.do_sensitivity(sv.v, "t2.dline");  
-    // s1.do_sensitivity(sv.v, "t3.dline");  
-    // s1.do_sensitivity(sv.v, "t4.dline");  
     
     double rt = resp_time(sv.v.begin(), sv.v.end(), 1000);
     cout << "Response time of t3: " << rt << endl;
