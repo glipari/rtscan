@@ -12,15 +12,16 @@ using namespace std;
 using namespace Scan;
 
 
-
 int main(int argc, char *argv[])
 {
-    if (argc < 2) {
-        cout << "Usage: " << argv[0] << " <filename> " << endl;
+    if (argc < 3) {
+        cout << "Usage: " << argv[0] << " <filename> <var>" << endl;
         exit(-1);
     }
     string fname(argv[1]);
     ifstream input(fname.c_str());
+    string vname(argv[2]);
+
     PropertyList sys;
 
     bool ok = parse_properties(input, fname, sys);
@@ -30,10 +31,15 @@ int main(int argc, char *argv[])
    }
 
     PrintPropertyVisitor vis;
-    vis(sys);
-    
     SysVisitor sv;
-    sv(sys);
+    try {
+	vis(sys);	
+	sv(sys);
+    } catch (IllegalValue &err) {
+        cout << "An error occurred while parsing the tree:" << endl;
+        cout << err.what() << endl;
+        exit(-1);
+    }
     
     cout << "Sys parsed!" << endl;
 
@@ -53,16 +59,9 @@ int main(int argc, char *argv[])
         cout << cs.vars[i] << endl;
     }
     
-    // // now substitute the first n-1 computation times, do analysis on the last one
-    // for (unsigned i=0; i<sv.v.size() - 1; i++) {
-    //     Variable xx(i);
-    //     Congruence cg = ((xx %= (int)sv.v[i].get_wcet()) / 0); 
-    //     ps.refine_with_congruence(cg);
-    // }
-    // cout << ps << endl;
-
+    cout << "Doing sensitivity with respect to " << vname << endl;
     try {
-        cs.do_sensitivity(sv.v, string("t3.wcet"));
+        cs.do_sensitivity(sv.v, vname);
     }
     catch(char const *msg) {
         cout << "An error occurred while doing sensitivity:" << endl;

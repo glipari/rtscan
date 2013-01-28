@@ -59,4 +59,4 @@ plt.plot([0, 3850, 7000], [1050, 1050, 0], 'r--', linewidth=5)
 plt.legend(('offset_based', 'holistic', 'rtscan',))
 
 plt.show()
-#plt.savefig('region.png')
+plt.savefig('region.eps')

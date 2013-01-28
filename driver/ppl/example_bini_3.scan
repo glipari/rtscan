@@ -7,17 +7,20 @@ sys(mysys) {
         period=3;
         dline=3;
         priority=3;
+	sched=fp;
     };
     task(t2) {
         wcet=1;
         period=8;
         dline=7;
         priority=2;
+	sched=fp;
     };
     task(t3) {
         wcet=1;
         period=20;
         dline=19;
         priority=1;
+	sched=fp;
     };
 };
