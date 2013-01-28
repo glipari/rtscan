@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     s1.do_sensitivity(sv.v, "t1.dline");  
     s1.do_sensitivity(sv.v, "t2.dline");  
     s1.do_sensitivity(sv.v, "t3.dline");  
-    s1.do_sensitivity(sv.v, "t4.dline");  
+//    s1.do_sensitivity(sv.v, "t4.dline");  
     
     double rt = resp_time(sv.v.begin(), sv.v.end(), 1000);
     cout << "Response time of t3: " << rt << endl;
