@@ -127,6 +127,8 @@ public:
                         const std::string &var);
     void do_sensitivity2(const std::vector<Scan::FPTask> &tasks,
                         const std::string &var);
+    void do_sensitivity3(const std::vector<Scan::FPTask> &tasks,
+                        const std::string &var);
     void do_sensitivity2(const std::vector<Scan::FPTask> &tasks,
                         const std::string &var1, const std::string &var2, const std::string &fname);
 };

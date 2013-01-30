@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 	cout << "                         " << "   <vars-list file> 	  : this file specifies free variables. Defaultly, jitter and\n";
 	cout << "			  " << "				dline of a pipeline task is the free parameter and there\n";
 	cout << "			  " << "				is no need to put them in this file\n"; 
-  	cout << "			  " << "   <do-sensitivity vars>  : RTSCAN will do analysis for variables in this file\n"; 
+  	cout << "			  " << "   <do-sensitivity vars>  : RTSCAN will do analysis for variale in this file\n"; 
 	cout << "			  " << "   [comparison vars file] : RTSCAN will build the parametric space for the pair of\n";
 	cout << "			  " << "				variables here\n";
         exit(-1);
@@ -82,7 +82,8 @@ int main(int argc, char *argv[])
     try {
 
 	for (unsigned i=0; i < vars.size(); i++) {
-	    cs.do_sensitivity2(sv.v, vars[i]);
+	    //cs.do_sensitivity2(sv.v, vars[i]);
+	    cs.do_sensitivity3(sv.v, vars[i]);
 	    cout << endl;
 	}
 

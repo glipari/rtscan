@@ -244,7 +244,17 @@ vector< vector<int> > number_of_instances_pline(IterInt pb, IterInt pe, IterTask
             n.push_back(x);
             // remember to add max_deadline! 
         }
-        vect.push_back(n);
+	bool pushed = false;
+	for( int ii = 0; ii < vect.size(); ii++) {
+		bool flag = true;
+		for( int jj = 0; jj < vect[ii].size(); jj++)
+			if( n[jj] != vect[ii][jj]) {
+				flag = false;
+				break;
+			}
+        	if( flag) { pushed = true; break; }
+	}
+        if( !pushed) vect.push_back(n);
     }
     return vect;
 }
@@ -443,7 +453,10 @@ ConstraintsSystem build_general_sensitivity_pline(vector<FPTask> &v, vector<stri
             vector<int> pp = compute_all_points(v.begin(), 
                                                 v.end() - (ntasks-i), 
                                                 (h-1)*v[i].get_period() + v[i].get_dline());
-            
+
+	    sort(pp.begin(), pp.end());
+	    pp.erase( unique( pp.begin(), pp.end() ), pp.end());	    
+
             vector< vector<int> > myn = 
                 number_of_instances_pline(pp.begin(), pp.end(), 
                                     v.begin(), v.end() - (ntasks-i));
@@ -856,6 +869,61 @@ for( PPL::Pointset_Powerset<PPL::C_Polyhedron>::iterator i = copied.begin(); i !
   // }
 }
 
+void ConstraintsSystem::do_sensitivity3(
+                    const std::vector<Scan::FPTask> &tasks,
+                    const std::string &var)
+{
+    PPL::Pointset_Powerset<PPL::C_Polyhedron> copied(poly);
+    int k = get_index(vars, var);   // we do sensitivity on the k variable
+    if (k == -1) throw("Variable not found");
+    for (int i=0; i<vars.size(); i++)  {
+        if (i == k) continue;
+
+        vector<string> ss = split(vars[i], ".");
+        int ti = find_task(tasks, ss[0]);
+        if (ti == -1) throw "Task not found!";
+	if( tasks[ti].get_pipeline_pos() == 0) {
+		double v = get_value_from_task(tasks[ti], ss[1]);
+
+		Variable xx(i);
+		Congruence cg = ((xx %= int(v)) / 0); 
+		copied.refine_with_congruence(cg);
+	}
+	else if( ss[1].compare("wcet") == 0) {
+		double v = get_value_from_task(tasks[ti], ss[1]);
+
+		Variable xx(i);
+		Congruence cg = ((xx %= int(v)) / 0); 
+		copied.refine_with_congruence(cg);
+	}
+
+    }
+	
+    Variable xx(k);
+    Linear_Expression le;
+    le += (xx);
+    Coefficient mn;
+    Coefficient md;
+    bool is_included;
+    bool res;
+PPL::Variables_Set vars_;
+   for (int i=0; i<vars.size(); i++)  {
+        if (i == k) continue;
+	Variable xx(i);
+	vars_.insert(xx);
+   }
+   copied.remove_space_dimensions(vars_);
+cout<<"Is this what we want? "<<copied<<endl;
+cout<<"A : " << var<<endl;
+//    res=copied.maximize(le, mn, md, is_included);
+//    // I should convert mn and md into a single double
+//    cout << "Upper bound value for " << var << ": " << mn << "/" <<  md << endl;
+//
+//    res=copied.minimize(le, mn, md, is_included);
+//    // I should convert mn and md into a single double
+//    cout << "Lower bound value for " << var << ": " << mn << "/" <<  md << endl;
+}
+
 void ConstraintsSystem::do_sensitivity2(
                     const std::vector<Scan::FPTask> &tasks,
                     const std::string &var)
@@ -1192,6 +1260,10 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> &sys = dis.poly;
 	vector< vector<int> > points;
 	vector<int> pp = compute_all_points(v.begin(), v.end() - (ntasks - i),
 				(k-1)*v[i].get_period() + v[i].get_dline());
+
+        sort(pp.begin(), pp.end());
+        pp.erase( unique( pp.begin(), pp.end() ), pp.end());	    
+
 	points = number_of_instances_pline(pp.begin(), pp.end(),
 					v.begin(), v.end() - (ntasks - i));
 
@@ -1635,7 +1707,10 @@ ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis, vector<stri
 	for( int i = 1; i < vis.MAX_; i++) {
 		if( vis.node[i].v_tasks.size() == 0 ) continue;
 		//to merge constraints on i-th node
+cout<<"The size of constraints on cpu "<<i+1<<" is "<<(nodes[i]->poly.total_memory_in_bytes()/1014)/1024<<endl;
 		nodes[0]->poly.concatenate_assign(nodes[i]->poly);
+cout<<"The total size after merging cpu "<<i+1<<" is "<< (nodes[0]->poly.total_memory_in_bytes()/1014)/1024<<endl;
+cout<<"here"<<endl;
 		//to update the variable names (for people to see)
 		for( int j = 0; j < nodes[i]->vars.size(); j++) {
 			vector<string> ss = split(nodes[i]->vars[j], ".");
