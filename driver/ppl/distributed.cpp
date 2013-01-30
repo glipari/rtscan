@@ -15,23 +15,22 @@ using namespace Scan;
 
 int main(int argc, char *argv[])
 {
-    if (argc < 3) {
-        cout << "Usage: " << argv[0] << " <filename> <varname>" << endl;
+    if (argc < 2) {
+        cout << "Usage: " << argv[0] << " <filename> " << endl;
         exit(-1);
     }
     string fname(argv[1]);
     ifstream input(fname.c_str());
-    string vname(argv[2]);
 
     PropertyList sys;
     SysVisitor sv;
     try {
         parse_properties(input, fname, sys);
         cout << "file parsed" << endl;
-	
+
         PrintPropertyVisitor pvis; 
         pvis(sys);
-	
+
         sv(sys);
     } catch(const std::runtime_error &e) {
         cout << e.what() << endl;
@@ -44,16 +43,12 @@ int main(int argc, char *argv[])
         char c = 'A' + i;
         cout << c << ": " << s1.vars[i] << endl;
     }
+    // substitute everything but t3.dline
 
-    cout << "Doing sensitivity with respect to " << vname << endl;
-    try {
-        s1.do_sensitivity(sv.v, vname);
-    }
-    catch(char const *msg) {
-        cout << "An error occurred while doing sensitivity:" << endl;
-        cout << msg << endl;
-        exit(-1);
-    }
+    s1.do_sensitivity(sv.v, "t1.dline");  
+    s1.do_sensitivity(sv.v, "t2.dline");  
+    s1.do_sensitivity(sv.v, "t3.dline");  
+//    s1.do_sensitivity(sv.v, "t4.dline");  
     
     double rt = resp_time(sv.v.begin(), sv.v.end(), 1000);
     cout << "Response time of t3: " << rt << endl;

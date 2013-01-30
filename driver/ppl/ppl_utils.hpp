@@ -61,17 +61,17 @@ public:
                 boost::apply_visitor(*this, *i);
 	}
         else if (pl.type == "task") { 
-	    Scan::FPTask task = Scan::create_fp_task(pl);
-	    if( task.get_pipeline_pos() >= 0) {
-		// ...
-		task.set_pipeline_pos(task.get_pipeline_pos()+1);
-		task.set_pipeline_tag(pipelines.back().get_tag());
-		pipelines.back().set_pipeline_param(task);
-		pipelines.back().register_a_fp_task(task);
-	    }
-	    node[task.get_node()-1].register_a_fp_task(task);
-	    v.push_back(task);
-	    cout<<"task name : "<<task.get_name()<<", scheduling policy : "<<task.get_sched()<<endl;
+		Scan::FPTask task = Scan::create_fp_task(pl);
+		if( task.get_pipeline_pos() >= 0) {
+			// ...
+			task.set_pipeline_pos(task.get_pipeline_pos()+1);
+			task.set_pipeline_tag(pipelines.back().get_tag());
+			pipelines.back().set_pipeline_param(task);
+			pipelines.back().register_a_fp_task(task);
+		}
+		node[task.get_node()-1].register_a_fp_task(task);
+		v.push_back(task);
+cout<<"task name : "<<task.get_name()<<", scheduling policy : "<<task.get_sched()<<endl;
 	}
         else 
             throw std::runtime_error("Found a property list which is not a task!");
@@ -144,7 +144,7 @@ public:
 ConstraintsSystem build_hyperplanes_powerset(std::vector<Scan::FPTask> &v);
 ConstraintsSystem build_hyperplanes_powerset2(std::vector<Scan::FPTask> &v);
 ///void build_hyperplanes_powerset2(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
-ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis);
+ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis, std::vector<std::string> &vars_list);
 void build_general_sensitivity2(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
 void np_build_general_sensitivity(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
 void constraints_of_a_pipepline(Scan::Pipeline &pline,

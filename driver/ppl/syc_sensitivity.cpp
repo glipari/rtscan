@@ -14,15 +14,23 @@ using namespace Scan;
 
 int main(int argc, char *argv[])
 {
-    if (argc < 3) {
-        cout << "Usage: " << argv[0] << " <filename> <sensitivity var file> [comparison vars file]" << endl;
+    if (argc < 4) {
+        cout << "Usage:   syc_sensitivity " << "   <filename> 	    	  : the .scan input file \n";
+	cout << "                         " << "   <vars-list file> 	  : this file specifies free variables. Defaultly, jitter and\n";
+	cout << "			  " << "				dline of a pipeline task is the free parameter and there\n";
+	cout << "			  " << "				is no need to put them in this file\n"; 
+  	cout << "			  " << "   <do-sensitivity vars>  : RTSCAN will do analysis for variables in this file\n"; 
+	cout << "			  " << "   [comparison vars file] : RTSCAN will build the parametric space for the pair of\n";
+	cout << "			  " << "				variables here\n";
         exit(-1);
     }
     string fname(argv[1]);
-    string vfilename(argv[2]);
+    string vars_list_file(argv[2]);
+    string vfilename(argv[3]);
 
     ifstream input(fname.c_str());
     ifstream varfile(vfilename.c_str());
+    ifstream vars_list_stream(vars_list_file.c_str());
 
     PropertyList sys;
 
@@ -40,19 +48,22 @@ int main(int argc, char *argv[])
     
     cout << "Sys parsed!" << endl;
 
-    ConstraintsSystem cs = dis_build_hyperplanes_powerset(sv);
+    vector<string> vars_list;
+    while (!vars_list_stream.eof()) {
+	string line;
+	getline(vars_list_stream, line);
+	line = StrUtils::remove_spaces(line);
+	if (line != "") vars_list.push_back(line);
+    }
+
+    ConstraintsSystem cs = dis_build_hyperplanes_powerset(sv, vars_list);
     cout<<endl;	
     cout<<"Constraints have been found successfully!\n";
     cout<<endl;	
 
     using namespace PPL::IO_Operators;
     cout<<"Total memory used in bytes : "<< cs.poly.total_memory_in_bytes() << endl;
-    cout << cs.poly << endl;
-//    for( PPL::Pointset_Powerset<PPL::C_Polyhedron>::iterator i = cs.poly.begin(); i != cs.poly.end(); i++) {
-//		PPL::Constraint_System csi = i->pointset().constraints();
-//		for(PPL::Constraint_System::const_iterator j = csi.begin(); j != csi.end(); j++)
-//			cout<<*j<<endl;
-//    }
+//    cout << cs.poly << endl;
     
     for (unsigned char i=0; i<cs.vars.size(); i++) {
 	char c = 'A' + i;
@@ -75,15 +86,12 @@ int main(int argc, char *argv[])
 	    cout << endl;
 	}
 
-//	cout<<"(If you see that the lower bound of a deadline is 0, \n";
-//	cout<<"it means that the system constraints are not met by current \n";
-//	cout<<"configuration values; i.e., the system is not schedulable...)\n\n\n";
     } catch (char const *msg) {cout<<msg<<endl;}
 
-    if( argc != 4) return 0;
+    if( argc != 5) return 0;
     vars.clear();
-    string vfilename1(argv[3]);
-    string output(argv[3]);
+    string vfilename1(argv[4]);
+    string output(argv[4]);
     string fname_(output.append(".out"));
     ifstream varfile1(vfilename1.c_str());
     while (!varfile1.eof()) {
@@ -95,7 +103,6 @@ int main(int argc, char *argv[])
     try {
 		//cs.do_sensitivity2(sv.v, vars[0], vars[1]);
 		cs.do_sensitivity2(sv.v, vars[0], vars[1], fname_);
-cout<<"called once here"<<endl;
     } catch (char const *msg) { cout<<msg<<endl; }
     
 }
