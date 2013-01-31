@@ -416,28 +416,30 @@ ConstraintsSystem build_general_sensitivity_pline(vector<FPTask> &v, vector<stri
         sys.vars[3*i+2] = v[i].get_name() + ".jitter";
     }
     sys.poly.add_disjunct(base);
+	vector<string> backup = sys.vars;
 	PPL::Variables_Set vars_;
-	for(int i = 0; i < sys.vars.size(); i++) { // it = sys.vars.begin(); it != sys.vars.end(); it++) {
+	for(int i = 0; i < sys.vars.size(); i++) { 
 		if( get_index(vars_list, sys.vars[i]) != -1) continue;
+		
 		vector<string> ss = split(sys.vars[i], ".");
 		int ti = find_task(v, ss[0]);
-		if( v[ti].get_pipeline_tag() == -1) {
-	                double v_ = get_value_from_task(v[ti], ss[1]);
+		if(v[ti].get_pipeline_tag() == -1 || ss[1].compare("wcet") == 0 ) {
+			double v_ = get_value_from_task(v[ti], ss[1]);
 
-                	Variable xx(i);
-                	Congruence cg = ((xx %= int(v_)) / 0);
+			Variable xx(i);
+			Congruence cg = ((xx %= int(v_)) / 0);
 			sys.poly.refine_with_congruence(cg);
-		        vars_.insert(xx);
-
-        	}
-		else if( ss[1].compare("wcet") == 0) {
-	                double v_ = get_value_from_task(v[ti], ss[1]);
-
-        	        Variable xx(i);
-                	Congruence cg = ((xx %= int(v_)) / 0);
-			sys.poly.refine_with_congruence(cg);
-		        vars_.insert(xx);
+			vars_.insert(xx);
+			backup.erase(backup.begin() + get_index(backup, sys.vars[i]));
 		}
+//		} else if(  ss[1].compare("wcet") == 0) {
+//			double v_ = get_value_from_task(v[ti], ss[1]);
+//
+//			Variable xx(i);
+//			Congruence cg = ((xx %= int(v_)) / 0);
+//			sys.poly.refine_with_congruence(cg);
+//			vars_.insert(xx);
+//		}
         }
 	sys.poly.remove_space_dimensions(vars_);
     /// why from i = 1? for (int i=1; i<ntasks; i++) {
@@ -515,8 +517,8 @@ ConstraintsSystem build_general_sensitivity_pline(vector<FPTask> &v, vector<stri
 
                 //cout << "Constraint set completed: " << cp << endl;
                 cout << "Constraint set completed: " << endl;
-
-                ps.add_disjunct(cp);
+		//if( !check_containment(cp, ps))
+		ps.add_disjunct(cp);
 //                ps.omega_reduce();
             }
             cout << "Now all constraint set have been prepared, intesecting...";
@@ -524,14 +526,12 @@ ConstraintsSystem build_general_sensitivity_pline(vector<FPTask> &v, vector<stri
 	    if( !ps.empty())
 {
 	    // Here, we must insantiate variables not in the vars-list 
-//cout<<"Before reduction ps "<<ps<<endl<<endl;
-//cout<<"Before reduction sys.poly "<<sys.poly<<endl<<endl;
 	PPL::Variables_Set vars__;
 	for(int i = 0; i < sys.vars.size(); i++) { // it = sys.vars.begin(); it != sys.vars.end(); it++) {
 		if( get_index(vars_list, sys.vars[i]) != -1) continue;
 		vector<string> ss = split(sys.vars[i], ".");
 		int ti = find_task(v, ss[0]);
-		if( v[ti].get_pipeline_tag() == -1) {
+		if( v[ti].get_pipeline_tag() == -1 || ss[1].compare("wcet")==0) {
 	                double v_ = get_value_from_task(v[ti], ss[1]);
 
                 	Variable xx(i);
@@ -539,24 +539,22 @@ ConstraintsSystem build_general_sensitivity_pline(vector<FPTask> &v, vector<stri
                 	ps.refine_with_congruence(cg);
 		        vars__.insert(xx);
         	}
-		else if( ss[1].compare("wcet") == 0) {
-	                double v_ = get_value_from_task(v[ti], ss[1]);
-
-        	        Variable xx(i);
-                	Congruence cg = ((xx %= int(v_)) / 0);
-                	ps.refine_with_congruence(cg);
-		        vars__.insert(xx);
-		}
+//		else if( ss[1].compare("wcet") == 0) {
+//	                double v_ = get_value_from_task(v[ti], ss[1]);
+//
+//        	        Variable xx(i);
+//                	Congruence cg = ((xx %= int(v_)) / 0);
+//                	ps.refine_with_congruence(cg);
+//		        vars__.insert(xx);
+//		}
         }
 	ps.remove_space_dimensions(vars__);
-//cout<<"After reduction ps "<<ps<<endl<<endl;
-//cout<<"After reduction sys.poly "<<sys.poly<<endl<<endl;
-
-            sys.poly.intersection_assign(ps);
+        sys.poly.intersection_assign(ps);
 } 
            cout << "... completed!" << endl;
         }
     }
+	sys.vars=backup;
     return sys;
 }
 // PPL::Pointset_Powerset<PPL::C_Polyhedron> build_general_sensitivity(vector<FPTask> &v, vector<string> &vars)
@@ -899,29 +897,15 @@ void ConstraintsSystem::do_sensitivity3(
 
     }
 	
-    Variable xx(k);
-    Linear_Expression le;
-    le += (xx);
-    Coefficient mn;
-    Coefficient md;
-    bool is_included;
-    bool res;
-PPL::Variables_Set vars_;
-   for (int i=0; i<vars.size(); i++)  {
+    PPL::Variables_Set vars_;
+    for (int i=0; i<vars.size(); i++)  {
         if (i == k) continue;
 	Variable xx(i);
 	vars_.insert(xx);
-   }
-   copied.remove_space_dimensions(vars_);
-cout<<"Is this what we want? "<<copied<<endl;
-cout<<"A : " << var<<endl;
-//    res=copied.maximize(le, mn, md, is_included);
-//    // I should convert mn and md into a single double
-//    cout << "Upper bound value for " << var << ": " << mn << "/" <<  md << endl;
-//
-//    res=copied.minimize(le, mn, md, is_included);
-//    // I should convert mn and md into a single double
-//    cout << "Lower bound value for " << var << ": " << mn << "/" <<  md << endl;
+    }
+    copied.remove_space_dimensions(vars_);
+    cout<<copied<<endl;
+    cout<<"A : " << var<<endl;
 }
 
 void ConstraintsSystem::do_sensitivity2(
@@ -1367,6 +1351,7 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> &sys = dis.poly;
 			cs = (le_i - xd <= (k-1)*v[i].get_period());
 			cp.add_constraint(cs);
 		}
+		//if( !check_containment(cp, ps))
 		ps.add_disjunct(cp);
 	} // the closed parenthesis of loop ''for(unsigned n = 0; n < points.size(); n++)''
           if( !ps.empty())
@@ -1377,7 +1362,7 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> &sys = dis.poly;
                 if( get_index(vars_list, dis.vars[i]) != -1) continue;
                 vector<string> ss = split(dis.vars[i], ".");
                 int ti = find_task(v, ss[0]);
-                if( v[ti].get_pipeline_tag() == -1) {
+                if( v[ti].get_pipeline_tag() == -1 || ss[1].compare("wcet")==0) {
                         double v_ = get_value_from_task(v[ti], ss[1]);
 
                         Variable xx(i);
@@ -1385,17 +1370,17 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> &sys = dis.poly;
                         ps.refine_with_congruence(cg);
                         vars__.insert(xx);
                 }
-                else if( ss[1].compare("wcet") == 0) {
-                        double v_ = get_value_from_task(v[ti], ss[1]);
-
-                        Variable xx(i);
-                        Congruence cg = ((xx %= int(v_)) / 0);
-                        ps.refine_with_congruence(cg);
-                        vars__.insert(xx);
-                }
+//                else if( ss[1].compare("wcet") == 0) {
+//                        double v_ = get_value_from_task(v[ti], ss[1]);
+//
+//                        Variable xx(i);
+//                        Congruence cg = ((xx %= int(v_)) / 0);
+//                        ps.refine_with_congruence(cg);
+//                        vars__.insert(xx);
+//                }
         }
         ps.remove_space_dimensions(vars__);
-
+	//if( !sys.contains(ps))
             sys.intersection_assign(ps);
 }
 
@@ -1445,27 +1430,29 @@ void np_build_general_sensitivity(std::vector<Scan::FPTask> &v, ConstraintsSyste
         	dis.poly.add_constraint(j_max);
         }
 	PPL::Variables_Set vars_;
+	vector<string> backup = dis.vars;
         for(int i = 0; i < dis.vars.size(); i++) { // it = sys.vars.begin(); it != sys.vars.end(); it++) {
                 if( get_index(vars_list, dis.vars[i]) != -1) continue;
                 vector<string> ss = split(dis.vars[i], ".");
                 int ti = find_task(v, ss[0]);
-                if( v[ti].get_pipeline_tag() == -1) {
+                if( v[ti].get_pipeline_tag() == -1 || ss[1].compare("wcet")==0) {
                         double v_ = get_value_from_task(v[ti], ss[1]);
 
                         Variable xx(i);
                         Congruence cg = ((xx %= int(v_)) / 0);
                         dis.poly.refine_with_congruence(cg);
                         vars_.insert(xx);
+			backup.erase(backup.begin() + get_index(backup, dis.vars[i]));
 
                 }
-                else if( ss[1].compare("wcet") == 0) {
-                        double v_ = get_value_from_task(v[ti], ss[1]);
-
-                        Variable xx(i);
-                        Congruence cg = ((xx %= int(v_)) / 0);
-                        dis.poly.refine_with_congruence(cg);
-                        vars_.insert(xx);
-                }
+//                else if( ss[1].compare("wcet") == 0) {
+//                        double v_ = get_value_from_task(v[ti], ss[1]);
+//
+//                        Variable xx(i);
+//                        Congruence cg = ((xx %= int(v_)) / 0);
+//                        dis.poly.refine_with_congruence(cg);
+//                        vars_.insert(xx);
+//                }
         }
         dis.poly.remove_space_dimensions(vars_);
 	//base.remove_space_dimensions(vars_);
@@ -1480,6 +1467,7 @@ void np_build_general_sensitivity(std::vector<Scan::FPTask> &v, ConstraintsSyste
 		constraints_of_np_task_i2(v, base, ntasks, i, ps_i, nvars, dis, vars_list);
 
 	}
+	dis.vars = backup;
 }
 
 void build_general_sensitivity2(vector<FPTask> &v, ConstraintsSystem &node_cs)
@@ -1622,10 +1610,11 @@ void constraints_of_a_pipepline(Scan::Pipeline &pline,
 		string jitter = ".jitter";
 		string i_jitter = v[i].get_name() + jitter;
 		int index = get_index(dis.vars, i_jitter); 
-		PPL::Variable xj(index);
+		if( index != -1) {
+			PPL::Variable xj(index);
 		if( i == 0) {
-			PPL::Constraint cs_jitter = (xj==0);
-			dis.poly.add_constraint(cs_jitter);
+//			PPL::Constraint cs_jitter = (xj==0);
+//			dis.poly.add_constraint(cs_jitter);
 		}
 		else {
 			//int pre_index = find_task(vis.v, v[i-1].get_name());
@@ -1635,10 +1624,12 @@ void constraints_of_a_pipepline(Scan::Pipeline &pline,
 			PPL::Variable xd(pre_index);
 			PPL::Constraint cs_jitter = (xd-xj<=0);//(xd <= xj);
 			dis.poly.add_constraint(cs_jitter);
-		}
+		} }
 	}
 }	
 
+void remove_jitter_dline(ConstraintsSystem & sys, vector<Scan::FPTask> &v, DisSysVisitor &vis);
+void merge_pline_constraints(ConstraintsSystem & sys, vector<Scan::FPTask> &pline_tasks, DisSysVisitor &vis, vector<string> &vars_list);
 ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis, vector<string> &vars_list)
 {
         for( int i = 0; i < vis.pipelines.size(); i++ ) {
@@ -1692,6 +1683,8 @@ ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis, vector<stri
 			*nodes[i] = build_general_sensitivity_pline(vis.node[i].v_fpfp, vars_list);
 		else if(vis.node[i].v_fpnp.size())
 			np_build_general_sensitivity(vis.node[i].v_fpnp, *nodes[i], vars_list);
+
+		remove_jitter_dline(*nodes[i], vis.node[i].v_tasks, vis);
 	}
 
 	cout<<"Now, to merge constraints on different nodes :\n";
@@ -1700,26 +1693,34 @@ ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis, vector<stri
 	for( int j = 0; j < vars_.size(); j++) {
 		vector<string> ss = split(vars_[j], ".");
 		int ti = find_task(vis.node[0].v_tasks, ss[0]);
-		if ( get_index(vars_list, vars_[j]) != -1 ||  
-			(vis.node[0].v_tasks[ti].get_pipeline_tag() != -1 && ss[1].compare("wcet") != 0 ))
+		if ( get_index(vars_list, vars_[j]) != -1  ||  (vis.node[0].v_tasks[ti].get_pipeline_tag() != -1 && ss[1].compare("wcet") != 0) )
 			nodes[0]->vars.push_back(vars_[j]);
 	}
+	vector<Scan::FPTask> pline_tasks;
+	for( vector<Scan::FPTask>::iterator it = vis.node[0].v_tasks.begin(); it != vis.node[0].v_tasks.end(); it++)
+                if( it->get_pipeline_tag() != -1)
+                        pline_tasks.push_back(*it);
+
 	for( int i = 1; i < vis.MAX_; i++) {
 		if( vis.node[i].v_tasks.size() == 0 ) continue;
 		//to merge constraints on i-th node
 cout<<"The size of constraints on cpu "<<i+1<<" is "<<(nodes[i]->poly.total_memory_in_bytes()/1014)/1024<<endl;
 		nodes[0]->poly.concatenate_assign(nodes[i]->poly);
 cout<<"The total size after merging cpu "<<i+1<<" is "<< (nodes[0]->poly.total_memory_in_bytes()/1014)/1024<<endl;
-cout<<"here"<<endl;
 		//to update the variable names (for people to see)
 		for( int j = 0; j < nodes[i]->vars.size(); j++) {
 			vector<string> ss = split(nodes[i]->vars[j], ".");
 			int ti = find_task(vis.node[i].v_tasks, ss[0]);
-			if ( get_index(vars_list, nodes[i]->vars[j]) != -1 ||  
-				(vis.node[i].v_tasks[ti].get_pipeline_tag() != -1 && ss[1].compare("wcet") != 0 ))
+			if ( get_index(vars_list, nodes[i]->vars[j]) != -1 || (vis.node[i].v_tasks[ti].get_pipeline_tag() != -1 && ss[1].compare("wcet") != 0 ))
 				nodes[0]->vars.push_back(nodes[i]->vars[j]);
 		}
-		cout<<"Constraints on node "<<i+1<<" has been merged"<<endl;
+		for( vector<Scan::FPTask>::iterator it = vis.node[i].v_tasks.begin(); it != vis.node[i].v_tasks.end(); it++)
+			if( it->get_pipeline_tag() != -1)
+				pline_tasks.push_back(*it);
+
+		merge_pline_constraints(*nodes[0], pline_tasks, vis, vars_list);
+cout<<"after merge_pline_constraints"<<i+1<<" is "<< (nodes[0]->poly.total_memory_in_bytes()/1014)/1024<<endl;
+		cout<<"Constraints on node "<<i+1<<" has been merged"<<endl<<endl;
 	}
 	/**
 	   The tasks order in this vector may not correspond to the 
@@ -1739,8 +1740,101 @@ cout<<"here"<<endl;
 	/* To add constraints of each pipeline to system constraints. */
 	for(vector<Scan::Pipeline>::iterator it=vis.pipelines.begin();
 				it != vis.pipelines.end(); ++it) 
-		constraints_of_a_pipepline(*it, vis, *nodes[0]);
+//		constraints_of_a_pipepline(*it, vis, *nodes[0]);
 
 	return *nodes[0];
 }
+
+void merge_pline_constraints(ConstraintsSystem & sys, vector<Scan::FPTask> &pline_tasks, DisSysVisitor &vis, vector<string> &vars_list)
+{
+	vector<Scan::FPTask> tasks = pline_tasks;
+	for( vector<Scan::FPTask>::iterator it = tasks.begin(); it != tasks.end(); it++) {
+		string dline = it->get_name() + ".dline";
+		int pos = get_index(sys.vars, dline);
+		if( pos == -1) continue;
+		for(vector<Scan::Pipeline> :: iterator jt = vis.pipelines.begin(); jt != vis.pipelines.end(); jt++) {
+			bool flag = false;
+			vector<Scan::FPTask> &vect = jt->tasks;
+			for ( int i = 0; i < vect.size(); i++) {
+                                        if(vect[i].get_name().compare(it->get_name()) != 0) continue;
+					 if( i == vect.size() - 1) {
+						 if( get_index(vars_list, dline) == -1) {
+                                                        PPL::Variable xd(pos);
+                                                        PPL::Variables_Set vars_set;
+                                                        vars_set.insert(xd);
+                                                        sys.poly.remove_space_dimensions(vars_set);
+                                                        sys.vars.erase(sys.vars.begin()+pos);
+						}
+                                        }
+					else {
+						Scan::FPTask &task = vect[i+1];
+						string jitter = task.get_name() + ".jitter";
+						int j = get_index(sys.vars, jitter);
+						if( j == -1) { flag = true; break;} 
+						PPL::Variables_Set set;
+						PPL::Variable xd(pos);
+						PPL::Variable xj(j);
+						set.insert(xd);
+						set.insert(xj);
+						PPL::Constraint cs_jitter = (xd-xj<=0);//(xd <= xj);
+                        			sys.poly.add_constraint(cs_jitter);
+						sys.poly.remove_space_dimensions(set);
+						sys.vars.erase(sys.vars.begin() + get_index(sys.vars, dline));
+						sys.vars.erase(sys.vars.begin() + get_index(sys.vars, jitter));
+cout<<endl<<endl<<dline<<", "<<jitter<<endl<<endl<<endl;
+					}
+					flag = true;
+					break;
+			}
+			if( flag) break;
+		}
+	}
+}
+
+
+void remove_jitter_dline(ConstraintsSystem & sys, vector<Scan::FPTask> &v, DisSysVisitor &vis)
+{
+	for( vector<Scan::FPTask>::iterator it = v.begin(); it != v.end(); it++) {
+		if( it->get_pipeline_tag() == -1) continue;
+		if( it->get_pipeline_pos() != 1) continue;
+		string jitter = it->get_name() + ".jitter";
+		int pos = get_index(sys.vars, jitter);
+		if( pos == -1) throw ("Variable not found");
+		PPL::Variable xj(pos);
+                PPL::Constraint cs_jitter = (xj==0);
+                sys.poly.add_constraint(cs_jitter);
+		PPL::Variables_Set vars_set;
+		vars_set.insert(xj);
+		sys.poly.remove_space_dimensions(vars_set);
+		sys.vars.erase(sys.vars.begin()+pos);
+	}
+//
+//	for( vector<Scan::FPTask>::iterator it = v.begin(); it != v.end(); it++) {
+//		if( it->get_pipeline_tag() == -1) continue;
+//		string dline = it->get_name() + ".dline";
+//                int pos = get_index(sys.vars, dline);
+//		if( pos == -1) continue;
+//		for(vector<Scan::Pipeline> :: iterator jt = vis.pipelines.begin(); jt != vis.pipelines.end(); jt++) {
+//			bool flag = false;
+//			vector<Scan::FPTask> &vect = jt->tasks;
+//                        for ( int i = 0; i < vect.size(); i++) {
+//				if(vect[i].get_name().compare(it->get_name()) != 0) continue;
+//				if( i == vect.size() - 1) {
+//					PPL::Variable xd(pos);
+//					PPL::Variables_Set vars_set;
+//					vars_set.insert(xd);
+//					sys.poly.remove_space_dimensions(vars_set);
+//					sys.vars.erase(sys.vars.begin()+pos);
+//				}
+//				flag = true;
+//				break;
+//			}
+//			if (flag) break;
+//		}
+//	}	
+}
+
+
+		
+
 

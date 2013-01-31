@@ -62,13 +62,22 @@ int main(int argc, char *argv[])
     cout<<endl;	
 
     using namespace PPL::IO_Operators;
-    cout<<"Total memory used in bytes : "<< cs.poly.total_memory_in_bytes() << endl;
-//    cout << cs.poly << endl;
+
+    cout<<"The final system :\n"<<endl;
+    PPL::Pointset_Powerset<C_Polyhedron> copied(cs.poly);
+    cout<<copied<<endl;
+    for( PPL::Pointset_Powerset<PPL::C_Polyhedron>::iterator i = copied.begin(); i != copied.end(); i++) {
+                PPL::C_Polyhedron cp = i->pointset();
+                PPL::Generator_System gs = cp.generators();
+                cout<<gs<<endl;
+    }
+    cout<<endl;
     
     for (unsigned char i=0; i<cs.vars.size(); i++) {
 	char c = 'A' + i;
 	cout << c << ": " << cs.vars[i] << endl;
     }
+    cout<<"Total memory used in M bytes (resulted pointset_powerset): "<< (cs.poly.total_memory_in_bytes()/1024)/1024 << endl;
     
     cout<<"\nStarting the sensitivity analysis ...\n";
 
