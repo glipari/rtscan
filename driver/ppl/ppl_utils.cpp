@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 using namespace Scan;
 using namespace std;
@@ -1704,9 +1705,7 @@ ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis, vector<stri
 	for( int i = 1; i < vis.MAX_; i++) {
 		if( vis.node[i].v_tasks.size() == 0 ) continue;
 		//to merge constraints on i-th node
-cout<<"The size of constraints on cpu "<<i+1<<" is "<<(nodes[i]->poly.total_memory_in_bytes()/1014)/1024<<endl;
 		nodes[0]->poly.concatenate_assign(nodes[i]->poly);
-cout<<"The total size after merging cpu "<<i+1<<" is "<< (nodes[0]->poly.total_memory_in_bytes()/1014)/1024<<endl;
 		//to update the variable names (for people to see)
 		for( int j = 0; j < nodes[i]->vars.size(); j++) {
 			vector<string> ss = split(nodes[i]->vars[j], ".");
@@ -1719,7 +1718,6 @@ cout<<"The total size after merging cpu "<<i+1<<" is "<< (nodes[0]->poly.total_m
 				pline_tasks.push_back(*it);
 
 		merge_pline_constraints(*nodes[0], pline_tasks, vis, vars_list);
-cout<<"after merge_pline_constraints"<<i+1<<" is "<< (nodes[0]->poly.total_memory_in_bytes()/1014)/1024<<endl;
 		cout<<"Constraints on node "<<i+1<<" has been merged"<<endl<<endl;
 	}
 	/**
@@ -1735,7 +1733,6 @@ cout<<"after merge_pline_constraints"<<i+1<<" is "<< (nodes[0]->poly.total_memor
 	}
 		
 	cout<<endl;
-	cout<<"Now, to refine system constraints using pipeline properties ...";
 	cout<<endl;
 	/* To add constraints of each pipeline to system constraints. */
 	for(vector<Scan::Pipeline>::iterator it=vis.pipelines.begin();
@@ -1781,7 +1778,6 @@ void merge_pline_constraints(ConstraintsSystem & sys, vector<Scan::FPTask> &plin
 						sys.poly.remove_space_dimensions(set);
 						sys.vars.erase(sys.vars.begin() + get_index(sys.vars, dline));
 						sys.vars.erase(sys.vars.begin() + get_index(sys.vars, jitter));
-cout<<endl<<endl<<dline<<", "<<jitter<<endl<<endl<<endl;
 					}
 					flag = true;
 					break;
@@ -1834,6 +1830,42 @@ void remove_jitter_dline(ConstraintsSystem & sys, vector<Scan::FPTask> &v, DisSy
 //	}	
 }
 
+void ConstraintsSystem::print_points(string fname) {
+	int index = -1;
+	for( PPL::Pointset_Powerset<PPL::C_Polyhedron>::iterator 
+				i = poly.begin(); i != poly.end(); i++) {
+		index ++;
+		PPL::C_Polyhedron cp = i->pointset();
+		PPL::Generator_System gs = cp.generators();
+		
+		ofstream res;
+		string index_str = static_cast<ostringstream*>( 
+					&(ostringstream() << index) )->str();
+		string out = fname; //to_string(index));
+		out.append("_");
+		out.append(index_str);
+		out.append(".out");
+		res.open(out.c_str());
+
+		for( PPL::Generator_System::const_iterator
+				 it = gs.begin(); it != gs.end(); it++) {
+			if( !it->is_point()) throw("Not a point here");
+			for( PPL::dimension_type ii = it->space_dimension(); 
+								ii -- > 0;) {
+				stringstream ss1 (stringstream::in | stringstream::out);
+				stringstream ss2 (stringstream::in | stringstream::out);
+				ss1 << it->coefficient(Variable(ii));
+				ss2 << it->divisor();
+				double coe, div;
+				ss1 >> coe;
+				ss2 >> div;
+				double x = coe/div;
+				res<<x<<"	";	
+			}
+			res<<"\n";
+		}
+	}
+}
 
 		
 

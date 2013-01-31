@@ -62,16 +62,36 @@ int main(int argc, char *argv[])
     cout<<endl;	
 
     using namespace PPL::IO_Operators;
-
+    cout<<cs.poly<<endl;
+    cs.print_points(vars_list_file);
+//    ofstream res;
+//    string out = vars_list_file.append(".out");
+//    res.open(out.c_str());
+//
     cout<<"The final system :\n"<<endl;
     PPL::Pointset_Powerset<C_Polyhedron> copied(cs.poly);
     cout<<copied<<endl;
     for( PPL::Pointset_Powerset<PPL::C_Polyhedron>::iterator i = copied.begin(); i != copied.end(); i++) {
                 PPL::C_Polyhedron cp = i->pointset();
                 PPL::Generator_System gs = cp.generators();
-                cout<<gs<<endl;
+		cout<<gs<<endl;
     }
-    cout<<endl;
+//		for( PPL::Generator_System::const_iterator it = gs.begin(); it != gs.end(); it++) {
+//			if( !it->is_point()) throw("Not a point here");
+//			for( PPL::dimension_type ii = it->space_dimension(); ii -- > 0;)
+//				cout<<it->coefficient(Variable(ii))<<". ";
+//			cout<<endl;
+//		}
+//                //cout<<gs<<endl;
+////		PPL::Constraint_System csi = i->pointset().constraints();
+////                for(PPL::Constraint_System::const_iterator j = csi.begin(); j != csi.end(); j++) {
+//                        res<<*j<<endl;
+//
+//                }
+//                res<<endl;
+//
+//    }
+//    cout<<endl;
     
     for (unsigned char i=0; i<cs.vars.size(); i++) {
 	char c = 'A' + i;

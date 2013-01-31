@@ -117,6 +117,8 @@ public:
     
     ConstraintsSystem(int n);
     ConstraintsSystem(int n, bool universe);
+    
+    void print_points(string fname);
 
     /**
        This function performs sensitivity analysis over a pointset
