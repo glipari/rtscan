@@ -8,6 +8,8 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <utility>
+#include <algorithm>
 
 using namespace Scan;
 using namespace std;
@@ -1830,6 +1832,25 @@ void remove_jitter_dline(ConstraintsSystem & sys, vector<Scan::FPTask> &v, DisSy
 //	}	
 }
 
+//bool com_pair (pair<double, double> & p1, pair<double, double> &p2) 
+//{
+//	if( p1.second < p2.second) return true;
+//	if( p1.second == p2.second ) return (p1.first > p2.first);
+//	return false;
+//}
+
+struct com_pair_class {
+  bool operator() (pair<double, double> p1, pair<double, double> p2) { 
+		if( p1.first == 0 && p1.second == 0) return true;
+		if( p2.first == 0 && p2.second == 0) return false;
+		if( p1.second < p2.second) return true;
+	        if( p1.second == p2.second ) return (p1.first > p2.first);
+        	return false;
+   }
+
+} com_pair;
+
+
 void ConstraintsSystem::print_points(string fname) {
 	int index = -1;
 	for( PPL::Pointset_Powerset<PPL::C_Polyhedron>::iterator 
@@ -1846,10 +1867,11 @@ void ConstraintsSystem::print_points(string fname) {
 		out.append(index_str);
 		out.append(".out");
 		res.open(out.c_str());
-
+		vector< pair<double, double> > points;
 		for( PPL::Generator_System::const_iterator
 				 it = gs.begin(); it != gs.end(); it++) {
 			if( !it->is_point()) throw("Not a point here");
+			pair<double, double> point; 
 			for( PPL::dimension_type ii = it->space_dimension(); 
 								ii -- > 0;) {
 				stringstream ss1 (stringstream::in | stringstream::out);
@@ -1859,11 +1881,31 @@ void ConstraintsSystem::print_points(string fname) {
 				double coe, div;
 				ss1 >> coe;
 				ss2 >> div;
-				double x = coe/div;
-				res<<x<<"	";	
+				if( ii != 0) point.first = coe/div;
+				else point.second = coe/div;
 			}
-			res<<"\n";
+			points.push_back(point);
 		}
+		std::sort(points.begin(), points.end(), com_pair);
+		for( int j = 0; j < points.size(); j++) 
+			res<<points[j].first<<"	"<<points[j].second<<"\n";
+//		for( PPL::Generator_System::const_iterator
+//				 it = gs.begin(); it != gs.end(); it++) {
+//			if( !it->is_point()) throw("Not a point here");
+//			for( PPL::dimension_type ii = it->space_dimension(); 
+//								ii -- > 0;) {
+//				stringstream ss1 (stringstream::in | stringstream::out);
+//				stringstream ss2 (stringstream::in | stringstream::out);
+//				ss1 << it->coefficient(Variable(ii));
+//				ss2 << it->divisor();
+//				double coe, div;
+//				ss1 >> coe;
+//				ss2 >> div;
+//				double x = coe/div;
+//				res<<x<<"	";	
+//			}
+//			res<<"\n";
+//		}
 	}
 }
 
