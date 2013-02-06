@@ -64,9 +64,9 @@ namespace Scan {
     {
         return myparse<property_set_grammar, PropertyList>(is, filename, pset);
     }
-
+  
     PrintPropertyVisitor::PrintPropertyVisitor() : indent_level(0) {}
-
+  
     void PrintPropertyVisitor::operator()(const Property &p) 
     {
         for (unsigned i=0; i<indent_level; ++i) std::cout << "  ";
@@ -158,7 +158,27 @@ namespace Scan {
         }
         return true;
     }
-   
+	   
+
+    void GenPropertyVisitor::check_defaults()
+    {
+	for (auto &x : keywords_double) {
+		std::string & keyword = x.first[0];
+            	if (d_values.find(keyword) == d_values.end())
+            		d_values[keyword] = x.second;
+	}
+	for (auto &x : keywords_int) {
+		std::string & keyword = x.first[0];
+            	if (i_values.find(keyword) == i_values.end())
+            		i_values[keyword] = x.second;
+	}
+	for (auto &x : keywords_string) {
+		std::string & keyword = x.first[0];
+            	if (s_values.find(keyword) == s_values.end())
+            		s_values[keyword] = x.second;
+	}
+    }
+
     void GenPropertyVisitor::add_double_parameter(const SVector &v, double x, bool mandatory) 
     {
         keywords_double.push_back(make_pair(v, x));

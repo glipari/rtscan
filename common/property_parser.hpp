@@ -52,6 +52,7 @@ namespace Scan {
         void operator()(const PropertyList &pl); 
         
         bool check_mandatory() const;
+        void check_defaults();
     };
 
     bool parse_properties(std::istream &is, const std::string &filename,

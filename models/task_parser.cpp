@@ -10,9 +10,11 @@ namespace Scan {
 	//here period T is set as an optional field
         add_int_parameter({"period", "T", "p"}, 0); 
         add_int_parameter({"offset", "o", "off"}, 0);
-	add_string_parameter({"sched", "s", "sch"}, "fpfp", true);
-	add_int_parameter({"node", "n", "node"}, 0);
-	add_int_parameter({"pipelinepos", "p", "pos"}, 0);
+	add_string_parameter({"sched", "s", "sch"}, "fp"); //, true);
+	//add_int_parameter({"node", "n", "node"}, 0);
+	add_int_parameter({"node", "n", "node"}, 1);
+	//add_int_parameter({"pipelinepos", "p", "pos"}, 0);
+	add_int_parameter({"pipelinepos", "p", "pos"}, -1);
     }
 
     Task TaskVisitor::create_task() {
@@ -50,6 +52,7 @@ namespace Scan {
     {
         if (!check_mandatory()) 
             THROW_EXC(IllegalValue, "Mandatory parameter is missing");
+	check_defaults();
         if (d_values["dline"] < 0.0) 
             d_values["dline"] = i_values["period"];
         FPTask t(d_values["wcet"], 

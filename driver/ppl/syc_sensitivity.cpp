@@ -6,7 +6,7 @@
 #include <models/task_parser.hpp>
 #include <analysis/hyperplane.hpp>
 #include <common/string_utils.hpp>
-#include "ppl_utils.hpp"
+#include <analysis/ppl_utils.hpp>
 
 namespace PPL = Parma_Polyhedra_Library;
 using namespace std;
