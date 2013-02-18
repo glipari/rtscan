@@ -36,7 +36,6 @@ int main(int argc, char *argv[])
         cout << e.what() << endl;
         exit(-1);
     }
-
     ConstraintsSystem s1 = build_general_sensitivity(sv.v);
     
     for (unsigned char i=0; i<s1.vars.size(); i++) {

@@ -106,7 +106,6 @@ namespace  Scan {
         int get_pipeline_tag() const { return pipeline_tag; }     
             
 	/// by calling this constructor, our cumstomized way to assign unique task id will be called
-        Task(double wcet, double dline, int period, int offset, double jitter, int ppos) throw(IllegalValue);
     private:
         int period;
         double wcet;

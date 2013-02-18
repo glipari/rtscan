@@ -6,6 +6,7 @@
 
 namespace Scan {
 
+    /** This class is currently not used. */
 	class PipelinePropVisitor : public GenPropertyVisitor {
 	public:
 		PipelinePropVisitor();

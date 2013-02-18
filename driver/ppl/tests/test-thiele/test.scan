@@ -1,0 +1,100 @@
+sys(mysys) {
+    pipeline(p1) {
+        Period = 31250;
+        E2Edline = 200000;
+        task(t11) {
+            wcet=4546;
+            period=31250;
+            dline=200000;
+            priority=10;
+            sched=fp;
+            node=1;
+            pipelinepos=0;
+        };
+        task(t12) {
+            wcet=445;
+            period=31250;
+            dline=200000;
+            priority=10;
+            sched=npfp;
+            node=2;
+            pipelinepos=1;
+        };
+        task(t13) {
+            wcet=9091;
+            period=31250;
+            dline=200000;
+            priority=10;
+            sched=fp;
+            node=4;
+            pipelinepos=2;
+        };
+        task(t14) {
+            wcet=445;
+            period=31250;
+            dline=200000;
+            priority=9;
+            sched=npfp;
+            node=2;
+            pipelinepos=3;
+        };
+        task(t15) {
+            wcet=22728;
+            period=31250;
+            dline=200000;
+            priority=9;
+            sched=fp;
+            node=1;
+            pipelinepos=4;
+        };
+    };
+    pipeline(p2) {
+        Period = 3000000;
+        E2Edline = 1000000;
+        task(t21) {
+            wcet=90910;
+            period=3000000;
+            dline=1000000;
+            priority=9;
+            sched=fp;
+            node=4;
+            pipelinepos=0;
+        };
+        task(t22) {
+            wcet=889;
+            period=3000000;
+            dline=1000000;
+            priority=8;
+            sched=npfp;
+            node=2;
+            pipelinepos=1;
+        };
+        task(t23) {
+            wcet=44248;
+            period=3000000;
+            dline=1000000;
+            priority=10;
+            sched=fp;
+            node=3;
+            pipelinepos=2;
+        };
+        task(t24) {
+            wcet=889;
+            period=3000000;
+            dline=1000000;
+            priority=7;
+            sched=npfp;
+            node=2;
+            pipelinepos=3;
+        };
+        task(t25) {
+            wcet=22728;
+            period=3000000;
+            dline=1000000;
+            priority=8;
+            sched=fp;
+            node=1;
+            pipelinepos=4;
+        };
+    };
+};

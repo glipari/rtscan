@@ -20,36 +20,20 @@ namespace Scan {
         name = string(nn.str());        
     }
 
-    Task::Task() : period(0), wcet(0), dline(0), pipeline_pos(0) 
+    Task::Task() : period(0), wcet(0), dline(0)
     {
         init_name_();
     }
 
-    Task::Task(const string &n) : name(n), period(0), wcet(0), dline(0), pipeline_pos(0) 
+    Task::Task(const string &n) : name(n), period(0), wcet(0), dline(0)
     {   
     }
 
     Task::Task(double w, double d, int p, int off, double jit) 
-        throw(IllegalValue) : period(p), wcet(w), dline(d), offset(off), jitter(jit), pipeline_pos(0)
-    {
-/**
-	Yes, this is dangerous ...
-        if (w > p || w < 0 || p < 0 || d < 0) {
- */
-        if (w < 0 || p < 0 || d < 0) {
-            stringstream err;
-            err << "cannot create task with parameters w: " 
-                << w << " p : " << p << " d : " << d;
-            
-            throw IllegalValue(err.str());
-        }
-        init_name_();
-    }
-    
-    Task::Task(double w, double d, int p, int off, double jit, int ppos) 
-        throw(IllegalValue) : period(p), wcet(w), dline(d), offset(off), jitter(jit), pipeline_pos(ppos), HasUniqueId(ppos)
+        throw(IllegalValue) : period(p), wcet(w), dline(d), offset(off), jitter(jit)
     {
         if (w > p || w < 0 || p < 0 || d < 0) {
+ 
             stringstream err;
             err << "cannot create task with parameters w: " 
                 << w << " p : " << p << " d : " << d;
@@ -72,10 +56,10 @@ namespace Scan {
         wcet = t.wcet;
         offset = t.offset;
         jitter = t.jitter;
-	sched = t.sched;
-	node = t.node;
-	pipeline_pos = t.pipeline_pos;
-	pipeline_tag = t.pipeline_tag;
+        sched = t.sched;
+        node = t.node;
+        pipeline_pos = t.pipeline_pos;
+        pipeline_tag = t.pipeline_tag;
 
         return *this;
     }

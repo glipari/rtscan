@@ -22,6 +22,10 @@ namespace Scan {
 		if( p.type != "pipeline") 
 			 THROW_EXC(IncorrectType, 
 					"Expecting a pipeline type");
+		Pipeline pipe;
+		pipe.set_name(p.name);
+		return pipe;
+
 		PipelinePropVisitor vis;
 		vis(p);
 		return vis.create_pipeline();

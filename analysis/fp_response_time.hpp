@@ -23,7 +23,7 @@ namespace Scan {
         Prop fun;
         CmpFunctorDecr(Prop f) : fun(f) {}
         bool operator()(Type x, Type y) {
-            return (x.*fun)() < (y.*fun)();
+            return (x.*fun)() > (y.*fun)();
         }
     };
 

@@ -160,7 +160,7 @@ namespace Scan {
     }
 	   
 
-    void GenPropertyVisitor::check_defaults()
+    void GenPropertyVisitor::setup_defaults()
     {
 	for (auto &x : keywords_double) {
 		std::string & keyword = x.first[0];

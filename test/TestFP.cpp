@@ -30,7 +30,7 @@ protected:
         v3.push_back(FPTask( 5, 15, 15));
         v3.push_back(FPTask(10,100,100));
         int i=5;
-        for (auto c : v3) 
+        for (auto &c : v3) 
             c.set_priority(i--);
     }
 };

@@ -16,6 +16,8 @@
 #include <models/pipeline_property_parser.hpp>
 #include <map>
 #include <utility>
+#include <fstream>
+#include <common/string_utils.hpp>
 using namespace std;
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -24,85 +26,57 @@ namespace Scan {
 
 /** 
     This class is used to read a .scan file and convert it into a set
-    of tasks. It applies the "visitor" pattern.
-    It can also read a .scan file that describes a distributed system
-    with computational resource nodes and pipelines.
-*/
-class DisSysVisitor : public boost::static_visitor<> {
-public:
-    /* A copy of all tasks in the system. */
-    std::vector<Scan::FPTask> v;
-    /*  A set of computational resource nodes in the system. */
-    Scan::ComputationalResource *node;
-    /*  The number of computational resource nodes in the system. */
-    int MAX_;
-    /* The pipelines in the system. */
-    vector<Scan::Pipeline> pipelines;
-
-    DisSysVisitor(int N):MAX_(N) 
-    {
-	node = new Scan::ComputationalResource[N];
-    }
-
-    void operator()(const Scan::Property &p) {
-	if( p.name.compare("Period") != 0 && p.name.compare("E2Edline") != 0)
-        	std::cerr << "ERROR: parsing a property at the sys level" 
-								<< std::endl;
-    }
-
-    void operator()(const Scan::PropertyList &pl) {
-        if (pl.type == "sys") 
-            for (std::vector< Scan::PropertyList::Element >::const_iterator i = pl.children.begin();
-                 i != pl.children.end(); i++) 
-                boost::apply_visitor(*this, *i);
-	else if (pl.type == "pipeline") {
-	    pipelines.push_back(Scan::create_pipeline(pl));
-            for (std::vector< Scan::PropertyList::Element >::const_iterator i = pl.children.begin();
-                 i != pl.children.end(); i++) 
-                boost::apply_visitor(*this, *i);
-	}
-        else if (pl.type == "task") { 
-		Scan::FPTask task = Scan::create_fp_task(pl);
-		if( task.get_pipeline_pos() >= 0) {
-			// ...
-			task.set_pipeline_pos(task.get_pipeline_pos()+1);
-			task.set_pipeline_tag(pipelines.back().get_tag());
-			pipelines.back().set_pipeline_param(task);
-			pipelines.back().register_a_fp_task(task);
-		}
-		node[task.get_node()-1].register_a_fp_task(task);
-		v.push_back(task);
-cout<<"task name : "<<task.get_name()<<", scheduling policy : "<<task.get_sched()<<", pipeline_pos :"<<task.get_pipeline_pos()<<", node:"<<task.get_node()<<endl;
-	}
-        else 
-            throw std::runtime_error("Found a property list which is not a task!");
-			
-    }
-};
-
-/** 
-    This class is used to read a .scan file and convert it into a set
-    of tasks. It applies the "visitor" pattern
+    of tasks. The copy of smart pointers of each task is stored in
+    its corresponding computational resource node and pipeline (if it
+    is a pipeline task. This class applies the "visitor" pattern
 */
 class SysVisitor : public boost::static_visitor<> {
 public:
+    /** A copy of all tasks in the system. */
+    std::vector<Scan::FPTask_ptr> all_tasks;
+
+    /** The set of computational resource nodes in the system. */
+    Scan::ComputationalResource *node;
+
+    /** The number of computational resource nodes in the system. */
+    unsigned MAX_;
+
+    /** The pipelines in the system. */
+    vector<Scan::Pipeline> pipelines;
+
+    /** This list contains all free variables in the system. */
+    std::vector<std::string> vars_list;
+
+    /**
+         A copy of all tasks in the system. 
+         This field is still kept for the compatibility with some early
+         codes like driver/ppl/distributed.cpp, driver/ppl/sensitivity.cpp,
+         and so on.     
+    */
     std::vector<Scan::FPTask> v;
 
-    SysVisitor() {}
+    /** By default, there is a single processor system. */
+    SysVisitor(unsigned N = 1):MAX_(N) 
+    {
+	    node = new Scan::ComputationalResource[N];
+    }
 
-    void operator()(const Scan::Property &p) {
-        std::cerr << "ERROR: parsing a property at the sys level" << std::endl;
+    ~SysVisitor()
+    {
+	    delete [] node;
     }
-    void operator()(const Scan::PropertyList &pl) {
-        if (pl.type == "sys") 
-            for (std::vector< Scan::PropertyList::Element >::const_iterator i = pl.children.begin();
-                 i != pl.children.end(); i++) 
-                boost::apply_visitor(*this, *i);
-        else if (pl.type != "task") 
-            throw std::runtime_error("Found a property list which is not a task!");
-        else 
-            v.push_back(Scan::create_fp_task(pl));
-    }
+
+    /** To fetch a piece of property for a task or pipeline. */
+    void operator()(const Scan::Property &p);
+
+    /** 
+        To analyze a property list and the result could be a whole 
+        system, a pipeline, or a task.
+    */
+    void operator()(const Scan::PropertyList &pl);
+
+    /** To parse the input file and fill the vars_list field. */
+    void operator() (const std::string &vars_list_file);
 };
 
 /**
@@ -114,11 +88,16 @@ class ConstraintsSystem {
 public:
     PPL::Pointset_Powerset<PPL::C_Polyhedron> poly;
     std::vector<std::string> vars;
-	map<double, string> ppl_vars;
     
-    ConstraintsSystem(int n);
-    ConstraintsSystem(int n, bool universe);
-    
+    ConstraintsSystem();
+    ConstraintsSystem(int n, PPL::Degenerate_Element kind=PPL::EMPTY);
+   
+    /**
+        This method prints the generator of each disjoint polyhedron
+        contained in poly into a set of files which later can be
+        utilized by plotting tools like gnuplot, plotutils and python
+        matplotlib easily.
+    */ 
     void print_points(string fname);
 
     /**
@@ -126,14 +105,75 @@ public:
        powerset on one single variable, computing maximum and minimum
        values.
     */
-    void do_sensitivity(const std::vector<FPTask> &tasks,
-                        const std::string &var);
-    void do_sensitivity2(const std::vector<Scan::FPTask> &tasks,
-                        const std::string &var);
-    void do_sensitivity3(const std::vector<Scan::FPTask> &tasks,
-                        const std::string &var);
-    void do_sensitivity2(const std::vector<Scan::FPTask> &tasks,
-                        const std::string &var1, const std::string &var2, const std::string &fname);
+    void do_sensitivity(const std::vector<FPTask> &tasks, 
+                                        const std::string &var);
+    void do_sensitivity(const std::vector<Scan::FPTask_ptr> &tasks, 
+                                        const std::string &var);
+};
+
+/**
+	This class builds the parametric space given a SysVisitor instance.
+*/
+class SensitivityBuilder {
+	SysVisitor *vis;
+
+    template<class IterInt, class IterTask> vector< vector<int> >
+    number_of_instances(IterInt pb, IterInt pe, IterTask tb, IterTask te);
+
+    /**
+        To compute maximum blocking time of a non-preemptive 
+        that (naively) considers pipeline's existence.
+     */
+    template<class Iter> int compute_max_blocking_time(Iter b, Iter e);
+
+    /** To build the trivial constraints on a node. */
+    PPL::C_Polyhedron build_base_constraints(int index);
+    /** 
+        To build parametric space for preemptive fixed-priority tasks
+        on Computational resource node.
+    */ 
+	ConstraintsSystem build_general_sensitivity( int node);
+
+    /** 
+        To build parametric space for non-preemptive fixed-priority tasks
+        on Computational resource node.
+    */ 
+	ConstraintsSystem build_general_sensitivity_np( int node);
+
+    /** 
+        To build parametric space for tasks
+        on Computational resource node.
+    */ 
+	ConstraintsSystem build_hyperplanes_powerset(int node);
+
+    /** 
+        To remove some variables that are not listed in vars_list
+        after building a preliminary parametric space on a node.
+    */
+	void remove_space_dimensions(const int index, const vector<string> &vars, 
+                                    PPL::Pointset_Powerset<C_Polyhedron> &poly);
+    /** 
+        Since remove_space_dimensions has removed some parameters from
+        the space, this method updates the variable names.
+    */
+	vector<string> update_var_names(const int index, const vector<string>&vars);
+
+    /**
+        The parametric system space is built incrementaly by merging 
+        constraints on each node one by one. After constraints on a
+        node has been merged, this method add pipeline constraints
+        involving with this node and other already mearged nodes; then
+        it removes unnecessary parameters and updates the variable names.
+    */
+	void merge_pline_constraints( const vector<Scan::FPTask> &pline_tasks, 
+                                                        ConstraintsSystem &sys);
+
+public :
+
+	SensitivityBuilder(SysVisitor &sv) { vis = &sv; }
+
+    /** Called to build the parametric space for the whole ststem. */
+	ConstraintsSystem build_hyperplanes_powerset();
 };
 
 /**
@@ -147,20 +187,6 @@ public:
 
  */
 ConstraintsSystem build_hyperplanes_powerset(std::vector<Scan::FPTask> &v);
-ConstraintsSystem build_hyperplanes_powerset2(std::vector<Scan::FPTask> &v);
-///void build_hyperplanes_powerset2(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
-ConstraintsSystem dis_build_hyperplanes_powerset(DisSysVisitor &vis, std::vector<std::string> &vars_list);
-void build_general_sensitivity2(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
-void np_build_general_sensitivity(vector<Scan::FPTask> &v, ConstraintsSystem &dis);
-void constraints_of_a_pipepline(Scan::Pipeline &pline,
-                        DisSysVisitor &vis, ConstraintsSystem &dis);
-
-/**
- * This method builds the same powerset as the above function 
- * for ''non-preemptive scheduling''. For details, please refer 
- * to	http://retis.sssup.it/~youcheng/logs/log0x01.html
-**/
-ConstraintsSystem np_build_hyperplanes_powerset(std::vector<Scan::FPTask> &v);
 
 /**
    This function builds a pointset powerset starting from a set of FP
@@ -169,15 +195,9 @@ ConstraintsSystem np_build_hyperplanes_powerset(std::vector<Scan::FPTask> &v);
  */
 ConstraintsSystem build_general_sensitivity(std::vector<Scan::FPTask> &v);
 
-PPL::Pointset_Powerset<PPL::C_Polyhedron> build_hyperplanes_powerset(std::vector<Scan::FPTask> &v,
-                                                                     std::vector<std::string> &vars);
-
-
-// void do_sensitivity(PPL::Pointset_Powerset<PPL::C_Polyhedron> ps, 
-//                     const std::vector<std::string> &var_names,
-//                     const std::vector<Scan::FPTask> &tasks,
-//                     const std::string &var);
-
+PPL::Pointset_Powerset<PPL::C_Polyhedron> 
+build_hyperplanes_powerset(std::vector<Scan::FPTask> &v, 
+							std::vector<std::string> &vars);
 
 /** this is for EDF */
 
