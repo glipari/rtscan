@@ -3,6 +3,15 @@
 namespace Scan {
 
 	int Pipeline::counter = 0;
+
+    Pipeline::Pipeline(const Pipeline &other) :
+        period(other.period), e2e_dline(other.e2e_dline),
+                            name(other.name), tag(other.tag) {
+            for ( auto x : other.pline_tasks )
+                pline_tasks.push_back(x);
+    }
+
+
 	bool Pipeline::register_a_fp_task(FPTask_ptr task) {
 		task->set_period(period);
 		task->set_dline(e2e_dline);

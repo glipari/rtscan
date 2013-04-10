@@ -37,12 +37,12 @@ namespace Scan {
 		Pipeline(const int _period, const int _dline) :
 			period(_period), e2e_dline(_dline) {tag=counter++;}
 
-		Pipeline(const Pipeline &other) :
-			period(other.period), e2e_dline(other.e2e_dline), 
-                                        name(other.name), tag(other.tag) {
-			for ( auto x : other.pline_tasks )
-				pline_tasks.push_back(x);	
-		}
+		Pipeline(const Pipeline &other);
+//			period(other.period), e2e_dline(other.e2e_dline), 
+//                                        name(other.name), tag(other.tag) {
+//			for ( auto x : other.pline_tasks )
+//				pline_tasks.push_back(x);	
+//		}
 
 		void set_period(int _period) { period = _period; }
 
