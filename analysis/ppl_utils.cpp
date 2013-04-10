@@ -1292,9 +1292,9 @@ void SensitivityBuilder::merge_pline_constraints(
             int pre_bytes = sys.poly.total_memory_in_bytes();
 			sys.poly.add_constraint(cs_jitter);
             int after_bytes = sys.poly.total_memory_in_bytes();
-            curr_bytes = after_bytes - pre_bytes;
+            curr_bytes += after_bytes - pre_bytes;
             if( curr_bytes > max_bytes) {
-                max_bytes += curr_bytes;
+                max_bytes = curr_bytes;
                 cout << "max_bytes updated!\n";
             }
 		    if( get_index(vars_list, dline) == -1) {
