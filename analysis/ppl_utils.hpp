@@ -116,7 +116,7 @@ public:
 */
 class SensitivityBuilder {
 	SysVisitor *vis;
-    int max_bytes;
+    int max_bytes, curr_bytes;
 
     template<class IterInt, class IterTask> vector< vector<int> >
     number_of_instances(IterInt pb, IterInt pe, IterTask tb, IterTask te);
@@ -172,7 +172,7 @@ class SensitivityBuilder {
 
 public :
 
-	SensitivityBuilder(SysVisitor &sv) { vis = &sv; max_bytes = 0; }
+	SensitivityBuilder(SysVisitor &sv) { vis = &sv; max_bytes = 0; curr_bytes=0;}
 
     /** Called to build the parametric space for the whole ststem. */
 	ConstraintsSystem build_hyperplanes_powerset();

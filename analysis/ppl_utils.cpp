@@ -549,17 +549,18 @@ ConstraintsSystem SensitivityBuilder::build_hyperplanes_powerset()
 		if( vis->node[i].get_rq().size() == 0 ) continue;
 		cout << "\nTo build constraints on node " << i + 1 << " ...\n";
 		*nodes[i] = build_hyperplanes_powerset(i);
-		cout << "\nThe resulted local constraints' size ";
-        cout << "(on node " << i + 1 << ") in bytes : ";
-        cout << nodes[i]->poly.total_memory_in_bytes() <<endl;
-//using namespace PPL::IO_Operators;
+
+        max_bytes += nodes[i]->poly.total_memory_in_bytes();
+	//	cout << "\nThe resulted local constraints' size ";
+      //  cout << "(on node " << i + 1 << ") in bytes : ";
+      //  cout << nodes[i]->poly.total_memory_in_bytes() <<endl;
 //PPL::IO_Operators::operator << (std::cout, nodes[i]->poly);// << endl;
 //for (unsigned char ii=0; ii<nodes[i]->vars.size(); ii++) {
 //    char c = 'A' + ii;
 //    cout << c << ": " << nodes[i]->vars[ii] << endl;
 //} 
 	}
-	
+    curr_bytes = max_bytes;	
 	cout<<"\nNow, to merge constraints on different nodes ...\n";
 
 	vector<Scan::FPTask> pline_tasks;
@@ -567,11 +568,17 @@ ConstraintsSystem SensitivityBuilder::build_hyperplanes_powerset()
 	for( auto t : rq)
         if( is_a_pline_task(t))
             pline_tasks.push_back(*t);
-	
+
 	for( unsigned i = 1; i < vis->MAX_; i++) {
 		if( vis->node[i].get_rq().size() == 0 ) continue;
 		/** To merge constraints on i-th node. */
+        int pre_bytes = nodes[0]->poly.total_memory_in_bytes();
 		nodes[0]->poly.concatenate_assign(nodes[i]->poly);
+        int after_bytes = nodes[0]->poly.total_memory_in_bytes();
+        curr_bytes += after_bytes - pre_bytes;
+        if( curr_bytes > max_bytes) max_bytes = curr_bytes;
+             
+       
 		/** To update the variable names. */
 		for( unsigned j = 0; j < nodes[i]->vars.size(); j++) {
 				nodes[0]->vars.push_back(nodes[i]->vars[j]);
@@ -582,14 +589,20 @@ ConstraintsSystem SensitivityBuilder::build_hyperplanes_powerset()
 		for( auto t : rq)
 			if( is_a_pline_task(t))
 				pline_tasks.push_back(*t);
+        int released_bytes = nodes[i]->poly.total_memory_in_bytes();
+        nodes[i].reset();
+        curr_bytes -= released_bytes;
+
 		merge_pline_constraints(pline_tasks, *nodes[0]);
 
-		cout << "Constraints on node " << i + 1 << " has been merged : ";
-        cout << "the resulted Pointset_Powerset's size in bytes is ";
-        cout << nodes[0]->poly.total_memory_in_bytes() << endl;
+		cout << "Constraints on node " << i + 1 << " has been merged.\n ";
+//        cout << "the resulted Pointset_Powerset's size in bytes is ";
+//        cout << nodes[0]->poly.total_memory_in_bytes() << endl;
 	}
 
 	cout << "\nThe parametric space for the whole system has been built!!!\n\n";
+    cout << "The maximum memory used for polyhedra space in bytes : " << max_bytes << endl; 
+    //cout << "The final memory used in bytes : " << nodes[0]->poly.total_memory_in_bytes() << endl; 
 	return *nodes[0];
 }
 
@@ -1275,7 +1288,11 @@ void SensitivityBuilder::merge_pline_constraints(
 			PPL::Variable xd(pos);
 			PPL::Variable xj(j);
 			PPL::Constraint cs_jitter = (xd-xj<=0);//(xd <= xj);
+            int pre_bytes = sys.poly.total_memory_in_bytes();
 			sys.poly.add_constraint(cs_jitter);
+            int after_bytes = sys.poly.total_memory_in_bytes();
+            curr_bytes = after_bytes - pre_bytes;
+            if( curr_bytes > max_bytes) max_bytes = curr_bytes;
 		    if( get_index(vars_list, dline) == -1) {
                 set.insert(xd);
 		    	sys.vars.erase(sys.vars.begin() + get_index(sys.vars, dline));
@@ -1284,7 +1301,11 @@ void SensitivityBuilder::merge_pline_constraints(
 			    set.insert(xj);
 			    sys.vars.erase(sys.vars.begin() + get_index(sys.vars, jitter));
             }
+            pre_bytes = sys.poly.total_memory_in_bytes();
 			sys.poly.remove_space_dimensions(set);
+            after_bytes = sys.poly.total_memory_in_bytes();
+            curr_bytes = after_bytes - pre_bytes;
+            if( curr_bytes > max_bytes) max_bytes = curr_bytes;
 		}
 	}
 }
