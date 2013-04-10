@@ -552,6 +552,12 @@ ConstraintsSystem SensitivityBuilder::build_hyperplanes_powerset()
 		cout << "\nThe resulted local constraints' size ";
         cout << "(on node " << i + 1 << ") in bytes : ";
         cout << nodes[i]->poly.total_memory_in_bytes() <<endl;
+//using namespace PPL::IO_Operators;
+//PPL::IO_Operators::operator << (std::cout, nodes[i]->poly);// << endl;
+//for (unsigned char ii=0; ii<nodes[i]->vars.size(); ii++) {
+//    char c = 'A' + ii;
+//    cout << c << ": " << nodes[i]->vars[ii] << endl;
+//} 
 	}
 	
 	cout<<"\nNow, to merge constraints on different nodes ...\n";
@@ -594,6 +600,7 @@ ConstraintsSystem SensitivityBuilder::build_hyperplanes_powerset(int index ) {
 	int npfp = node.get_rq_npfp().size();
 	if( fp > 0 ) return this->build_general_sensitivity(index);
 	else if ( npfp > 0 ) return this->build_general_sensitivity_np(index);
+	//else if ( npfp > 0 ) return this->build_general_sensitivity_np_fast(index);
 } 
 
 PPL::C_Polyhedron SensitivityBuilder::build_base_constraints(int index)
@@ -751,14 +758,16 @@ ConstraintsSystem SensitivityBuilder::build_general_sensitivity_np(int index)
     sys.poly.add_disjunct(base);
 	remove_space_dimensions(index, sys.vars, sys.poly);
 
+    int H_i = compute_hyperperiod(v.begin(), v.end(), ntasks);
+    cout << "The hyperperiod is " << H_i << endl << endl;
     for( unsigned i = 0; i < ntasks; i++) {
 		//constraints_of_np_task_i2(v, base, ntasks, i, nvars, sys, vars_list);
-        unsigned B_i = compute_max_blocking_time(v.begin() + i, v.end());
-        // The upper bound of length of the level-i active period.
-        unsigned H_i = 1;
-        for ( unsigned j = 0; j <= i; j++)
-        H_i =  boost::math::lcm(H_i, (unsigned)(v[j].get_period()));
-            H_i += B_i;
+//        unsigned B_i = compute_max_blocking_time(v.begin() + i, v.end());
+//        // The upper bound of length of the level-i active period.
+//        unsigned H_i = 1;
+//        for ( unsigned j = 0; j <= i; j++)
+//        H_i =  boost::math::lcm(H_i, (unsigned)(v[j].get_period()));
+//            H_i += B_i;
         /* The number of jobs to be considered. */
         unsigned K_i = H_i/v[i].get_period();
         if( H_i%v[i].get_period())
@@ -889,6 +898,152 @@ ConstraintsSystem SensitivityBuilder::build_general_sensitivity_np(int index)
     return sys;
 }
 
+ConstraintsSystem SensitivityBuilder::build_general_sensitivity_np_fast(int index)
+{
+    vector<FPTask> v;
+    for( auto x : vis->node[index].get_rq())
+       v.push_back(*x);
+
+	unsigned ntasks = v.size();
+	unsigned nvars = 2*ntasks; 	
+	PPL::C_Polyhedron base(nvars);// = build_base_constraints(index);
+    for (int i=0;i<ntasks;i++) {
+        //PPL::Variable xw(3*i);
+        double xw = v[i].get_wcet();
+//        PPL::Constraint cs_min = (xw >= 0);
+//        base.add_constraint(cs_min);
+//        PPL::Constraint cs_max = (xw <= (int)v[i]->get_period());
+//        base.add_constraint(cs_max);
+
+        PPL::Variable xd(2*i);
+        PPL::Constraint dd_min = (xd >= 0);
+        base.add_constraint(dd_min);
+        PPL::Constraint dd_max = (xd <= int(v[i].get_dline()));
+        base.add_constraint(dd_max);
+
+        PPL::Variable xj(2*i+1);
+        PPL::Constraint j_min = (xj >= 0);
+        base.add_constraint(j_min);
+        PPL::Constraint j_max = (xj + xw <= int(v[i].get_dline()));
+        base.add_constraint(j_max);
+    }
+	ConstraintsSystem sys(nvars);
+    for (unsigned i=0;i<ntasks;i++) {
+        sys.vars[2*i] = v[i].get_name() + ".dline";
+        sys.vars[2*i+1] = v[i].get_name() + ".jitter";
+    }
+    sys.poly.add_disjunct(base);
+
+
+    for( unsigned i = 0; i < ntasks; i++) {
+		int B_i = 0, bi=i, H_i;
+		double U_i = 0, h_i=0;
+		while( ++bi < ntasks) {
+            int tag_bi = v[bi].get_pipeline_tag();
+            int tag_i = v[i].get_pipeline_tag();
+            if( tag_bi == tag_i && is_a_pline_task(v[bi])) {
+                if( v[bi].get_dline() <= v[bi].get_period())
+                    continue;
+			}
+			if (B_i < v[bi].get_wcet()) 
+                B_i = v[bi].get_wcet();
+        }
+		for( bi = 0; bi <= i; bi++)	
+			U_i += v[bi].get_wcet()/v[bi].get_period(); 
+		for( bi = 0; bi <= i; bi++)
+			h_i += v[bi].get_dline()*v[bi].get_wcet()/v[bi].get_period()
+								+ v[bi].get_wcet();
+		H_i = (B_i + h_i)/(1-U_i);
+		H_i += 1;
+		cout<< "H_i is " << H_i << endl;
+        /* The number of jobs to be considered. */
+        unsigned K_i = H_i/v[i].get_period();
+        if( H_i%v[i].get_period())
+            K_i ++;
+        for( unsigned k = 1; k <= K_i; k++) {
+            vector< vector<int> > points;
+            vector<int> pp = 
+                        compute_all_points(v.begin(), v.end() - (ntasks - i),
+                                    (k-1)*v[i].get_period() + v[i].get_dline());
+            sort(pp.begin(), pp.end());
+            pp.erase( unique( pp.begin(), pp.end() ), pp.end());
+            points = this->number_of_instances(pp.begin(), pp.end(),
+                             v.begin(), v.end() - (ntasks - i));
+
+            cout<<"Task "<<v[i].get_name()<<endl;
+            cout<<"Instance k = "<<k<<endl;
+            cout<<"Points: ";
+            print_vector(pp.begin(), pp.end());
+            cout<<endl;
+            cout<<"Vector n: ";
+            for(unsigned po=0; po<points.size(); po++) {
+                print_vector(points[po].begin(), points[po].end());
+                cout<<";";
+            }
+            cout<<endl;
+            cout<<"Now preparing the pointset"<<endl;
+
+            PPL::Pointset_Powerset<PPL::C_Polyhedron> ps(nvars, EMPTY);
+            for(unsigned n = 0; n < points.size(); n++) {
+                cout << "Point: ";
+                print_vector(points[n].begin(), points[n].end());
+                cout<<endl;
+
+                PPL::C_Polyhedron cp = base;
+                for( unsigned nn = 0; nn < i; nn++) {
+                    if( points[n][nn] == 0 )
+                        continue;
+                    PPL::Linear_Expression le;
+                    //PPL::Variable xx(3*i);
+					double xx = v[nn].get_wcet();
+                    PPL::Variable xj(2*nn+1);
+                    le += xx*(k-1) + xj;
+                    for( unsigned j = 0; j < i; j++) {
+                         //PPL::Variable xx(3*j);
+						 double xx = v[j].get_wcet();
+                         le += xx * points[n][j];
+                    }
+                    PPL::Constraint cs = ( le + B_i <= 
+                            points[n][nn]*v[nn].get_period()-1);
+                    cp.add_constraint(cs);
+                }
+
+		//        PPL::Variable xx(3*i);
+				double xx = v[i].get_wcet();
+		        PPL::Variable xj(2*i+1);
+		        PPL::Linear_Expression le_i;
+		        le_i += k*xx + xj;
+		        for (unsigned j = 0; j < i; j++) {
+			        //PPL::Variable xx(3*j);
+					double xx = v[j].get_wcet();
+			        le_i += xx * points[n][j];
+		        }
+//		        if( i == ntasks-1) {
+                PPL::Variable xd(2*i);
+                PPL::Constraint cs;
+                cs = (B_i + le_i - xd <= (k-1)*v[i].get_period());
+                cp.add_constraint(cs);
+
+		        ps.add_disjunct(cp);
+            }
+            cout << "Now all constraint set have been prepared, intesecting...";
+            if( !ps.empty()) {
+             //   remove_space_dimensions(index, sys.vars, ps);
+                sys.poly.intersection_assign(ps);
+            }                                
+            cout << "... completed!" << endl;
+        }
+	}
+//	sys.vars = update_var_names(index, sys.vars);
+//    using namespace PPL::IO_Operators;
+//    PPL::IO_Operators::operator << (std::cout, sys.poly);// << endl;
+//    for (unsigned char i=0; i<sys.vars.size(); i++) {
+//        char c = 'A' + i;
+//        cout << c << ": " << sys.vars[i] << endl;
+//    }
+
+    return sys;
+}
 template<class IterInt, class IterTask> vector< vector<int> > 
 SensitivityBuilder::number_of_instances( IterInt pb, IterInt pe, 
                                             IterTask tb, IterTask te) 

@@ -116,6 +116,7 @@ public:
 */
 class SensitivityBuilder {
 	SysVisitor *vis;
+    int max_bytes;
 
     template<class IterInt, class IterTask> vector< vector<int> >
     number_of_instances(IterInt pb, IterInt pe, IterTask tb, IterTask te);
@@ -139,6 +140,7 @@ class SensitivityBuilder {
         on Computational resource node.
     */ 
 	ConstraintsSystem build_general_sensitivity_np( int node);
+	ConstraintsSystem build_general_sensitivity_np_fast( int node);
 
     /** 
         To build parametric space for tasks
@@ -170,7 +172,7 @@ class SensitivityBuilder {
 
 public :
 
-	SensitivityBuilder(SysVisitor &sv) { vis = &sv; }
+	SensitivityBuilder(SysVisitor &sv) { vis = &sv; max_bytes = 0; }
 
     /** Called to build the parametric space for the whole ststem. */
 	ConstraintsSystem build_hyperplanes_powerset();
