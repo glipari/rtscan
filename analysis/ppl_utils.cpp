@@ -1291,6 +1291,8 @@ void SensitivityBuilder::merge_pline_constraints(
 			PPL::Constraint cs_jitter = (xd-xj<=0);//(xd <= xj);
             int pre_bytes = sys.poly.total_memory_in_bytes();
 			sys.poly.add_constraint(cs_jitter);
+//PPL::IO_Operators::operator << (std::cout, nodes[i]->poly);// 
+//cout << endl;
             int after_bytes = sys.poly.total_memory_in_bytes();
             curr_bytes += after_bytes - pre_bytes;
             if( curr_bytes > max_bytes) {
