@@ -554,7 +554,8 @@ ConstraintsSystem SensitivityBuilder::build_hyperplanes_powerset()
 	//	cout << "\nThe resulted local constraints' size ";
       //  cout << "(on node " << i + 1 << ") in bytes : ";
       //  cout << nodes[i]->poly.total_memory_in_bytes() <<endl;
-//PPL::IO_Operators::operator << (std::cout, nodes[i]->poly);// << endl;
+//PPL::IO_Operators::operator << (std::cout, nodes[i]->poly);// 
+//cout << endl;
 //for (unsigned char ii=0; ii<nodes[i]->vars.size(); ii++) {
 //    char c = 'A' + ii;
 //    cout << c << ": " << nodes[i]->vars[ii] << endl;
@@ -1292,7 +1293,10 @@ void SensitivityBuilder::merge_pline_constraints(
 			sys.poly.add_constraint(cs_jitter);
             int after_bytes = sys.poly.total_memory_in_bytes();
             curr_bytes = after_bytes - pre_bytes;
-            if( curr_bytes > max_bytes) max_bytes = curr_bytes;
+            if( curr_bytes > max_bytes) {
+                max_bytes += curr_bytes;
+                cout << "max_bytes updated!\n";
+            }
 		    if( get_index(vars_list, dline) == -1) {
                 set.insert(xd);
 		    	sys.vars.erase(sys.vars.begin() + get_index(sys.vars, dline));
@@ -1304,8 +1308,11 @@ void SensitivityBuilder::merge_pline_constraints(
             pre_bytes = sys.poly.total_memory_in_bytes();
 			sys.poly.remove_space_dimensions(set);
             after_bytes = sys.poly.total_memory_in_bytes();
-            curr_bytes = after_bytes - pre_bytes;
-            if( curr_bytes > max_bytes) max_bytes = curr_bytes;
+            curr_bytes += after_bytes - pre_bytes;
+            if( curr_bytes > max_bytes) {
+                max_bytes = curr_bytes;
+                cout << "max_bytes updated!\n";
+             }
 		}
 	}
 }
