@@ -66,7 +66,6 @@ namespace Scan {
         
         taskres_grammar() : taskres_grammar::base_type(sys, "System") {
             using qi::lit;
-            using qi::int_;
             using qi::double_;
             using qi::bool_;
             using qi::int_;

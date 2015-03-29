@@ -24,9 +24,9 @@ scantest_SOURCES = test_main.cpp \
 	TestCommon.cpp \
 	TestHyperplanes.cpp \
 	TestPropertyParser.cpp \
-    TestFP_ptr.cpp \
-    TestComputationalResource.cpp \
-    TestPipeline.cpp \
-    TestUtility.cpp 
+	TestFP_ptr.cpp \
+	TestComputationalResource.cpp \
+	TestPipeline.cpp \
+	TestUtility.cpp 
 
 #TestBasicFunctions.cpp  
