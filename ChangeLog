@@ -1,1 +1,8 @@
+2015-04-02 Giuseppe Lipari <giulipari@gmail.com>
 
+	* test/catch.hpp : Removed dependency from google test
+	library. Now the project includes the Catch library as an header
+	file. For more information on the Catch library, see
+	https://github.com/philsquared/Catch/
+
+	

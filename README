@@ -15,20 +15,18 @@ The programs and the libraries are written in C++.
 You need:
 
 - the latest GNU g++ compiler (> 4.6)
+- the automake and autoconf tools
 - the boost spirit library
 - the boost filestystem library
-- the google test library
-- the automake and autoconf tools
+- the boost program-options library
+- the ppl library (which requires the gmp library)
 
 They should be all available in your Linux distribution. 
 On Ubuntu and Debian, check with apt-cache and apt-get.
 
-Google Test is only needed if you wish to run the tests 
-(strongly suggested!). Please download it from here: 
-
-  http://code.google.com/p/googletest/
-
-and follow instructions to compile and install. 
+Tests are supported by the Catch library (see
+https://github.com/philsquared/Catch/), already included in the
+repository.
 
 To compile the libraries and the programs: 
 
@@ -64,3 +62,5 @@ Have fun!
 March 22 2012
 Giuseppe Lipari
 g #dot# lipari #at# sssup #dot# it
+
+/Edited: April 2 2015, by Giuseppe Lipari/
