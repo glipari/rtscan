@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "catch.hpp"
 #include <vector>
 #include <stdexcept>
 #include <iostream>
@@ -9,15 +9,15 @@
 using namespace std;
 using namespace Scan;
 
-TEST(PropertyParser, simple)
+TEST_CASE("PropertyParser, simple")
 {
     stringstream ss;
     ss << "sys(s) { seq (pippo) { c=1; p=5; par (pluto) {c=4; d=10;}; }; };";
     PropertyList plist;
-    EXPECT_TRUE(parse_properties(ss, "string", plist));
+    CHECK(parse_properties(ss, "string", plist));
 }
 
-TEST(PropertyParser, string_ex)
+TEST_CASE("PropertyParser, string_ex")
 {
     stringstream ss;
     ss << "sys(s) { c=1; p=\"long and longer\"; nomore=pippo; };";
@@ -28,6 +28,6 @@ TEST(PropertyParser, string_ex)
     } catch(const std::runtime_error& e) {
         cout << e.what() << endl;
     }
-    EXPECT_TRUE(r);
+    CHECK(r);
 }
 

@@ -5,14 +5,14 @@
  *      Author: Youcheng Sun
  */
 
-#include "gtest/gtest.h"
+#include "catch.hpp"
 #include <models/pipeline.hpp>
 #include <vector>
 
 using namespace Scan;
 using namespace std;
 
-TEST(TestPipeline, PlineTag)
+TEST_CASE("TestPipeline, PlineTag")
 {
     Pipeline p1(5, 5); 
     Pipeline p2(10, 10); 
@@ -22,10 +22,10 @@ TEST(TestPipeline, PlineTag)
     t1->set_pipeline_pos(0);
     p1.register_a_fp_task(t1);
 
-    EXPECT_EQ(t1->get_pipeline_tag(), p1.get_tag());
+    REQUIRE(t1->get_pipeline_tag() ==  p1.get_tag());
 }
 
-TEST(TestPipeline, PlinePos)
+TEST_CASE("TestPipeline, PlinePos")
 {
     Pipeline pline(10, 10);
 
@@ -45,11 +45,11 @@ TEST(TestPipeline, PlinePos)
 
     const vector<FPTask_ptr> &v = pline.pline_tasks;
 
-    EXPECT_EQ(v[0]->get_pipeline_pos(), 0);
-    EXPECT_EQ(v[1]->get_pipeline_pos(), 1);
-    EXPECT_EQ(v[2]->get_pipeline_pos(), 2);
+    REQUIRE(v[0]->get_pipeline_pos() ==  0);
+    REQUIRE(v[1]->get_pipeline_pos() ==  1);
+    REQUIRE(v[2]->get_pipeline_pos() ==  2);
 
-    EXPECT_EQ(v[0]->get_name(), t2->get_name());
-    EXPECT_EQ(v[1]->get_name(), t3->get_name());
-    EXPECT_EQ(v[2]->get_name(), t1->get_name());
+    REQUIRE(v[0]->get_name() ==  t2->get_name());
+    REQUIRE(v[1]->get_name() ==  t3->get_name());
+    REQUIRE(v[2]->get_name() ==  t1->get_name());
 }

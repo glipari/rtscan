@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "catch.hpp"
 
 #include <vector>
 #include <analysis/fp_response_time.hpp>
@@ -6,7 +6,7 @@
 using namespace Scan;
 using namespace std;
 
-class TestFPFix : public ::testing::Test {
+class TestFPFix {
 protected:
     vector<FPTask> v;
     vector<FPTask> v2;
@@ -35,60 +35,61 @@ protected:
     }
 };
 
-TEST(TestFP, Conversion)
-{
+TEST_CASE_METHOD(TestFPFix, "Conversion") {
     FPTask t(2, 5, 10);
     t.set_priority(3);
-    EXPECT_EQ(3, t.get_priority());
+    REQUIRE(3 == t.get_priority());
     Task t2 = t;
-    EXPECT_EQ(t.get_wcet(), t2.get_wcet());
-
+    REQUIRE(t.get_wcet() == t2.get_wcet());
+    
     Task t3;
     t3 = t;
-    EXPECT_EQ(t.get_dline(), t3.get_dline());
-    EXPECT_EQ(t2.get_period(), t3.get_period());
+    REQUIRE(t.get_dline() == t3.get_dline());
+    REQUIRE(t2.get_period() == t3.get_period());
 }
 
-TEST_F(TestFPFix, AssignRM)
+
+
+TEST_CASE_METHOD(TestFPFix, "AssignRM")
 {
     assign_rm_priorities(v.begin(), v.end());
 
-    EXPECT_EQ( 2, v[0].get_period());
-    EXPECT_EQ(10, v[3].get_period());
-    EXPECT_EQ( 4, v[0].get_priority()); 
-    EXPECT_EQ( 1, v[3].get_priority()); 
+    REQUIRE( 2 == v[0].get_period());
+    REQUIRE(10 == v[3].get_period());
+    REQUIRE( 4 == v[0].get_priority()); 
+    REQUIRE( 1 == v[3].get_priority()); 
 }
 
-TEST_F(TestFPFix, AssignDM) 
+TEST_CASE_METHOD(TestFPFix, "AssignDM") 
 {
     assign_dm_priorities(v.begin(), v.end());
 
-    EXPECT_EQ(1, v[0].get_dline());
-    EXPECT_EQ(4, v[3].get_dline());
-    EXPECT_EQ(4, v[0].get_priority()); 
-    EXPECT_EQ(1, v[3].get_priority()); 
+    REQUIRE(1 == v[0].get_dline());
+    REQUIRE(4 == v[3].get_dline());
+    REQUIRE(4 == v[0].get_priority()); 
+    REQUIRE(1 == v[3].get_priority()); 
 }
 
-TEST_F(TestFPFix, RespTime) 
+TEST_CASE_METHOD(TestFPFix, "RespTime") 
 {
     assign_rm_priorities(v2.begin(), v2.end());
 
-    EXPECT_EQ( 1,resp_time(v2.begin(), v2.begin()+1, 100));
-    EXPECT_EQ( 3,resp_time(v2.begin(), v2.begin()+2, 100));
-    EXPECT_EQ( 8,resp_time(v2.begin(), v2.begin()+3, 100));
-    EXPECT_EQ(19,resp_time(v2.begin(), v2.begin()+4, 100));
-    EXPECT_EQ(55,resp_time(v2.begin(), v2.begin()+5, 100));    
+    REQUIRE( 1 == resp_time(v2.begin(), v2.begin()+1, 100));
+    REQUIRE( 3 == resp_time(v2.begin(), v2.begin()+2, 100));
+    REQUIRE( 8 == resp_time(v2.begin(), v2.begin()+3, 100));
+    REQUIRE(19 == resp_time(v2.begin(), v2.begin()+4, 100));
+    REQUIRE(55 == resp_time(v2.begin(), v2.begin()+5, 100));    
 
     sort_by_decreasing(v3.begin(), v3.end(), &FPTask::get_priority);
 
-    EXPECT_EQ( 1,resp_time(v3.begin(), v3.begin()+1, 100));
-    EXPECT_EQ( 3,resp_time(v3.begin(), v3.begin()+2, 100));
-    EXPECT_EQ( 7,resp_time(v3.begin(), v3.begin()+3, 100));
-    EXPECT_EQ(16,resp_time(v3.begin(), v3.begin()+4, 100));
-    EXPECT_EQ(90,resp_time(v3.begin(), v3.begin()+5, 100));    
+    REQUIRE( 1 == resp_time(v3.begin(), v3.begin()+1, 100));
+    REQUIRE( 3 == resp_time(v3.begin(), v3.begin()+2, 100));
+    REQUIRE( 7 == resp_time(v3.begin(), v3.begin()+3, 100));
+    REQUIRE(16 == resp_time(v3.begin(), v3.begin()+4, 100));
+    REQUIRE(90 == resp_time(v3.begin(), v3.begin()+5, 100));    
 }
 
-TEST_F(TestFPFix, Align)
+TEST_CASE_METHOD(TestFPFix, "Align")
 {
     vector<FPTask> v = { {1,5,5,4},
                           {1,8,8,7},
@@ -96,11 +97,11 @@ TEST_F(TestFPFix, Align)
     auto vv = v;
  
     align_critical_instant(vv.begin(), vv.end());
-    EXPECT_EQ( 0, vv[0].get_offset());
-    EXPECT_EQ( 0, vv[1].get_offset());
-    EXPECT_EQ( 0, vv[2].get_offset());
+    REQUIRE( 0 == vv[0].get_offset());
+    REQUIRE( 0 == vv[1].get_offset());
+    REQUIRE( 0 == vv[2].get_offset());
 
-    EXPECT_EQ( 4, v[0].get_offset());
-    EXPECT_EQ( 7, v[1].get_offset());
-    EXPECT_EQ( 2, v[2].get_offset());
+    REQUIRE( 4 == v[0].get_offset());
+    REQUIRE( 7 == v[1].get_offset());
+    REQUIRE( 2 == v[2].get_offset());
 } 

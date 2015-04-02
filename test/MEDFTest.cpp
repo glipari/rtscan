@@ -1,11 +1,11 @@
-#include "gtest/gtest.h"
+#include "catch.hpp"
 
 #include <analysis/medf_rta.hpp>
 
 using namespace std;
 using namespace Scan;
 
-TEST(MEDFRTA, Simple1)
+TEST_CASE("MEDFRTA, Simple1")
 {
     vector<Task> tset = {
         Task(5,20,20),
@@ -14,12 +14,12 @@ TEST(MEDFRTA, Simple1)
         Task(9,36,36)
     };
 
-    EXPECT_EQ(true, gedf_iterative(2, tset.begin(), tset.end()));
-    EXPECT_EQ(true, gedf_bound_gfb(2, tset.begin(), tset.end()));
-    EXPECT_EQ(true, gfp_bound_density(2, tset.begin(), tset.end()));
+    REQUIRE(true ==  gedf_iterative(2, tset.begin(), tset.end()));
+    REQUIRE(true ==  gedf_bound_gfb(2, tset.begin(), tset.end()));
+    REQUIRE(true ==  gfp_bound_density(2, tset.begin(), tset.end()));
 }
 
-TEST(MEDFRTA, Simple2)
+TEST_CASE("MEDFRTA, Simple2")
 {
     vector<Task> tset = {
         Task(4,6,6),
@@ -27,7 +27,7 @@ TEST(MEDFRTA, Simple2)
         Task(4,6,6)
     };
 
-    EXPECT_EQ(false, gedf_iterative(2, tset.begin(), tset.end()));
-    EXPECT_EQ(false, gedf_bound_gfb(2, tset.begin(), tset.end()));
-    EXPECT_EQ(false, gfp_bound_density(2, tset.begin(), tset.end()));
+    REQUIRE(false ==  gedf_iterative(2, tset.begin(), tset.end()));
+    REQUIRE(false ==  gedf_bound_gfb(2, tset.begin(), tset.end()));
+    REQUIRE(false ==  gfp_bound_density(2, tset.begin(), tset.end()));
 }

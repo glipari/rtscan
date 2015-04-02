@@ -5,7 +5,7 @@
  *      Author: lipari
  */
 
-#include <gtest/gtest.h>
+#include "catch.hpp"
 
 #include <models/task.hpp>
 #include <models/taskset.hpp>
@@ -14,98 +14,100 @@
 using namespace std;
 using namespace Scan;
 
-class DBFTestFix : public ::testing::Test {
-protected:
-	Task t1, t2, t3;
 
-	DBFTestFix() : t1(2.5, 10, 10), t2(1, 6, 12), t3(3, 12, 8) {}
-};
-
-TEST_F(DBFTestFix, Single)
+TEST_CASE("DBFTestFix Single")
 {
+	Task t1(2.5, 10, 10), t2(1, 6, 12), t3(3, 12, 8);
+
     DemandBoundFunction d1(t1);
 
-    EXPECT_EQ(10.0, d1.get_interval());
-    EXPECT_EQ(10, d1.get_period());
+    REQUIRE(10.0 ==  d1.get_interval());
+    REQUIRE(10 ==  d1.get_period());
 
     vector<double> p;
     p.push_back(0);
     p.push_back(10);
 
-    EXPECT_EQ(p, d1.get_points());
+    REQUIRE(p ==  d1.get_points());
 
     p.clear();
     p.push_back(0);
     p.push_back(2.5);
 
-    EXPECT_EQ(p, d1.get_values());
+    REQUIRE(p ==  d1.get_values());
 
-    EXPECT_EQ(0.0, d1(8));
-    EXPECT_EQ(2.5, d1(12));
-    EXPECT_EQ(5.0, d1(25));
-    EXPECT_EQ(5.0, d1(28));
-    EXPECT_EQ(7.5, d1(32));
+    REQUIRE(0.0 ==  d1(8));
+    REQUIRE(2.5 ==  d1(12));
+    REQUIRE(5.0 ==  d1(25));
+    REQUIRE(5.0 ==  d1(28));
+    REQUIRE(7.5 ==  d1(32));
 }
 
 
-TEST_F(DBFTestFix, Single2)
+TEST_CASE("DBFTestFix Single2")
 {
+	Task t1(2.5, 10, 10), t2(1, 6, 12), t3(3, 12, 8);
+
     DemandBoundFunction d1(t2);
 
-    EXPECT_EQ(12.0, d1.get_interval());
-    EXPECT_EQ(12, d1.get_period());
+    REQUIRE(12.0 ==  d1.get_interval());
+    REQUIRE(12 ==  d1.get_period());
 
     vector<double> p;
     p.push_back(0);
     p.push_back(6);
 
-    EXPECT_EQ(p, d1.get_points());
+    REQUIRE(p ==  d1.get_points());
 
     p.clear();
     p.push_back(0);
     p.push_back(1);
 
-    EXPECT_EQ(p, d1.get_values());
+    REQUIRE(p ==  d1.get_values());
 
-    EXPECT_EQ(0.0, d1(4));
-    EXPECT_EQ(1.0, d1(8));
-    EXPECT_EQ(1.0, d1(12));
-    EXPECT_EQ(2.0, d1(18));
-    EXPECT_EQ(3.0, d1(30));
+    REQUIRE(0.0 ==  d1(4));
+    REQUIRE(1.0 ==  d1(8));
+    REQUIRE(1.0 ==  d1(12));
+    REQUIRE(2.0 ==  d1(18));
+    REQUIRE(3.0 ==  d1(30));
 }
 
-TEST_F(DBFTestFix, Single3)
+TEST_CASE("DBFTestFix Single3")
 {
+	Task t1(2.5, 10, 10), t2(1, 6, 12), t3(3, 12, 8);
+
     DemandBoundFunction d1(t3);
 
-    EXPECT_EQ(12.0, d1.get_interval());
-    EXPECT_EQ(8, d1.get_period());
+    REQUIRE(12.0 ==  d1.get_interval());
+    REQUIRE(8 ==  d1.get_period());
 
     vector<double> p;
     p.push_back(0);
     p.push_back(12);
 
-    EXPECT_EQ(p, d1.get_points());
+    REQUIRE(p ==  d1.get_points());
 
     p.clear();
     p.push_back(0);
     p.push_back(3);
 
-    EXPECT_EQ(p, d1.get_values());
+    REQUIRE(p ==  d1.get_values());
 
-    EXPECT_EQ(0.0, d1(4));
-    EXPECT_EQ(0.0, d1(11));
-    EXPECT_EQ(3.0, d1(12));
-    EXPECT_EQ(3.0, d1(19));
-    EXPECT_EQ(6.0, d1(20));
-    EXPECT_EQ(6.0, d1(24));
-    EXPECT_EQ(9.0, d1(28));
-    EXPECT_EQ(9.0, d1(29));
-    EXPECT_EQ(12.0, d1(36));
+    REQUIRE(0.0 ==  d1(4));
+    REQUIRE(0.0 ==  d1(11));
+    REQUIRE(3.0 ==  d1(12));
+    REQUIRE(3.0 ==  d1(19));
+    REQUIRE(6.0 ==  d1(20));
+    REQUIRE(6.0 ==  d1(24));
+    REQUIRE(9.0 ==  d1(28));
+    REQUIRE(9.0 ==  d1(29));
+    REQUIRE(12.0 ==  d1(36));
 }
 
-TEST_F(DBFTestFix, Sum)
+TEST_CASE("DBFTestFix Sum")
 {
+	Task t1(2.5, 10, 10), t2(1, 6, 12), t3(3, 12, 8);
+
     DemandBoundFunction d1(t1);
     DemandBoundFunction d2(t2);
     DemandBoundFunction d3(t3);
@@ -120,8 +122,8 @@ TEST_F(DBFTestFix, Sum)
     double values[]= {0, 1, 3.5, 4.5, 7, 10.5, 13, 14, 16.5, 17.5, 20, 21, 23.5, 24.5, 27, 30.5, 33, 34, 36.5};
     vector<double> v(values, values+19);
 
-    EXPECT_EQ(p, ds.get_points());
-    EXPECT_EQ(v, ds.get_values());
+    REQUIRE(p ==  ds.get_points());
+    REQUIRE(v ==  ds.get_values());
 
     DemandBoundFunction dss = ds + d3;
 
@@ -144,12 +146,14 @@ TEST_F(DBFTestFix, Sum)
 
     vector<double> v2(val2, val2+69);
 
-    EXPECT_EQ(p2, dss.get_points());
-    EXPECT_EQ(v2, dss.get_values());
+    REQUIRE(p2 ==  dss.get_points());
+    REQUIRE(v2 ==  dss.get_values());
 }
 
-TEST_F(DBFTestFix, Sup)
+TEST_CASE("DBFTestFix Sup")
 {
+	Task t1(2.5, 10, 10), t2(1, 6, 12), t3(3, 12, 8);
+
     DemandBoundFunction d1(t1);
     DemandBoundFunction d2(t2);
     DemandBoundFunction d3(t3);
@@ -164,18 +168,20 @@ TEST_F(DBFTestFix, Sup)
     double values[]= {0, 1, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 27.5};
     vector<double> v(values, values+13);
 
-    EXPECT_EQ(p, ds.get_points());
-    EXPECT_EQ(v, ds.get_values());
+    REQUIRE(p ==  ds.get_points());
+    REQUIRE(v ==  ds.get_values());
 }
 
-TEST_F(DBFTestFix, TestSumWithNull)
+TEST_CASE("DBFTestFix TestSumWithNull")
 {
+	Task t1(2.5, 10, 10), t2(1, 6, 12), t3(3, 12, 8);
+
 	DemandBoundFunction d1(t1);
 	DemandBoundFunction d2;
 	DemandBoundFunction sum;
 	sum = d1 + d2;
-	EXPECT_LE(d1, sum);
-	EXPECT_LE(sum, d1);
+	REQUIRE(d1 <= sum);
+	REQUIRE(sum <= d1);
 }
 
 /*TEST_F(DBFTestFix, FromSet)
@@ -184,7 +190,7 @@ TEST_F(DBFTestFix, TestSumWithNull)
 	ts += t1;
 	ts += t2;
 	ts += t3;
-	EXPECT_EQ(3, ts.size());
+	REQUIRE(3 ==  ts.size());
 
 	DemandBoundFunction dbf;
 	dbf = ts.get_dbf();

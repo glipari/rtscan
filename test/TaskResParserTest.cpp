@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+#include "catch.hpp"
 #include <fstream>
 #include <stdexcept>
 #include <algorithm>
@@ -7,7 +7,7 @@
 using namespace std;
 using namespace Scan;
 
-TEST(TaskResParser, Test1)
+TEST_CASE("TaskResParser, Test1")
 {
     fstream file("example1.sys");
     
@@ -20,11 +20,11 @@ TEST(TaskResParser, Test1)
     }
     catch (const std::exception &e2) {
         std::cerr << e2.what() << std::endl;
-        FAIL();
+        FAIL("Exception thrown");
     }
 }
 
-TEST(TaskResParser, TestExc)
+TEST_CASE("TaskResParser, TestExc")
 {
     string input = "SYS task pippo { C=2.0 T=10 D=8.0 cs { xx=2 l=3 } } END";
     
@@ -35,14 +35,14 @@ TEST(TaskResParser, TestExc)
     
     try {
         parse_taskres(str, "Input", tset, rset);
-        FAIL();
+        FAIL("Should not get here");
     }
     catch (std::exception &err) {
         std::cerr << err.what() << endl;
     }
 }
 
-TEST(TaskResParser, TestOptional)
+TEST_CASE("TaskResParser, TestOptional")
 {
     string input = "SYS task pippo { C=2.0 T=10 o=3 } END";
     
@@ -53,21 +53,21 @@ TEST(TaskResParser, TestOptional)
     
     try {
         parse_taskres(str, "Input", tset, rset);
-        EXPECT_EQ(1, tset.size());
-        EXPECT_EQ(10, tset[0].get_period());
-        EXPECT_EQ(10, tset[0].get_dline());
-        EXPECT_EQ(3, tset[0].get_offset());
+        REQUIRE(1 ==  tset.size());
+        REQUIRE(10 ==  tset[0].get_period());
+        REQUIRE(10 ==  tset[0].get_dline());
+        REQUIRE(3 ==  tset[0].get_offset());
 
     }
     catch (std::exception &err) {
         std::cerr << err.what() << endl;
-        FAIL();
+        FAIL("Exception thrown");
     }
 }
 
 
 
-TEST(TaskResParser, TestResult)
+TEST_CASE("TaskResParser, TestResult")
 {
     string input = "SYS\n"
                    "res r1 {id=1 short=true}\n" 
@@ -85,40 +85,40 @@ TEST(TaskResParser, TestResult)
 
     try {
         parse_taskres(str, "Input", tset, rset);
-        EXPECT_EQ(2, rset.size());
+        REQUIRE(2 ==  rset.size());
         
-        EXPECT_EQ(2, tset.size());
+        REQUIRE(2 ==  tset.size());
 
-        EXPECT_EQ(2, tset[0].get_wcet());
-        EXPECT_EQ(10, tset[0].get_period());
-        EXPECT_EQ(8, tset[0].get_dline());
-        EXPECT_EQ(0, tset[0].get_offset());
-        EXPECT_EQ(true, tset[0].uses_resource(1));
-        EXPECT_EQ(false, tset[0].uses_resource(2));
+        REQUIRE(2 ==  tset[0].get_wcet());
+        REQUIRE(10 ==  tset[0].get_period());
+        REQUIRE(8 ==  tset[0].get_dline());
+        REQUIRE(0 ==  tset[0].get_offset());
+        REQUIRE(true ==  tset[0].uses_resource(1));
+        REQUIRE(false ==  tset[0].uses_resource(2));
         CSSet cslist1 = tset[0].get_outer_cs();
-        EXPECT_EQ(1, cslist1.size());
-        EXPECT_EQ(3, cslist1[0].get_duration());
-        EXPECT_EQ(1, cslist1[0].get_resource());
+        REQUIRE(1 ==  cslist1.size());
+        REQUIRE(3 ==  cslist1[0].get_duration());
+        REQUIRE(1 ==  cslist1[0].get_resource());
         
-        EXPECT_EQ(4, tset[1].get_wcet());
-        EXPECT_EQ(25, tset[1].get_period());
-        EXPECT_EQ(25, tset[1].get_dline());
-        EXPECT_EQ(0, tset[1].get_offset());
+        REQUIRE(4 ==  tset[1].get_wcet());
+        REQUIRE(25 ==  tset[1].get_period());
+        REQUIRE(25 ==  tset[1].get_dline());
+        REQUIRE(0 ==  tset[1].get_offset());
         CSSet cslist2 = tset[1].get_outer_cs();
-        EXPECT_EQ(2, cslist2.size());
-        EXPECT_EQ(1, cslist2[0].get_duration());
-        EXPECT_EQ(1, cslist2[0].get_resource());
+        REQUIRE(2 ==  cslist2.size());
+        REQUIRE(1 ==  cslist2[0].get_duration());
+        REQUIRE(1 ==  cslist2[0].get_resource());
 
-        EXPECT_EQ(2, cslist2[1].get_duration());
-        EXPECT_EQ(2, cslist2[1].get_resource());
+        REQUIRE(2 ==  cslist2[1].get_duration());
+        REQUIRE(2 ==  cslist2[1].get_resource());
         CSSet cslist3;
         std::copy(cslist2[1].begin(), cslist2[1].end(), std::back_inserter(cslist3));
-        EXPECT_EQ(1, cslist3.size());
-        EXPECT_EQ(1, cslist3[0].get_resource());
-        EXPECT_EQ(1, cslist3[0].get_duration());
+        REQUIRE(1 ==  cslist3.size());
+        REQUIRE(1 ==  cslist3[0].get_resource());
+        REQUIRE(1 ==  cslist3[0].get_duration());
     }
     catch (std::exception &err) {
         std::cerr << err.what() << endl;
-        FAIL();
+        FAIL("Exception thrown");
     }
 }

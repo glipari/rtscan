@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "catch.hpp"
 
 #include <vector>
 #include <analysis/fp_response_time.hpp>
@@ -6,7 +6,7 @@
 using namespace Scan;
 using namespace std;
 
-class TestFPPtrFix : public ::testing::Test {
+class TestFPPtrFix {
 protected:
     vector<FPTask_ptr> v;
     vector<FPTask_ptr> v2;
@@ -35,16 +35,16 @@ protected:
     }
 };
 
-TEST(TestFPPtr, Conversion)
+TEST_CASE_METHOD(TestFPPtrFix, "FP Conversion")
 {
     FPTask_ptr t( new FPTask(2, 5, 10));
     t->set_priority(3);
-    EXPECT_EQ(3, t->get_priority());
+    REQUIRE(3 ==  t->get_priority());
     Task t2 = *t;
-    EXPECT_EQ(t->get_wcet(), t2.get_wcet());
+    REQUIRE(t->get_wcet() ==  t2.get_wcet());
 
     Task t3;
     t3 = *t;
-    EXPECT_EQ(t->get_dline(), t3.get_dline());
-    EXPECT_EQ(t2.get_period(), t3.get_period());
+    REQUIRE(t->get_dline() ==  t3.get_dline());
+    REQUIRE(t2.get_period() ==  t3.get_period());
 }

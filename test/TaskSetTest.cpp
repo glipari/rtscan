@@ -4,14 +4,14 @@
  *  Created on: May 13, 2011
  *      Author: lipari
  */
-#include <gtest/gtest.h>
+#include <catch.hpp>
 #include <models/taskset.hpp>
 
 using namespace std;
 using namespace Scan;
 
-class TaskSetFixture : public ::testing::Test {
-protected:
+class TaskSetFixture {
+public:
     TaskSet tset1;
     TaskSet tset2;
     Task t1;
@@ -33,53 +33,60 @@ protected:
     }
 };
 
-TEST_F(TaskSetFixture, TestAt)
+
+TEST_CASE("TaskSetFixture TestAt")
 {
-    EXPECT_EQ(10, tset1.at(0).get_period());
-    EXPECT_EQ(20, tset1.at(1).get_period());
+    TaskSetFixture f;
 
-    EXPECT_EQ(10, tset1[0].get_period());
-    EXPECT_EQ(20, tset1[1].get_period());
+    REQUIRE(10 ==  f.tset1.at(0).get_period());
+    REQUIRE(20 ==  f.tset1.at(1).get_period());
 
-    tset1[0].set_period(5);
+    REQUIRE(10 ==  f.tset1[0].get_period());
+    REQUIRE(20 ==  f.tset1[1].get_period());
 
-    EXPECT_EQ(5, tset1[0].get_period());
-    EXPECT_THROW(tset1.at(2), IndexOutOfBound);
-    EXPECT_THROW(tset1[2], IndexOutOfBound);
+    f.tset1[0].set_period(5);
+
+    REQUIRE(5 ==  f.tset1[0].get_period());
+    CHECK_THROWS_AS(f.tset1.at(2), IndexOutOfBound);
+    CHECK_THROWS_AS(f.tset1[2], IndexOutOfBound);
 
 }
 
-TEST_F(TaskSetFixture, TestName)
+TEST_CASE("TaskSetFixture TestName")
 {
-    Task *pt1 = &tset1[0];
-    Task *pt2 = &tset1["TA"];
-    EXPECT_EQ(pt1, pt2);
+    TaskSetFixture f;
 
-    EXPECT_EQ(&tset2[0], &tset2["TC"]);
+    Task *pt1 = &f.tset1[0];
+    Task *pt2 = &f.tset1["TA"];
+    REQUIRE(pt1 ==  pt2);
+
+    REQUIRE(&f.tset2[0] ==  &f.tset2["TC"]);
 }
 
-TEST_F(TaskSetFixture, TestSum)
+TEST_CASE("TaskSetFixture TestSum")
 {
+    TaskSetFixture f;
     TaskSet tset3;
 
-    tset3 = tset1 + tset2;
+    tset3 = f.tset1 + f.tset2;
 
-    EXPECT_EQ(4, tset3.size());
-    EXPECT_NO_THROW(tset3["TA"].get_period());
-    EXPECT_NO_THROW(tset3["TB"].get_period());
-    EXPECT_NO_THROW(tset3["TC"].get_period());
-    EXPECT_NO_THROW(tset3["TD"].get_period());
+    REQUIRE(4 ==  tset3.size());
+    CHECK_NOTHROW(tset3["TA"].get_period());
+    CHECK_NOTHROW(tset3["TB"].get_period());
+    CHECK_NOTHROW(tset3["TC"].get_period());
+    CHECK_NOTHROW(tset3["TD"].get_period());
 }
 
-TEST_F(TaskSetFixture, TestSort)
+TEST_CASE("TaskSetFixture TestSort")
 {
-    EXPECT_EQ( &tset1[0], &tset1["TA"] );
-    EXPECT_EQ( &tset1[1], &tset1["TB"] );
+    TaskSetFixture f;
+    REQUIRE( &f.tset1[0] ==  &f.tset1["TA"] );
+    REQUIRE( &f.tset1[1] ==  &f.tset1["TB"] );
 
-    tset1.sort<TaskCmpDline>();
-    EXPECT_EQ( &tset1[0], &tset1["TB"] );
-    EXPECT_EQ( &tset1[1], &tset1["TA"] );
-    tset1.sort<TaskCmpPeriod>();
-    EXPECT_EQ( &tset1[0], &tset1["TA"] );
-    EXPECT_EQ( &tset1[1], &tset1["TB"] );
+    f.tset1.sort<TaskCmpDline>();
+    REQUIRE( &f.tset1[0] ==  &f.tset1["TB"] );
+    REQUIRE( &f.tset1[1] ==  &f.tset1["TA"] );
+    f.tset1.sort<TaskCmpPeriod>();
+    REQUIRE( &f.tset1[0] ==  &f.tset1["TA"] );
+    REQUIRE( &f.tset1[1] ==  &f.tset1["TB"] );
 }

@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "catch.hpp"
 
 #include <vector>
 #include <algorithm>
@@ -8,7 +8,7 @@
 using namespace Scan;
 using namespace std;
 
-TEST(OMLPTest, testsmall)
+TEST_CASE("OMLPTest, testsmall")
 {
     vector<Resource> vres = {
         Resource()
@@ -25,14 +25,14 @@ TEST(OMLPTest, testsmall)
     tset[3].addCS(CriticalSection(vres[0].get_id(), 7));
 
     OMLPAnalysis omlp(3, tset.begin(), tset.end(), vres.begin(), vres.end());
-    EXPECT_EQ(7+5+3, omlp.blocking_time_global(tset[0]));
-    EXPECT_EQ(7+5+2, omlp.blocking_time_global(tset[1]));
-    EXPECT_EQ(7+2+3, omlp.blocking_time_global(tset[2]));
-    EXPECT_EQ(2+5+3, omlp.blocking_time_global(tset[3]));
+    REQUIRE((7+5+3) ==  omlp.blocking_time_global(tset[0]));
+    REQUIRE((7+5+2) ==  omlp.blocking_time_global(tset[1]));
+    REQUIRE((7+2+3) ==  omlp.blocking_time_global(tset[2]));
+    REQUIRE((2+5+3) ==  omlp.blocking_time_global(tset[3]));
 
     OMLPAnalysis omlp2(2, tset.begin(), tset.end(), vres.begin(), vres.end());
-    EXPECT_EQ(7+7+5, omlp2.blocking_time_global(tset[0]));
-    EXPECT_EQ(7+7+5, omlp2.blocking_time_global(tset[1]));
-    EXPECT_EQ(7+7+3, omlp2.blocking_time_global(tset[2]));
-    EXPECT_EQ(5+5+3, omlp2.blocking_time_global(tset[3]));
+    REQUIRE((7+7+5) ==  omlp2.blocking_time_global(tset[0]));
+    REQUIRE((7+7+5) ==  omlp2.blocking_time_global(tset[1]));
+    REQUIRE((7+7+3) ==  omlp2.blocking_time_global(tset[2]));
+    REQUIRE((5+5+3) ==  omlp2.blocking_time_global(tset[3]));
 }

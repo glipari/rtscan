@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+#include "catch.hpp"
 
 #include <models/fp_task.hpp>
 #include <analysis/hyperplane.hpp>
@@ -6,18 +6,18 @@
 using namespace Scan;
 using namespace std;
 
-TEST(TestHET, Points1)
+TEST_CASE("TestHET, Points1")
 {
     vector<FPTask> tset = { {2, 5, 10}, {3, 12, 15} };
 
     vector<int> p = compute_points(tset.rbegin(), tset.rend(), 12);
 
-    EXPECT_EQ(2, p.size());
-    EXPECT_EQ(p[0], 10);
-    EXPECT_EQ(p[1], 12);
+    REQUIRE(2 ==  p.size());
+    REQUIRE(p[0] ==  10);
+    REQUIRE(p[1] ==  12);
 }
 
-TEST(TestHET, PositiveSpace)
+TEST_CASE("TestHET, PositiveSpace")
 {
     for (int n=2; n<10; n++) {
         Conjunction s = non_negative_space(n);
@@ -25,72 +25,72 @@ TEST(TestHET, PositiveSpace)
             Plane p = s.get(i);
             for (int j=0; j<n; ++j) {
                 if (j != i) 
-                    EXPECT_EQ(0, p.a[j]);
+                    REQUIRE(0 ==  p.a[j]);
                 else 
-                    EXPECT_EQ(1, p.a[j]);
+                    REQUIRE(1 ==  p.a[j]);
             }
-            EXPECT_EQ(Plane::gte, p.sign);
-            EXPECT_EQ(0, p.b);
+            REQUIRE(Plane::gte ==  p.sign);
+            REQUIRE(0 ==  p.b);
         }
     }
     
     Conjunction s1 = non_negative_space(2);
     
-    EXPECT_TRUE(s1.is_in({1,1}));
-    EXPECT_TRUE(s1.is_in({1,0}));
-    EXPECT_TRUE(s1.is_in({0,1}));
-    EXPECT_TRUE(s1.is_in({0,0}));
-    EXPECT_FALSE(s1.is_in({-1,1}));
-    EXPECT_FALSE(s1.is_in({1,-1}));
-    EXPECT_FALSE(s1.is_in({0,-1}));
+    CHECK(s1.is_in({1,1}));
+    CHECK(s1.is_in({1,0}));
+    CHECK(s1.is_in({0,1}));
+    CHECK(s1.is_in({0,0}));
+    CHECK_FALSE(s1.is_in({-1,1}));
+    CHECK_FALSE(s1.is_in({1,-1}));
+    CHECK_FALSE(s1.is_in({0,-1}));
 }
 
-TEST(TestHET, Plane1)
+TEST_CASE("TestHET, Plane1")
 {
     Plane p1({1,0}, Plane::gte, 1);
-    EXPECT_FALSE(p1.is_in({0,0}));
-    EXPECT_TRUE(p1.is_in({2,2}));
-    EXPECT_TRUE(p1.is_in({1,0}));
-    EXPECT_FALSE(p1.is_in({0,1}));
+    CHECK_FALSE(p1.is_in({0,0}));
+    CHECK(p1.is_in({2,2}));
+    CHECK(p1.is_in({1,0}));
+    CHECK_FALSE(p1.is_in({0,1}));
 
 
     Plane p2({1,1}, Plane::gte, 1);
-    EXPECT_FALSE(p2.is_in({0,0}));
-    EXPECT_TRUE(p2.is_in({2,2}));
-    EXPECT_TRUE(p2.is_in({1,0}));
-    EXPECT_TRUE(p2.is_in({0,1}));
-    EXPECT_TRUE(p2.is_in({.5,.5}));
+    CHECK_FALSE(p2.is_in({0,0}));
+    CHECK(p2.is_in({2,2}));
+    CHECK(p2.is_in({1,0}));
+    CHECK(p2.is_in({0,1}));
+    CHECK(p2.is_in({.5,.5}));
 
     Plane p3({1,1}, Plane::gt, 1);
-    EXPECT_FALSE(p3.is_in({0,0}));
-    EXPECT_TRUE(p3.is_in({2,2}));
-    EXPECT_FALSE(p3.is_in({1,0}));
-    EXPECT_FALSE(p3.is_in({0,1}));
-    EXPECT_FALSE(p3.is_in({.5,.5}));
+    CHECK_FALSE(p3.is_in({0,0}));
+    CHECK(p3.is_in({2,2}));
+    CHECK_FALSE(p3.is_in({1,0}));
+    CHECK_FALSE(p3.is_in({0,1}));
+    CHECK_FALSE(p3.is_in({.5,.5}));
 }
 
-TEST(TestHET, Plane2)
+TEST_CASE("TestHET, Plane2")
 {
     Conjunction s = non_negative_space(2);
     Plane p({1,1}, Plane::lte, 1);
     s.add_plane(p);
 
-    EXPECT_TRUE(s.is_in({0,0}));
-    EXPECT_TRUE(s.is_in({1,0}));
-    EXPECT_TRUE(s.is_in({0,1}));
-    EXPECT_FALSE(s.is_in({1,1}));
+    CHECK(s.is_in({0,0}));
+    CHECK(s.is_in({1,0}));
+    CHECK(s.is_in({0,1}));
+    CHECK_FALSE(s.is_in({1,1}));
 
-    EXPECT_TRUE(s.is_in({.5,.5}));
+    CHECK(s.is_in({.5,.5}));
 }
 
-TEST(TestHET, Disjunctive)
+TEST_CASE("TestHET, Disjunctive")
 {
     Plane p1({1, .5}, Plane::lte, .5); 
     Plane p2({.5, 1}, Plane::lte, .5);
     point_t point = {.5, .5};   
 
-    EXPECT_FALSE(p1.is_in(point));
-    EXPECT_FALSE(p2.is_in(point));
+    CHECK_FALSE(p1.is_in(point));
+    CHECK_FALSE(p2.is_in(point));
 
     DisjunctionSet s1(2);
     s1.add_constraint(p1);
@@ -100,15 +100,15 @@ TEST(TestHET, Disjunctive)
     s.add_constraint(nn);
     s.add_constraint(s1);
 
-    EXPECT_TRUE(s.is_in({0,0}));
-    EXPECT_TRUE(s.is_in({1,0}));
-    EXPECT_TRUE(s.is_in({0,1}));
-    EXPECT_FALSE(s.is_in({1,1}));
-    EXPECT_FALSE(s.is_in({.5,.5}));
-    EXPECT_TRUE(s.is_in({.25,.25}));
+    CHECK(s.is_in({0,0}));
+    CHECK(s.is_in({1,0}));
+    CHECK(s.is_in({0,1}));
+    CHECK_FALSE(s.is_in({1,1}));
+    CHECK_FALSE(s.is_in({.5,.5}));
+    CHECK(s.is_in({.25,.25}));
 }
 
-TEST(TestHET, HyperplanePaper_Example1)
+TEST_CASE("TestHET, HyperplanePaper_Example1")
 {
     Plane p1({1, 0, 0}, Plane::lte, 3);
     Plane p2({6, 1, 0}, Plane::lte, 18);
@@ -134,20 +134,20 @@ TEST(TestHET, HyperplanePaper_Example1)
     space.add_constraint(s1);
     space.add_constraint(s2);
 
-    EXPECT_TRUE(space.is_in({1,1,1}));
-    EXPECT_TRUE(space.is_in({3,0,0}));
-    EXPECT_TRUE(space.is_in({0,8,0}));
-    EXPECT_TRUE(space.is_in({0,0,8}));
-    EXPECT_FALSE(space.is_in({2,2,2}));
+    CHECK(space.is_in({1,1,1}));
+    CHECK(space.is_in({3,0,0}));
+    CHECK(space.is_in({0,8,0}));
+    CHECK(space.is_in({0,0,8}));
+    CHECK_FALSE(space.is_in({2,2,2}));
 
     space.project(0,1);
     space.project(1,1);
     space.project(2,1);
 
-    EXPECT_TRUE(space.is_in({10,10,10}));
+    CHECK(space.is_in({10,10,10}));
 }
 
-TEST(TestHET, GeneratePointsExample1)
+TEST_CASE("TestHET, GeneratePointsExample1")
 {
     vector<Task> tasks;
     tasks.push_back({1,3,3});
@@ -161,20 +161,20 @@ TEST(TestHET, GeneratePointsExample1)
 
     for (unsigned i =0; i<tasks.size(); ++i) {
         vector<double> p = compute_points(tasks, i, tasks[i].get_dline());
-        EXPECT_EQ(q[i].size(), p.size());
-        EXPECT_EQ(q[i], p);
+        REQUIRE(q[i].size() ==  p.size());
+        REQUIRE(q[i] ==  p);
     }
 
     ConjunctionSet space = create_space(tasks);
-    EXPECT_EQ(4, space.size());
-    EXPECT_TRUE(space.is_in({1,1,1}));
-    EXPECT_TRUE(space.is_in({3,0,0}));
-    EXPECT_TRUE(space.is_in({0,8,0}));
-    EXPECT_TRUE(space.is_in({0,0,8}));
-    EXPECT_FALSE(space.is_in({2,2,2}));
+    REQUIRE(4 ==  space.size());
+    CHECK(space.is_in({1,1,1}));
+    CHECK(space.is_in({3,0,0}));
+    CHECK(space.is_in({0,8,0}));
+    CHECK(space.is_in({0,0,8}));
+    CHECK_FALSE(space.is_in({2,2,2}));
 }
 
-TEST(TestHET, GeneratePointsExample2)
+TEST_CASE("TestHET, GeneratePointsExample2")
 {
     vector<Task> tasks;
     tasks.push_back({1,3,3});
@@ -188,20 +188,20 @@ TEST(TestHET, GeneratePointsExample2)
 
     for (unsigned i =0; i<tasks.size(); ++i) {
         vector<double> p = compute_points(tasks, i, tasks[i].get_dline());
-        EXPECT_EQ(q[i].size(), p.size());
-        EXPECT_EQ(q[i], p);
+        REQUIRE(q[i].size() ==  p.size());
+        REQUIRE(q[i] ==  p);
     }
 
     ConjunctionSet space = create_space(tasks);
-    EXPECT_EQ(4, space.size());
-    EXPECT_TRUE(space.is_in({3,0,0}));
-    EXPECT_TRUE(space.is_in({0,6,0}));
-    EXPECT_TRUE(space.is_in({0,0,15}));
-    EXPECT_TRUE(space.is_in({2,1,3}));
-    EXPECT_FALSE(space.is_in({2.1,1,3}));
+    REQUIRE(4 ==  space.size());
+    CHECK(space.is_in({3,0,0}));
+    CHECK(space.is_in({0,6,0}));
+    CHECK(space.is_in({0,0,15}));
+    CHECK(space.is_in({2,1,3}));
+    CHECK_FALSE(space.is_in({2.1,1,3}));
 }
 
-TEST(TestHET, FMEtest1)
+TEST_CASE("TestHET, FMEtest1")
 {
     Conjunction space = non_negative_space(2);
     Plane p1({.5,1}, Plane::lte, .5);
@@ -212,10 +212,10 @@ TEST(TestHET, FMEtest1)
     Plane p3({1, 1}, Plane::gte, 1);
     space.add_plane(p3);
 
-    EXPECT_FALSE(fme_is_feasible(space));
+    CHECK_FALSE(fme_is_feasible(space));
 }
 
-TEST(TestHET, FMEtest2)
+TEST_CASE("TestHET, FMEtest2")
 {
     Conjunction space = non_negative_space(2);
     Plane p1({.5,1}, Plane::lte, .5);
@@ -226,10 +226,10 @@ TEST(TestHET, FMEtest2)
     Plane p3({1, 1}, Plane::gte, .5);
     space.add_plane(p3);
 
-    EXPECT_TRUE(fme_is_feasible(space));
+    CHECK(fme_is_feasible(space));
 }
 
-TEST(TestHET, FMEtest3)
+TEST_CASE("TestHET, FMEtest3")
 {
     Conjunction s = non_negative_space(2);
 
@@ -240,11 +240,11 @@ TEST(TestHET, FMEtest3)
 
     s.add_plane(p1); s.add_plane(p2); s.add_plane(p3); s.add_plane(p4);
 
-    EXPECT_TRUE(!fme_is_feasible(s));
+    CHECK(!fme_is_feasible(s));
 }
 
 
-TEST(TestHET, FMEtest4)
+TEST_CASE("TestHET, FMEtest4")
 {
     Conjunction s(2);
 
@@ -256,10 +256,10 @@ TEST(TestHET, FMEtest4)
     // s.normalize();
     // cout << s << endl;
 
-    EXPECT_FALSE(fme_is_feasible(s));
+    CHECK_FALSE(fme_is_feasible(s));
 }
 
-TEST(TestHET, Tighen1)
+TEST_CASE("TestHET, Tighen1")
 {
     Conjunction s = non_negative_space(2);
 
@@ -270,14 +270,14 @@ TEST(TestHET, Tighen1)
     
     s.add_plane(p1); s.add_plane(p2); s.add_plane(p3); s.add_plane(p4);
 
-    EXPECT_EQ(6, s.size());
+    REQUIRE(6 ==  s.size());
 
     s.tighen();
     
-    EXPECT_EQ(4, s.size());
+    REQUIRE(4 ==  s.size());
 }
 
-TEST(TestHET, Tighen2)
+TEST_CASE("TestHET, Tighen2")
 {
     Disjunction s(2);
 
@@ -288,7 +288,7 @@ TEST(TestHET, Tighen2)
     
     s.add_plane(p1); s.add_plane(p2); s.add_plane(p3); s.add_plane(p4);
 
-    EXPECT_EQ(4, s.size());
+    REQUIRE(4 ==  s.size());
     s.tighen();
-    EXPECT_EQ(2, s.size());
+    REQUIRE(2 ==  s.size());
 }

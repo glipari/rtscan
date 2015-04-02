@@ -178,7 +178,6 @@ int main(int argc, char* argv[])
             cout << poly << endl;
             
             allcount(double(s2-ntasks)/double(ntasks)); ///double(s1-ntasks));
-            
         }
         // output statistics on terminal
         cout << "dr = " << dr << "\n" 

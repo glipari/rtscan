@@ -5,14 +5,14 @@
  *      Author: Youcheng Sun
  */
 
-#include "gtest/gtest.h"
+#include "catch.hpp"
 #include <models/computational_resource.hpp>
 #include <vector>
 
 using namespace Scan;
 using namespace std;
 
-TEST(TestComputationalResource, Enqueue)
+TEST_CASE("TestComputationalResource, Enqueue")
 {
     ComputationalResource node;
 
@@ -33,12 +33,12 @@ TEST(TestComputationalResource, Enqueue)
 
     vector<FPTask_ptr> v = node.get_rq();
 
-    EXPECT_EQ( t2->get_period(), v[0]->get_period());
-    EXPECT_EQ( t1->get_period(), v[1]->get_period());
-    EXPECT_EQ( t3->get_period(), v[2]->get_period());
+    REQUIRE( t2->get_period() ==  v[0]->get_period());
+    REQUIRE( t1->get_period() ==  v[1]->get_period());
+    REQUIRE( t3->get_period() ==  v[2]->get_period());
 }
 
-TEST(TestComputationalResource, Enqueue_NP)
+TEST_CASE("TestComputationalResource, Enqueue_NP")
 {
     ComputationalResource node;
 
@@ -59,7 +59,7 @@ TEST(TestComputationalResource, Enqueue_NP)
 
     vector<FPTask_ptr> v = node.get_rq();
 
-    EXPECT_EQ( t2->get_period(), v[0]->get_period());
-    EXPECT_EQ( t1->get_period(), v[1]->get_period());
-    EXPECT_EQ( t3->get_period(), v[2]->get_period());
+    REQUIRE( t2->get_period() ==  v[0]->get_period());
+    REQUIRE( t1->get_period() ==  v[1]->get_period());
+    REQUIRE( t3->get_period() ==  v[2]->get_period());
 }
