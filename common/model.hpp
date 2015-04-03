@@ -16,7 +16,7 @@
 
    - a generic "task" structure, able to contain almost every
      parameter, defined once and for all. This data structure must be
-     "dynamic", in the sense that it should contain a variable number
+     "customizable", in the sense that it should contain a variable number
      of "variables", each variable has a type, a name and a value.
 
    - Each algorithm defines its own data structures, and a way to
@@ -32,7 +32,7 @@
    - Problem no 2: convert to and from specific data structures. Of
      course the "algorithm designer" can do it as he whishes, but to
      reduce the work, we should be able to provide him with
-     appropriate tools for simplyfing the work.
+     appropriate tools for simplyfing the task.
 
    - Problem no 3: check consistency of the model. This is the most
      difficult thing, because to do that "automatically" we need a big
@@ -43,6 +43,8 @@
      names (and types, maybe).
      
      b) check and assign default values to optional elements.     
+
+     c) check valus of all elements
 */
 namespace Scan {
     struct ModelTemplate {

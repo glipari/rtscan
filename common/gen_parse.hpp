@@ -54,7 +54,7 @@ bool myparse(std::istream& input, const std::string filename, DataType &result)
         //     " line " << pos.line << " column " << pos.column << std::endl <<
         //     "'" << e.first.get_currentline() << "'" << std::endl <<
         //     std::setw(pos.column) << " " << "^- here";
-	msg << "parse error";
+        msg << "parse error";
         throw std::runtime_error(msg.str());
     }
     

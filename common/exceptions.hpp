@@ -6,7 +6,10 @@
 
 namespace Scan {
     /**
-       The basic exception class
+       The basic exception class. This is just a wrapper of the
+       std:exception class (probably not very useful).
+
+       @todo should we remove it? 
      */
     class Exception : public std::exception {
         std::string where;
@@ -32,7 +35,7 @@ namespace Scan {
          }
 /// shortcurt to throw an exception with the right parameters
 /// sss must be a constant string
-#define THROW_EXC(xxx, sss) throw xxx(NUM_TO_STR_2(__LINE__) ": " sss)
+#define THROW_EXC(xxx, sss) throw xxx(__FILE__ ", line " NUM_TO_STR_2(__LINE__) ": " sss)
 
 /// debugging macros
 #ifdef MYDEBUG
@@ -47,11 +50,17 @@ namespace Scan {
 #define DEBUGVAR(xxx)
 #endif
 
-    /// basic exeptions
+    /// Exception: receive an illegal value
     DECL_EXC(IllegalValue);
-    DECL_EXC(IndexOutOfBound);
-    DECL_EXC(TaskDoesNotExist);
+
+    /// Exception: expecting a non negative value.
     DECL_EXC(NegativeValue);
+
+    /// Exception: Index out of bound in some array
+    DECL_EXC(IndexOutOfBound);
+
+    /// Exception: Addressing a non-existing task
+    DECL_EXC(TaskDoesNotExist);
 }
 
 #endif

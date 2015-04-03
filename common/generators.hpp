@@ -58,13 +58,29 @@ namespace Scan {
     std::vector<int> random_bins(const std::vector< std::pair<int, int> >& limits, int sum, rndgen_t &rng = RNDGEN());
 
     /**
+       This is an helper function for random_bins(). It takes as input
+       a vector of n pairs <min,max>. For each element of the vector,
+       <min,max> represents the interval of values of the i-th
+       elements in the result.
+
+       Then it produces a set of vectors of n integers, with all
+       possible combination of values. For example, if we pass <2,3>
+       and <4,5> as parameters, we obtain : 
+
+       <2, 4>, <2, 5>, <3, 4>, <3, 5>. 
      */
     std::vector< std::vector<int> > cartesian_product(const std::vector< std::pair<int, int> >& limits);
 
     /**
+       This is a helper function for random_bins(). It takes a set of
+       vectors of n elements, and returns a subset in which all
+       vectors have the sum of the elements equal to sum.
      */
     std::vector< std::vector<int> > select_sum_vectors(const std::vector< std::vector<int> > & elems, int sum);
 
+
+    /// Exception: if select_sum_vectors() does not provide any
+    /// feasible solution, the exception is thrown.
     DECL_EXC(UnfeasibleBins);
 }
 
