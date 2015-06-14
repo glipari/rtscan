@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
         ("num,n", po::value<int>(), "The number of computational resource nodes. By default 10 will be set.")
         ("vars,v", po::value<string>(), "Provide the file containing variable list. By default the wcet, dline and jitter of all tasks will be free variables.")
         ("analysis,a", po::value<string>(), "Provide the file that contains variables for sensitivity analysis")
-        ("print,p", po::value<string>(), "To print the resulted Pointset_Powerset into files");
+        ("print,p", po::value<string>(), "To print the resulting Pointset_Powerset into files");
 
     po::variables_map vm;
     po::store( po::parse_command_line(argc, argv, options), vm);
@@ -78,8 +78,8 @@ int main(int argc, char *argv[])
     using namespace PPL::IO_Operators;
     cout<<cs.poly<<endl;
     for (unsigned char i=0; i<cs.vars.size(); i++) {
-	char c = 'A' + i;
-	cout << c << ": " << cs.vars[i] << endl;
+        char c = 'A' + i;
+        cout << c << ": " << cs.vars[i] << endl;
     }
     cout << "Total memory used in  bytes (resulted pointset_powerset): ";
     cout << cs.poly.total_memory_in_bytes() << endl;
@@ -97,11 +97,10 @@ int main(int argc, char *argv[])
 		    if (line != "") sens_vars.push_back(line);
 	    }
 	    try {
-
 		    for (unsigned i=0; i < sens_vars.size(); i++)
 		        cs.do_sensitivity(sv.all_tasks, sens_vars[i]);
-
-	    } catch (char const *msg) {cout<<msg<<endl;}
+            
+	    } catch (char const *msg) { cout<<msg<<endl; }
     }
 
     if( vm.count("print"))

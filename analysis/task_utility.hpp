@@ -121,6 +121,7 @@ namespace Scan {
 
     DECL_EXC(NonMonotonicFunction);
     DECL_EXC(FixPointDoesNotConverge);
+
     /**
        Computes the first fixed point of a monotonic function,
        starting from point start. The function is expected to be
@@ -157,9 +158,31 @@ namespace Scan {
             throw FixPointDoesNotConverge("Function does not converge");
         else if (old == start) return start;
         else 
-            std::cerr << "WTF????" << std::endl;
+            std::cerr << "fix_point: Should never reach this point!" << std::endl;
         return 0;
     }
+    
+    /**
+      Computes all deadlines in the hyperperiod.
+    */
+    template<class Iter>
+    std::vector<int> compute_all_deadlines(Iter a, Iter b)
+    {
+        std::vector<int> dl;
+        int h = compute_hyperperiod(a, b, b-a);
+        for (Iter p = a; p!=b; ++p) {
+            int d = get_next_deadline(*p, 0);
+            while (d <= h) {
+                dl.push_back(d);
+                d = get_next_deadline(*p, d);
+            }
+        }
+        std::sort(dl.begin(), dl.end());
+        std::unique(dl.begin(), dl.end());
+        return dl;
+    }
 }
+
+
 
 #endif

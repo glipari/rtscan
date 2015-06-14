@@ -51,7 +51,7 @@ void SysVisitor::operator()(const Scan::PropertyList &pl) {
 
 void SysVisitor::operator() (const std::string &vars_list_file)
 {
-	if( vars_list_file !="" ) {
+	if ( vars_list_file !="" ) {
 		std::ifstream vars_stream(vars_list_file.c_str());
 		while (!vars_stream.eof()) {
 			string line;
@@ -62,7 +62,7 @@ void SysVisitor::operator() (const std::string &vars_list_file)
 		return;
 	}
 
-	for ( int i = 0; i < all_tasks.size(); i++) {
+	for (unsigned i = 0; i < all_tasks.size(); i++) {
 		vars_list.push_back( all_tasks[i]->get_name() + ".wcet");
 		vars_list.push_back( all_tasks[i]->get_name() + ".dline");
 		vars_list.push_back( all_tasks[i]->get_name() + ".jitter");
@@ -109,7 +109,7 @@ ConstraintsSystem build_hyperplanes_powerset(std::vector<Scan::FPTask> &v)
         
         double dline = v[j].get_dline();
         vector<int> points = compute_points(v.begin(), v.end()-(ntasks-j), dline);
-        for (int k=0; k<points.size(); k++) {
+        for (unsigned k=0; k<points.size(); k++) {
             PPL::C_Polyhedron cp = base; 
             PPL::Linear_Expression le;
             for (int i=0; i<=j; i++) {
@@ -149,7 +149,7 @@ PPL::Pointset_Powerset<PPL::C_Polyhedron> build_hyperplanes_powerset(vector<FPTa
         
         double dline = v[j].get_dline();
         vector<int> points = compute_points(v.begin(), v.end()-(ntasks-j), dline);
-        for (int k=0; k<points.size(); k++) {
+        for (unsigned k=0; k<points.size(); k++) {
             PPL::C_Polyhedron cp = base; 
             PPL::Linear_Expression le;
             for (int i=0; i<=j; i++) {
@@ -252,7 +252,7 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
 
                 PPL::C_Polyhedron cp = base;
                 cout << "Copied" << "   i = " << i << endl;
-                for (unsigned k=0; k<i; ++k) {
+                for (int k=0; k<i; ++k) {
                     PPL::Linear_Expression le;
                     for (int j=0; j<i; j++) {
                         PPL::Variable xx(3*j); 
@@ -262,16 +262,17 @@ ConstraintsSystem build_general_sensitivity(vector<FPTask> &v)
                     PPL::Variable xj(3*k+2);
                     le += h * xx;
                     le += xj;
-			if(myn[n][k] != 0) {
-                    PPL::Constraint cs = (le <= myn[n][k]*v[k].get_period());
-                    cp.add_constraint(cs);	}
+                    if (myn[n][k] != 0) {
+                        PPL::Constraint cs = (le <= myn[n][k]*v[k].get_period());
+                        cp.add_constraint(cs);	
+                    }
                 }
                 
                 PPL::Linear_Expression le;
-                for (unsigned j=0; j<i; j++) {
-			if(myn[n][j] != 0) {
-                    PPL::Variable xx(3*j); 
-                    le += xx * myn[n][j];}
+                for (int j=0; j<i; j++) {
+                    if(myn[n][j] != 0) {
+                        PPL::Variable xx(3*j); 
+                        le += xx * myn[n][j];}
                 }
                 PPL::Variable xx(3*i);
                 PPL::Variable xd(3*i+1);
@@ -301,7 +302,7 @@ using namespace StrUtils;
 
 void build_edf_base(const vector<FPTask> &v, PPL::C_Polyhedron &poly, vector<string> &vars)
 {
-    for (int i=0;i<v.size();i++) {
+    for (unsigned i=0;i<v.size();i++) {
         PPL::Variable xx(i);
         PPL::Constraint cs_min = (xx >= 0);
         poly.add_constraint(cs_min);
@@ -315,9 +316,9 @@ void build_edf_base(const vector<FPTask> &v, PPL::C_Polyhedron &poly, vector<str
 void build_edf_constraints(const vector<FPTask> &v, PPL::C_Polyhedron &poly)
 {
     vector<int> dlines = compute_all_deadlines(v.begin(), v.end());
-    for (int i=0; i<dlines.size(); ++i) {
+    for (unsigned i=0; i<dlines.size(); ++i) {
         PPL::Linear_Expression le;
-        for (int j=0; j<v.size(); ++j) {
+        for (unsigned j=0; j<v.size(); ++j) {
             PPL::Variable xx(j);
             le += xx * get_num_contained_instances(v[j], 0, dlines[i]);
         }
@@ -462,7 +463,7 @@ void ConstraintsSystem::do_sensitivity(// PPL::Pointset_Powerset<PPL::C_Polyhedr
 
     int k = get_index(vars, var);   // we do sensitivity on the k variable
     if (k == -1) throw("Variable not found");
-    for (int i=0; i<vars.size(); i++)  {
+    for (unsigned i=0; i<vars.size(); i++)  {
         if (i == k) continue;
         vector<string> ss = split(vars[i], ".");
         int ti = find_task(tasks, ss[0]);
@@ -614,6 +615,7 @@ ConstraintsSystem SensitivityBuilder::build_hyperplanes_powerset(int index ) {
 	int npfp = node.get_rq_npfp().size();
 	if( fp > 0 ) return this->build_general_sensitivity(index);
 	else if ( npfp > 0 ) return this->build_general_sensitivity_np(index);
+    else throw "Error in building the ConstraintsSystem";
 	//else if ( npfp > 0 ) return this->build_general_sensitivity_np_fast(index);
 } 
 
@@ -921,7 +923,7 @@ ConstraintsSystem SensitivityBuilder::build_general_sensitivity_np_fast(int inde
 	unsigned ntasks = v.size();
 	unsigned nvars = 2*ntasks; 	
 	PPL::C_Polyhedron base(nvars);// = build_base_constraints(index);
-    for (int i=0;i<ntasks;i++) {
+    for (unsigned i=0;i<ntasks;i++) {
         //PPL::Variable xw(3*i);
         double xw = v[i].get_wcet();
 //        PPL::Constraint cs_min = (xw >= 0);
@@ -1134,7 +1136,7 @@ void SensitivityBuilder::remove_space_dimensions( const int index,
 		v.push_back(*x);
 	PPL::Variables_Set vars_;
 
-	for( int i = 0; i < vars.size(); i++) {
+	for (unsigned i = 0; i < vars.size(); i++) {
 		// If the i-th variable is in the vars_list, simply continue.
 		if( get_index(vars_list, vars[i]) != -1) continue;
 
@@ -1172,7 +1174,7 @@ void SensitivityBuilder::remove_space_dimensions( const int index,
 			if( pos == -1) throw ("Variable not found");
 			PPL::Variable xj(pos);
 
-			double v_ = it->get_jitter();
+			//double v_ = it->get_jitter();
        		Congruence cg = ((xj %= 0) / 0);
         	poly.refine_with_congruence(cg);
 			vars_.insert(xj);
@@ -1217,10 +1219,10 @@ vector<string> SensitivityBuilder::update_var_names (const int index,
 	vector<string> res;
 	const vector<string> &vars_list = vis->vars_list;
 	vector<FPTask> v;
-	for( auto x : vis->node[index].get_rq())
+	for ( auto x : vis->node[index].get_rq())
 		v.push_back(*x);
 
-	for( int i = 0; i < vars.size(); i++) {
+	for (unsigned i = 0; i < vars.size(); i++) {
 		vector<string> ss = split(vars[i], ".");
 		int ti = find_task(v, ss[0]);
 		if( ti == -1) throw ("task not found\n");
