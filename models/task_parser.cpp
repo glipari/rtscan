@@ -8,15 +8,16 @@ namespace Scan {
         add_double_parameter({"jitter", "j", "J"}, 0);
         add_double_parameter({"dline", "d", "D", "deadline"}, -1);
         add_int_parameter({"period", "T", "p"}, 0); 
-	//here period T is set as an optional field
+        //here period T is set as an optional field
         add_int_parameter({"offset", "o", "off"}, 0);
-	add_string_parameter({"sched", "s", "sch"}, "fp"); //, true);
-	add_int_parameter({"node", "n", "node"}, 1);
-	add_int_parameter({"pipelinepos", "p", "pos"}, -1);
+        add_string_parameter({"sched", "s", "sch"}, "fp"); //, true);
+        add_int_parameter({"node", "n", "node"}, 1);
+        add_int_parameter({"pipelinepos", "p", "pos"}, -1);
     }
 
     Task TaskVisitor::create_task() {
-        if (!check_mandatory()) THROW_EXC(IllegalValue, "Mandatory parameter is missing");
+        if (!check_mandatory()) THROW_EXC(IllegalValue, 
+                                          "Mandatory parameter is missing");
         if (d_values["dline"] < 0.0) 
             d_values["dline"] = i_values["period"];
         
@@ -50,7 +51,7 @@ namespace Scan {
     {
         if (!check_mandatory()) 
             THROW_EXC(IllegalValue, "Mandatory parameter is missing");
-	setup_defaults();
+        setup_defaults();
         if (d_values["dline"] < 0.0) 
             d_values["dline"] = i_values["period"];
         FPTask t(d_values["wcet"], 
@@ -58,7 +59,7 @@ namespace Scan {
                  i_values["period"], 
                  d_values["offset"],
                  d_values["jitter"]);
-	//	 i_values["pipelinepos"]);
+        //	 i_values["pipelinepos"]);
         t.set_priority(i_values["priority"]);
         t.set_sched(s_values["sched"]);
         t.set_node(i_values["node"]);

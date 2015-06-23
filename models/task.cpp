@@ -128,5 +128,58 @@ namespace Scan {
         return i;
     }
 
-    using namespace std;
+
+
+    void Task::configure_visitor(GenPropertyVisitor &pv)
+    {
+        pv.add_double_parameter({"wcet", "c", "C"}, 0, true);
+        pv.add_double_parameter({"jitter", "j", "J"}, 0);
+        pv.add_double_parameter({"dline", "d", "D", "deadline"}, -1);
+        pv.add_int_parameter({"period", "T", "p"}, 0); 
+        //here period T is set as an optional field
+        pv.add_int_parameter({"offset", "o", "off"}, 0);
+        pv.add_string_parameter({"sched", "s", "sch"}, "fp"); 
+        pv.add_int_parameter({"node", "n", "node"}, 1);
+        pv.add_int_parameter({"pipelinepos", "p", "pos"}, -1);
+    }
+
+    void Task::init_attributes(const GenPropertyVisitor &pv)
+    {
+        if (!pv.check_mandatory()) THROW_EXC(IllegalValue, 
+                                             "Mandatory parameter is missing");
+
+        double d = pv.get_dvalue("dline");
+        
+        if (d < 0.0) 
+            d = pv.get_ivalue("period");
+
+        // cout << "p: " << pv.get_ivalue("period") 
+        //      << " d: " << pv.get_dvalue("dline") 
+        //      << " w: " << pv.get_dvalue("wcet") 
+        //      << " off: " << pv.get_ivalue("offset") << endl; 
+            
+        set_period(pv.get_ivalue("period"));
+        set_dline(d);
+        set_wcet(pv.get_dvalue("wcet")); 
+              
+        // set_jitter(pv.get_dvalue("jitter"));
+        set_offset(pv.get_ivalue("offset"));
+
+        // set_sched(pv.get_svalue("sched"));
+        set_node(pv.get_ivalue("node"));
+        set_pipeline_pos(pv.get_ivalue("pipelinepos"));
+        set_name(pv.get_name());        
+    }
+    
+    void Task::parse(const PropertyList &p)
+    {
+        if (p.type != "task") 
+            THROW_EXC(IncorrectType, "Expecting a task type");
+
+        GenPropertyVisitor vis;
+        configure_visitor(vis); 
+        vis(p);
+        vis.setup_defaults();
+        init_attributes(vis);
+    }
 }

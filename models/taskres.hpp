@@ -3,7 +3,7 @@
 
 #include <models/task_ex.hpp>
 #include <models/has_critical_section.hpp>
-#include <models/haspriority.hpp>
+#include <models/has_priority.hpp>
 
 namespace Scan {
     typedef TaskEx<HasCriticalSection> TaskRes;

@@ -10,6 +10,7 @@
 #include <models/task.hpp>
 #include <analysis/task_utility.hpp>
 #include <models/task_parser.hpp>
+#include <models/fp_task.hpp>
 
 
 using namespace std;
@@ -139,10 +140,36 @@ TEST_CASE("TaskTestNoFix TaskFromProperties")
     REQUIRE("mytask" ==  pset.name);
     REQUIRE("task" ==  pset.type);
 
-    Task task = create_task(pset);
+    //Task task = create_task(pset);
+    Task task;
+    try {
+        task.parse(pset);
+    } catch (Scan::Exception &exc) {
+        cout << "Exception : " << exc.what() << endl;
+        FAIL("Stopping here");
+    }
+
     REQUIRE(1 ==  task.get_wcet());
     REQUIRE(10 ==  task.get_period());
     REQUIRE(8 ==  task.get_dline());
     REQUIRE(0 ==  task.get_jitter());
     REQUIRE(0 ==  task.get_offset());
+}
+
+TEST_CASE("TaskTestNoFix FPTaskFromProperties")
+{
+    string spec = "task(mytask){ c=1; T=10; dline=8; prio = 5; };";
+    stringstream ss(spec);
+    PropertyList pset;
+    parse_properties(ss, "string", pset);
+    
+    FPTask task;
+    try {
+        task.parse(pset);
+    } catch (Scan::Exception &exc) {
+        cout << "Exception : " << exc.what() << endl;
+        FAIL("Stopping here");
+    }
+
+    REQUIRE(5 ==  task.get_priority());
 }

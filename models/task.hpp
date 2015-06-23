@@ -7,6 +7,7 @@
 
 #include <common/exceptions.hpp>
 #include <models/has_unique_id.hpp>
+#include <common/property_parser.hpp>
 
 namespace  Scan {
     /** 
@@ -23,6 +24,8 @@ namespace  Scan {
            a number initialized to a increasing value
         */
         Task();
+
+        ~Task() {}
 
         /**
            Constructor, it is possible to set the task name by passing
@@ -82,9 +85,11 @@ namespace  Scan {
         void set_jitter(int j) { jitter = j; }     
             
         /// sets the sched policy 
+        /// TO BE REMOVED
         void set_sched(std::string _sched) { sched = _sched; }     
 
         /// gets the sched policy
+        /// TO BE REMOVED
         std::string get_sched() const { return sched; }     
             
         /// sets the node index 
@@ -94,38 +99,51 @@ namespace  Scan {
         int get_node() const { return node; }     
             
         /// sets the pipeline position 
+        /// TO BE REMOVED
         void set_pipeline_pos(int pos) { pipeline_pos = pos; }     
 
         /// gets the pipeline position
+        /// TO BE REMOVED
         int get_pipeline_pos() const { return pipeline_pos; }     
             
         /// sets the pipeline tag 
+        /// TO BE REMOVED
         void set_pipeline_tag(int tag) { pipeline_tag = tag; }     
 
         /// gets the pipeline tag
+        /// TO BE REMOVED
         int get_pipeline_tag() const { return pipeline_tag; }     
-            
-	/// by calling this constructor, our cumstomized way to assign unique task id will be called
+
+       
+
     private:
         int period;
         double wcet;
         double dline;
         int offset;
         double jitter;
-	std::string sched;
-	int node;
-	/**
-	 * the position in a pipeline :
-	 *	1 : in the beginning of a pipeline
-	 *	2 : in the middle of a pipeline
-	 * 	3 : in the end of a pipeline
-	 *	0 : not in a pipeline
-	 **/
-	int pipeline_pos;
-	/** To specify tasks in the same pipeline. */  
-	int pipeline_tag;
-    };
+        std::string sched;
+        int node;
+        /**
+         * the position in a pipeline :
+         *	1 : in the beginning of a pipeline
+         *	2 : in the middle of a pipeline
+         * 	3 : in the end of a pipeline
+         *	0 : not in a pipeline
+         **/
+        int pipeline_pos;
+        /** To specify tasks in the same pipeline. */  
+        int pipeline_tag;
 
+    protected:
+        /// prepare for parsing
+        void configure_visitor(GenPropertyVisitor &pv);
+        void init_attributes(const GenPropertyVisitor &pv);
+    public:
+        /// parsing (this is shared)
+        void parse(const PropertyList &p);
+    };
+    
     /** 
         Outputs the task parameters on a file. The output consists of
         the wcet value, the relative deadline, the task period, and
@@ -141,6 +159,10 @@ namespace  Scan {
        case this is not true.
     */
     std::istream & operator>>(std::istream &i, Task &t) throw(IllegalValue);
+
+
+   
+
 }
 
 #endif

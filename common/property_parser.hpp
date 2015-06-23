@@ -21,9 +21,6 @@ namespace Scan {
 
     class GenPropertyVisitor : public boost::static_visitor<> {
     protected:
-        std::map<std::string, double> d_values;
-        std::map<std::string, int> i_values;
-        std::map<std::string, std::string> s_values;
 
         typedef std::vector< std::string > SVector;
         typedef std::pair< SVector, double > SVDouble; 
@@ -37,7 +34,9 @@ namespace Scan {
 
         std::string name;
         std::string type;
-        
+        std::map<std::string, double> d_values;
+        std::map<std::string, int> i_values;
+        std::map<std::string, std::string> s_values;
     public:
         GenPropertyVisitor();
 
@@ -53,6 +52,13 @@ namespace Scan {
         
         bool check_mandatory() const;
         void setup_defaults();
+
+        std::string get_name() const { return name; }
+        std::string get_type() const { return type; }
+        double get_dvalue(const std::string &n) const {return d_values.find(n)->second;}
+        double get_ivalue(const std::string &n) const {return i_values.find(n)->second;}
+        std::string get_svalue(const std::string &n) const {return s_values.find(n)->second;}
+        
     };
 
     bool parse_properties(std::istream &is, const std::string &filename,

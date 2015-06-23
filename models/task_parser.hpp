@@ -20,6 +20,7 @@ namespace Scan {
         FPTask create_task();
         FPTask_ptr create_task_ptr();
     };
+
     FPTask create_fp_task(const PropertyList &p);
     FPTask_ptr create_fp_task_ptr(const PropertyList &p);
 }
