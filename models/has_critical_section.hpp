@@ -22,7 +22,7 @@ namespace Scan {
         bool is_short()  const { return isShort_; }
     };
 
-    class ResourceIdLessThan {
+    class ResourceIdLessThanPred {
     public:
         bool operator()(const Resource &a, const Resource &b) const {
             return a.get_id() < b.get_id();
@@ -68,7 +68,7 @@ namespace Scan {
         /** makes a copy of the parameter */
         void addNestedCS(const CriticalSection &cs);
 
-        // /** Returns the parent CS, or nullptr */
+        /** Returns the parent CS, or nullptr */
         CriticalSection *get_parent() const;
         
         /** returns resource id */
@@ -143,17 +143,6 @@ namespace Scan {
         }
         return b;
     }
-
-    // template<class Container, class Iter>
-    // void subset_tasks_use_res(Iter a, Iter b, Container &c, int res)
-    // {
-    //     Iter i = a;
-    //     i = find_task_uses_res(a, b, res);
-    //     while (i != b) {
-    //         c.insert(c.end(), *i);
-    //         i = find_task_uses_res(i+1, b, res);
-    //     }
-    // }
 
     template<class Iter, class Iter2>
     void subset_tasks_use_res(Iter a, Iter b, Iter2 c, int res)

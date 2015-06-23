@@ -7,7 +7,7 @@
 
 namespace Scan {
 
-    typedef std::set<Resource, ResourceIdLessThan> ResGroup;
+    typedef std::set<Resource, ResourceIdLessThanPred> ResGroup;
     typedef std::vector<ResGroup> ResGroupSet;
     
     class FMLPAnalysis {
