@@ -5,6 +5,13 @@
 
 namespace Scan {
 
+    /**
+       Analysis of the OMLP protocol from the paper :
+
+        Brandenburg, B. B., & Anderson, J. H. (2013).
+		The OMLP family of optimal multiprocessor real-time locking protocols.
+		Design Automation for Embedded Systems, 17(2), 277-342.
+     */
     class OMLPAnalysis {
         int num_proc;
         std::vector<TaskRes> tset;

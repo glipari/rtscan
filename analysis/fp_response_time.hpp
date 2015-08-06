@@ -31,9 +31,6 @@ namespace Scan {
     void sort_by_increasing(Iter b, Iter e, Prop f) 
     {
         typedef typename std::iterator_traits<Iter>::value_type Type;
-        /**std::sort(b, e, [f](Type x, Type y) {
-                return (x.*f)() < (y.*f)();
-                });*/
         sort(b, e, CmpFunctorIncr<Type, Prop>(f));
     }
 
@@ -41,9 +38,6 @@ namespace Scan {
     void sort_by_decreasing(Iter b, Iter e, Prop f) 
     {
         typedef typename std::iterator_traits<Iter>::value_type Type;
-        /**std::sort(b, e, [f](Type x, Type y) {
-                return (x.*f)() > (y.*f)();
-                });*/
         sort(b, e, CmpFunctorDecr<Type, Prop>(f));
     }
  
@@ -55,10 +49,6 @@ namespace Scan {
         
         sort_by_increasing(b, e, &Type::get_period);      
         int k=0;
-        /**for_each(b, e, [&k](Ref a) { k++; });
-        for_each(b, e, [&k](Ref a) {
-                a.set_priority(k); --k; 
-                });*/
         for (Iter i=b; i!=e; i++) k++;
         for (Iter i=b; i!=e; i++) { i->set_priority(k); k--;}
     }
@@ -74,10 +64,6 @@ namespace Scan {
         int k=0;
         for (Iter i=b; i!=e; i++) k++;
         for (Iter i=b; i!=e; i++) { i->set_priority(k); k--;}
-        // for_each(b, e, [&k](Ref a) { k++; });
-        // for_each(b, e, [&k](Ref a) {
-        //         a.set_priority(k); --k; 
-        //     });
     }
 
     DECL_EXC(RespTimeTooLarge);
@@ -101,11 +87,6 @@ namespace Scan {
 
         for (Iter x = first; x!=end; ++x) 
             r += get_num_arrived_instances(*x, t1, t2) * x->get_wcet();  
-        
-        // for_each(first, end, [&r, t1, t2](Type i) {
-        //         r += get_num_arrived_instances(i, t1, t2) *
-        //             i.get_wcet();
-        //     });
         return r;
     }
     
@@ -127,10 +108,6 @@ namespace Scan {
                                  
         // starting point: r^0
         for (Iter x = highest; x!=end; ++x) r += x->get_wcet();
-
-        // for_each(highest, end, [&r](Type a) {
-        //         r += a.get_wcet();
-        //     });
                         
         do {
             k++;   
@@ -149,10 +126,6 @@ namespace Scan {
     void align_critical_instant(Iter b, Iter e)
     {
         for (Iter x=b; x!=e; ++x) x->set_offset(0);
-        // typedef typename std::iterator_traits<Iter>::reference Ref;
-        // for_each(b, e, [](Ref x) {
-        //         x.set_offset(0);
-        //     });
     }
 }
 #endif

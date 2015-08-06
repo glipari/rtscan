@@ -125,7 +125,7 @@ namespace Scan {
 
         sort_by_increasing(tset_begin, tset_end, &Task::get_dline);
 
-	for(auto k=tset_begin; k != tset_end; k++) {
+        for(auto k=tset_begin; k != tset_end; k++) {
             beta_tot += lambda(*k);
             
             if (lambda(*k) > lambda_max){
@@ -135,8 +135,8 @@ namespace Scan {
             
             if (beta_tot > lim)
                 return false;
-	}
-	return true;
+        }
+        return true;
     }
 }
 

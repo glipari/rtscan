@@ -9,7 +9,17 @@ namespace Scan {
 
     typedef std::set<Resource, ResourceIdLessThanPred> ResGroup;
     typedef std::vector<ResGroup> ResGroupSet;
-    
+
+
+    /**
+       Analysis of the FMLP protocol from the paper:
+
+       A. Block, H. Leontyev, B. Brandenburg, and J. Anderson. A
+       flexible real-time locking protocol for multiprocessors. In
+       Proceedings of the 13th IEEE International Conference on
+       Embedded and Real-Time Computing Systems and Applications,
+       pages 71-80, 2007.       
+     */
     class FMLPAnalysis {
         int num_proc;
         std::vector<TaskRes> tset;
