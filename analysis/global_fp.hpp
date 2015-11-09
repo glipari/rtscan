@@ -35,6 +35,19 @@ namespace Scan {
   int CIW(const Task& t_i, const int x, const int wcrt_i); 
 
 
+  /**
+   * Compute the NC interference of a task tau_i over the 
+   * target task tau_k within a time interval with length "x".
+   */ 
+  int NCI(const Task& t_i, const Task& t_k, const int x); 
+
+  /**
+   * Compute the CI interference of a task tau_i over the 
+   * target task tau_k within a time interval with length "x",
+   * and "wcrt_i" is the worst-case response time of tau_i.
+   */ 
+  int CII(const Task& t_i, const Task& t_k, const int x, const int wcrt_i); 
+
 
 }
 
