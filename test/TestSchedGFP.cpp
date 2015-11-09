@@ -6,6 +6,12 @@
 using namespace Scan;
 using namespace std;
 
+
+/**
+ * This file is for testing the implementation of
+ * methods for multiprocessor G-FP schedulability analysis.
+ */
+
 TEST_CASE("Workload and Interference for G-FP")
 {
   Task t1 (28, 50, 50);
