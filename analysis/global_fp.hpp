@@ -48,7 +48,23 @@ namespace Scan {
    */ 
   int CII(const Task& t_i, const Task& t_k, const int x, const int wcrt_i); 
 
+  /**
+   * Nan Guan, Martin Stigge, Wang Yi and Ge  Yu.
+   * "New Response Time Bounds for Fixed Priority
+   * Multiprocessor Scheduling".
+   *
+   * Youcheng Sun. PhD thesis: "Real-Time Schedulability
+   * Analysis with Formal Techniques".
+   */
+  bool RTA_CE (const std::vector<Task>& tasks, const int m, const bool ceiling = false);
 
+  /**
+   * Given the set of higher priority tasks within "hps",
+   * to compute the WCRT of the target task "tk". The 
+   * WCRTs of all higher priority tasks are stored in
+   * the vector "wcrts".
+   */
+  int RTA_CE (const Task& tk, const std::vector<Task>& hps, const std::vector<int>& wcrts, const int m, const bool ceiling = false);
 }
 
 #endif

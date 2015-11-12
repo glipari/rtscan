@@ -1,4 +1,5 @@
 #include "global_fp.hpp"
+#include <algorithm>
 
 namespace Scan {
 
@@ -47,6 +48,58 @@ namespace Scan {
   }
 
 
+  bool RTA_CE (const std::vector<Task>& tasks, const int m, const bool ceiling) {
+
+    vector<int> wcrts;
+    vector<Task> hps; // the set of higher priority tasks when analysing the target one
+
+    for ( auto it = tasks.begin(); it != tasks.end(); it++) {
+
+      int wcrt = RTA_CE(*it, hps, wcrts, m, ceiling);
+      if ( wcrt > it->get_dline()) return false;
+      wcrts.push_back(wcrt);
+      hps.push_back(*it);
+    }
+
+    return true;
+  }
+
+  int RTA_CE (const Task& tk, const std::vector<Task>& hps, const std::vector<int>& wcrts, const int m, const bool ceiling) {
+
+    if ( hps.size() < m) return tk.get_wcet();
+
+    int L = tk.get_wcet();
+
+    while (true) {
+
+      vector<int> ncis, diffs;
+      int i = 0, totI = 0;
+
+      for ( auto & x : hps) {
+        int nci = NCI(x, tk, L);
+        int cii = CII(x, tk, L, wcrts[i++]);
+
+        totI += nci;
+        diffs.push_back(cii-nci);
+      }
+
+      sort(diffs.begin(), diffs.end(), 
+          [](const int a, const int b) {return a > b;}
+          );
+
+      for ( i = 0; i < m-1; i++) // at most m-1 CI tasks
+        totI += diffs[i];
+
+      int Y;
+      if ( not ceiling) Y = totI / m + tk.get_wcet();
+      else Y = ceil( totI*1.0 / m) + tk.get_wcet();
+      
+      if ( Y <= L or Y > tk.get_dline()) return Y;
+      L = Y;
+      
+    }
+
+  }
 
 }
 
