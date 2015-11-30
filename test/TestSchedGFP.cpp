@@ -70,30 +70,30 @@ TEST_CASE("Workload and Interference for G-FP")
   REQUIRE(cii4 == 12);
 
   vector<Task> tasks = {t1, t2, t3, t4, t5};
-  REQUIRE(RTA_CE(tasks, 2) == false);
+  REQUIRE(RTA_LC(tasks, 2) == false);
 
   vector<Task> hps;
   vector<int> wcrts;
 
   //int wcrt1 = 28, wcrt2 = 13, wcrt3 = 18, wcrt4 = 24;
-  REQUIRE ( RTA_CE(t1, hps, wcrts, 2) == wcrt1); 
+  REQUIRE ( RTA_LC(t1, hps, wcrts, 2) == wcrt1); 
   hps.push_back(t1);
   wcrts.push_back(wcrt1);
 
-  REQUIRE ( RTA_CE(t2, hps, wcrts, 2) == wcrt2); 
+  REQUIRE ( RTA_LC(t2, hps, wcrts, 2) == wcrt2); 
   hps.push_back(t2);
   wcrts.push_back(wcrt2);
 
-  REQUIRE ( RTA_CE(t3, hps, wcrts, 2) == wcrt3); 
+  REQUIRE ( RTA_LC(t3, hps, wcrts, 2) == wcrt3); 
   hps.push_back(t3);
   wcrts.push_back(wcrt3);
 
-  REQUIRE ( RTA_CE(t4, hps, wcrts, 2) == wcrt4); 
+  REQUIRE ( RTA_LC(t4, hps, wcrts, 2) == wcrt4); 
   hps.push_back(t4);
   wcrts.push_back(wcrt4);
 
-  REQUIRE ( RTA_CE(t5, hps, wcrts, 2) > t5.get_dline()); 
-  cout << RTA_CE(t5, hps, wcrts, 2) << endl;
+  REQUIRE ( RTA_LC(t5, hps, wcrts, 2) > t5.get_dline()); 
+  cout << RTA_LC(t5, hps, wcrts, 2) << endl;
 
 
   vector<int> v = {2, 3, 4, 0, 6, 1, 5};

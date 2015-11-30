@@ -48,14 +48,14 @@ namespace Scan {
   }
 
 
-  bool RTA_CE (const std::vector<Task>& tasks, const int m, const bool ceiling) {
+  bool RTA_LC (const std::vector<Task>& tasks, const int m, const bool ceiling) {
 
     vector<int> wcrts;
     vector<Task> hps; // the set of higher priority tasks when analysing the target one
 
     for ( auto it = tasks.begin(); it != tasks.end(); it++) {
 
-      int wcrt = RTA_CE(*it, hps, wcrts, m, ceiling);
+      int wcrt = RTA_LC(*it, hps, wcrts, m, ceiling);
       if ( wcrt > it->get_dline()) return false;
       wcrts.push_back(wcrt);
       hps.push_back(*it);
@@ -64,7 +64,7 @@ namespace Scan {
     return true;
   }
 
-  int RTA_CE (const Task& tk, const std::vector<Task>& hps, const std::vector<int>& wcrts, const int m, const bool ceiling) {
+  int RTA_LC (const Task& tk, const std::vector<Task>& hps, const std::vector<int>& wcrts, const int m, const bool ceiling) {
 
     if ( hps.size() < m) return tk.get_wcet();
 

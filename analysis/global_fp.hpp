@@ -56,7 +56,7 @@ namespace Scan {
    * Youcheng Sun. PhD thesis: "Real-Time Schedulability
    * Analysis with Formal Techniques".
    */
-  bool RTA_CE (const std::vector<Task>& tasks, const int m, const bool ceiling = false);
+  bool RTA_LC (const std::vector<Task>& tasks, const int m, const bool ceiling = false);
 
   /**
    * Given the set of higher priority tasks within "hps",
@@ -64,7 +64,7 @@ namespace Scan {
    * WCRTs of all higher priority tasks are stored in
    * the vector "wcrts".
    */
-  int RTA_CE (const Task& tk, const std::vector<Task>& hps, const std::vector<int>& wcrts, const int m, const bool ceiling = false);
+  int RTA_LC (const Task& tk, const std::vector<Task>& hps, const std::vector<int>& wcrts, const int m, const bool ceiling = false);
 }
 
 #endif

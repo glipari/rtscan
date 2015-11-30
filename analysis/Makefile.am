@@ -10,4 +10,4 @@ libscan_analysis_la_SOURCES=dbf.cpp \
 	mbwi_interference.cpp \
 	fmlp.cpp omlp.cpp constraint_space.cpp hyperplane.cpp \
 	ppl_utils.cpp \
-	global_fp.cpp
+	global_fp.cpp global_edf.cpp

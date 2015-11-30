@@ -30,5 +30,5 @@ scantest_SOURCES = test_main.cpp \
 	TestComputationalResource.cpp \
 	TestPipeline.cpp \
 	TestUtility.cpp \
-	TestSchedGFP.cpp
+	TestSchedGFP.cpp TestSchedGEDF.cpp
 
