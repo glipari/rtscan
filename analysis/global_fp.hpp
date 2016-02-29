@@ -4,6 +4,7 @@
 #include <vector>
 #include <cmath>
 #include <ostream>
+#include <map>
 
 #include <models/task.hpp>
 
@@ -55,8 +56,13 @@ namespace Scan {
    *
    * Youcheng Sun. PhD thesis: "Real-Time Schedulability
    * Analysis with Formal Techniques".
+   *
+   *
+   * Note that different from the original algorithm, here we refer to
+   * continuous-time, instead of discrete-time, schedule.
+   *
    */
-  bool RTA_LC (const std::vector<Task>& tasks, const int m, const bool ceiling = false);
+  bool RTA_LC (const std::vector<Task>& tasks, const int m);
 
   /**
    * Given the set of higher priority tasks within "hps",
@@ -64,7 +70,21 @@ namespace Scan {
    * WCRTs of all higher priority tasks are stored in
    * the vector "wcrts".
    */
-  int RTA_LC (const Task& tk, const std::vector<Task>& hps, const std::vector<int>& wcrts, const int m, const bool ceiling = false);
+  int RTA_LC (const Task& tk, const std::vector<Task>& hps, const std::vector<int>& wcrts, const int m);
+
+
+
+  /**
+   * Schedulability Analysis by exploring the Parallel Execution of 
+   * different tasks (work submitted to ECRTS'16).
+   */
+  bool baseline (const std::vector<Task>& tasks, const int m);
+
+  int baseline_wcrt (const Task& tk, const std::vector<Task>& hps, const std::vector<int>& wcrts, const int m);
+
+
+  int FIk (const int ck1, const int ck2, const int L1star, const Task& tk, const std::vector<Task>& hps, const std::vector<int>& wcrts, const int m);
+
 }
 
 #endif

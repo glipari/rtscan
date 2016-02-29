@@ -27,7 +27,9 @@ namespace Scan {
     }
     if ( ti.get_id() == tk.get_id()) {
       int s = L - pi;
-      W = fmin (W, DBF(ti, s));
+      int w2 = DBF(ti, s);
+      if ( W > w2)
+        W = w2;
     }
     return W;
   }
@@ -47,8 +49,8 @@ namespace Scan {
     int p = fmin(x-ci, L-di);
     if ( p < 0) {
       W = fmin( L-(di-ri), ci);
-      W = fmax(W, 0);
-      W = fmin(W, x);
+      if( W < 0) W = 0;
+      if( W > x) W = x;
     }
     else {
       W = ci;
@@ -58,7 +60,11 @@ namespace Scan {
     }
 
     if ( tk.get_id() == ti.get_id()) {
-      W = fmin(W, DBF(ti, L - pi));
+      int t = L-pi;
+      int w2 = t/pi * ci + fmin(ci, fmax(t % pi - di + ri, 0));
+
+      if ( W > w2) 
+        W = w2;
     }
 
     return W;
@@ -285,7 +291,7 @@ namespace Scan {
         x = nuX;
       }
       
-      wcrt = fmax(x - Ak, wcrt);
+      if( wcrt < x - Ak) wcrt = x - Ak;
 
     }
     
